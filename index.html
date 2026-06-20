@@ -18,6 +18,16 @@
             --success: #10b981;
             --danger: #ef4444;
             --warning: #fbbf24;
+            --emp-accent: #00f2ff;
+            --emp-accent-8: rgba(0,242,255,0.08);
+            --emp-accent-15: rgba(0,242,255,0.15);
+            --emp-accent-20: rgba(0,242,255,0.2);
+            --emp-accent-25: rgba(0,242,255,0.25);
+            --emp-accent-30: rgba(0,242,255,0.3);
+            --emp-accent-40: rgba(0,242,255,0.4);
+            --emp-accent2: #7000ff;
+            --emp-accent2-8: rgba(112,0,255,0.08);
+            --emp-accent2-15: rgba(112,0,255,0.15);
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -142,9 +152,6 @@
         td.details-cell { max-width: 280px; white-space: normal; line-height: 1.6; text-align: right; padding-right: 16px; }
         tr:hover td { background: rgba(255,255,255,0.03); }
         .badge { padding: 4px 12px; border-radius: 8px; font-weight: 700; font-size: 12px; display: inline-block; }
-        .badge-morning { background: rgba(251,191,36,0.15); color: #fbbf24; }
-        .badge-evening { background: rgba(249,115,22,0.15); color: #f97316; }
-        .badge-night { background: rgba(129,140,248,0.15); color: #818cf8; }
         .badge-active { background: rgba(16,185,129,0.15); color: #10b981; }
         .badge-inactive { background: rgba(239,68,68,0.15); color: #ef4444; }
         .badge-manager { background: rgba(251,191,36,0.15); color: #fbbf24; }
@@ -250,43 +257,29 @@
             font-size: 14px; opacity: 0.7; transition: opacity 0.3s;
         }
         .pass-toggle:hover { opacity: 1; }
-
-        /* ===== ألوان مخصصة لكل موظف ===== */
-        .emp-theme-color {
-            width: 36px; height: 36px; border-radius: 10px; border: 2px solid rgba(255,255,255,0.15);
+        .theme-picker-bar { display: flex; align-items: center; gap: 10px; padding: 0 8px; }
+        .theme-picker-bar .color-label { color: #94a3b8; font-size: 12px; font-weight: 700; white-space: nowrap; }
+        .theme-color-btn {
+            width: 34px; height: 34px; border-radius: 10px; border: 2px solid rgba(255,255,255,0.2);
             cursor: pointer; position: relative; overflow: hidden; flex-shrink: 0;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: transform 0.2s, box-shadow 0.3s;
         }
-        .emp-theme-color:hover { transform: scale(1.1); box-shadow: 0 0 15px rgba(255,255,255,0.2); }
-        .emp-theme-color input[type="color"] {
+        .theme-color-btn:hover { transform: scale(1.15); box-shadow: 0 0 18px var(--emp-accent-40); }
+        .theme-color-btn input[type="color"] {
             position: absolute; top: -10px; right: -10px; width: 60px; height: 60px;
             border: none; cursor: pointer; padding: 0; opacity: 0;
         }
-        .color-picker-group { display: flex; align-items: center; gap: 10px; }
-        .color-picker-group label { margin-bottom: 0 !important; }
+        .theme-color-saving { font-size: 11px; color: var(--warning); opacity: 0; transition: opacity 0.3s; white-space: nowrap; }
+        .theme-color-saving.show { opacity: 1; }
 
-        /* ألوان الصفحة الديناميكية */
-        .theme-applied .session-bar {
-            border-color: var(--emp-accent-20);
-            background: var(--emp-accent-8);
-        }
+        .theme-applied .session-bar { border-color: var(--emp-accent-20); background: var(--emp-accent-8); }
         .theme-applied .session-bar .user-info { color: var(--emp-accent); }
         .theme-applied .session-bar .online-dot { background: var(--emp-accent); }
         .theme-applied .input-box label { color: var(--emp-accent); }
         .theme-applied .field-wrap i { color: var(--emp-accent); }
-        .theme-applied input:focus, .theme-applied select:focus {
-            border-color: var(--emp-accent);
-            box-shadow: 0 0 20px var(--emp-accent-20);
-        }
-        .theme-applied h3 {
-            background: linear-gradient(to left, var(--emp-accent), var(--emp-accent2, var(--secondary)));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 10px var(--emp-accent-30));
-        }
-        .theme-applied .btn-neon {
-            background: linear-gradient(45deg, var(--emp-accent), var(--emp-accent2, var(--secondary)));
-            box-shadow: 0 10px 25px var(--emp-accent-30);
-        }
+        .theme-applied input:focus, .theme-applied select:focus { border-color: var(--emp-accent); box-shadow: 0 0 20px var(--emp-accent-20); }
+        .theme-applied h3 { background: linear-gradient(to left, var(--emp-accent), var(--emp-accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 10px var(--emp-accent-30)); }
+        .theme-applied .btn-neon { background: linear-gradient(45deg, var(--emp-accent), var(--emp-accent2)); box-shadow: 0 10px 25px var(--emp-accent-30); }
         .theme-applied .btn-neon:hover { box-shadow: 0 15px 35px var(--emp-accent-40); }
         .theme-applied .filter-bar .f-item i { color: var(--emp-accent); }
         .theme-applied .filter-bar .f-label { border-left-color: var(--emp-accent); }
@@ -297,28 +290,17 @@
         .theme-applied .cloud-status.synced { color: var(--emp-accent); }
         .theme-applied .cloud-status.synced .cloud-dot { background: var(--emp-accent); }
         .theme-applied .stat-card:hover { border-color: var(--emp-accent-30); }
-        .theme-applied .stat-card .stat-num {
-            background: linear-gradient(to left, var(--emp-accent), var(--emp-accent2, var(--secondary)));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-        .theme-applied .mgr-tab.active {
-            background: linear-gradient(45deg, var(--emp-accent-15), var(--emp-accent2-15, rgba(112,0,255,0.15)));
-            border-color: var(--emp-accent-40); color: var(--emp-accent);
-        }
+        .theme-applied .stat-card .stat-num { background: linear-gradient(to left, var(--emp-accent), var(--emp-accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .theme-applied .mgr-tab.active { background: linear-gradient(45deg, var(--emp-accent-15), var(--emp-accent2-15)); border-color: var(--emp-accent-40); color: var(--emp-accent); }
         .theme-applied .mgr-tab .tab-count { background: var(--emp-accent-20); color: var(--emp-accent); }
-        .theme-applied .card::after {
-            background: linear-gradient(135deg, var(--emp-accent), transparent);
-        }
-        .theme-applied body::before {
-            background: radial-gradient(circle at 20% 30%, var(--emp-accent-8), transparent 40%),
-                        radial-gradient(circle at 80% 70%, var(--emp-accent2-8, rgba(112,0,255,0.08)), transparent 40%);
-        }
-        .theme-applied .btn-add-emp {
-            background: linear-gradient(45deg, var(--emp-accent), var(--emp-accent2, var(--secondary)));
-            color: white;
-        }
+        .theme-applied .card::after { background: linear-gradient(135deg, var(--emp-accent), transparent); }
+        .theme-applied body::before { background: radial-gradient(circle at 20% 30%, var(--emp-accent-8), transparent 40%), radial-gradient(circle at 80% 70%, var(--emp-accent2-8), transparent 40%); }
+        .theme-applied .theme-color-btn { border-color: var(--emp-accent-40); }
+        .theme-applied .theme-color-btn:hover { box-shadow: 0 0 18px var(--emp-accent-40); }
 
-        /* مكان التسليم - حقل نص مرن */
+        .emp-color-cell { display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .emp-color-dot { width: 22px; height: 22px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); }
+
         .location-input-wrap { position: relative; }
         .location-input-wrap .location-suggestions {
             position: absolute; top: 100%; right: 0; left: 0; z-index: 100;
@@ -326,19 +308,19 @@
             margin-top: 4px; max-height: 200px; overflow-y: auto; display: none;
         }
         .location-input-wrap .location-suggestions.open { display: block; }
-        .location-input-wrap .location-suggestions div {
-            padding: 10px 16px; cursor: pointer; font-size: 13px; transition: background 0.2s;
-        }
+        .location-input-wrap .location-suggestions div { padding: 10px 16px; cursor: pointer; font-size: 13px; transition: background 0.2s; }
         .location-input-wrap .location-suggestions div:hover { background: rgba(0,242,255,0.1); }
 
         @media (max-width: 1000px) { .grid-layout { grid-template-columns: 1fr 1fr; } }
         @media (max-width: 700px) {
             .grid-layout { grid-template-columns: 1fr; }
             .filter-bar .f-item { min-width: 100%; }
-            .session-bar { flex-direction: column; text-align: center; }
+            .session-bar { flex-direction: column; text-align: center; align-items: stretch; }
+            .session-bar > * { justify-content: center; }
             .stats-bar { flex-direction: column; }
             .modal-grid { grid-template-columns: 1fr; }
             .modal-grid .full-width { grid-column: span 1; }
+            .theme-picker-bar { justify-content: center; }
         }
     </style>
 </head>
@@ -383,8 +365,7 @@
                             <option value="عباس العقاد">عباس العقاد</option>
                             <option value="يوسف عباس">يوسف عباس</option>
                             <option value="المعهد">المعهد</option>
-                               <option value="مركز الاتصالات">مركز الاتصالات</option>
-                         
+                            <option value="مركز الاتصالات">مركز الاتصالات</option>
                         </select>
                     </div>
                 </div>
@@ -397,21 +378,13 @@
                         </select>
                     </div>
                 </div>
-                <div class="input-box">
-                    <div class="color-picker-group">
-                        <div class="emp-theme-color" id="empColorPreview" style="background:#00f2ff;">
-                            <input type="color" id="empThemeColor" value="#00f2ff" oninput="document.getElementById('empColorPreview').style.background=this.value">
-                        </div>
-                        <label>لون الصفحة الخاص بالموظف</label>
-                    </div>
+                <div class="input-box" style="display:flex; align-items:center; gap:10px; padding-top:22px;">
+                    <input type="checkbox" id="empActive" checked style="width:auto; padding:0; margin:0;">
+                    <label for="empActive" style="margin-bottom:0; cursor:pointer;">حساب نشط</label>
                 </div>
                 <div class="input-box full-width">
                     <label>ملاحظات إضافية</label>
                     <textarea id="empNotes" rows="2" placeholder="أي ملاحظات عن الموظف..."></textarea>
-                </div>
-                <div class="input-box full-width" style="display:flex; align-items:center; gap:10px; padding-top:6px;">
-                    <input type="checkbox" id="empActive" checked style="width:auto; padding:0; margin:0;">
-                    <label for="empActive" style="margin-bottom:0; cursor:pointer;">الحساب نشط (يمكنه تسجيل الدخول)</label>
                 </div>
             </div>
             <div class="modal-actions">
@@ -426,10 +399,10 @@
 <div id="login-section" class="app-container hidden">
     <div class="card login-card" style="text-align: center;">
         <div style="font-size: 55px; color: var(--primary); margin-bottom: 18px;"><i class="fas fa-fingerprint"></i></div>
-<h3 style="font-size: 2.8rem; margin-bottom: 20px;"> Complaints</h3>        <p style="text-align:center; color:#64748b; font-size:13px; margin-bottom:20px;">
-        </p>
+        <h3 style="font-size: 2.8rem; margin-bottom: 20px;">Complaints</h3>
         <div class="input-box">
-<label style="font-size: 25px;"> Login</label>            <div class="field-wrap"><i class="fas fa-user-circle"></i><input type="text" id="username" placeholder="Username"></div>
+            <label style="font-size: 25px;">Login</label>
+            <div class="field-wrap"><i class="fas fa-user-circle"></i><input type="text" id="username" placeholder="Username"></div>
         </div>
         <div class="input-box" style="margin-top: 14px;">
             <div class="field-wrap">
@@ -438,7 +411,7 @@
             </div>
         </div>
         <button class="btn btn-neon" id="loginBtn" onclick="handleLogin()"><i class="fas fa-arrow-right"></i> دخول النظام</button>
-        <p id="error-msg" class="hidden" style="color:#ef4444; margin-top:14px; font-weight:bold;">بيانات الاعتماد غير صالحة!</p>
+        <p id="error-msg" class="hidden" style="color:#ef4444; margin-top:14px; font-weight:bold;">بيانات الاعتماد غير صالدة!</p>
     </div>
 </div>
 
@@ -449,6 +422,13 @@
             <div class="online-dot"></div>
             <i class="fas fa-user-shield"></i>
             <span>متصل: <strong id="emp-name-display"></strong></span>
+        </div>
+        <div class="theme-picker-bar">
+            <span class="color-label"><i class="fas fa-palette"></i> لوني</span>
+            <div class="theme-color-btn" id="empThemeBtn" style="background:#00f2ff;">
+                <input type="color" id="empThemeColorPicker" value="#00f2ff">
+            </div>
+            <span class="theme-color-saving" id="themeSavingText"><i class="fas fa-spinner fa-spin"></i> جاري الحفظ...</span>
         </div>
         <div id="empCloudStatus" class="cloud-status synced">
             <div class="cloud-dot"></div>
@@ -623,7 +603,7 @@
     import {
         getFirestore, collection, addDoc, setDoc, doc, getDocs, getDoc,
         query, where, orderBy, deleteDoc, onSnapshot, serverTimestamp,
-        writeBatch, Timestamp
+        writeBatch, Timestamp, updateDoc
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -642,21 +622,36 @@
     const db = getFirestore(app);
 
     let currentUser = null;
+    let currentUserDocId = null;
     let allComplaints = [];
     let allEmployees = [];
     let unsubSnapshot = null;
     let unsubEmpSnapshot = null;
     let localCache = JSON.parse(localStorage.getItem('db_complaints_cache') || '[]');
     let localEmpCache = JSON.parse(localStorage.getItem('db_employees_cache') || '[]');
+    let themeSaveTimeout = null;
 
-    /* أماكن التسليم المقترحة */
-    const LOCATION_SUGGESTIONS = [
-        'منزل', 'مكان عمل', '  Talabat ',
-    ];
-
+    const LOCATION_SUGGESTIONS = ['منزل', 'مكان عمل', 'Talabat'];
     const DEFAULT_MANAGERS = [
         { username: 'admin', password: '19971', fullName: 'مدير النظام', role: 'manager' }
     ];
+
+    /* ===== الحصول على الشهر الحالي بتوقيت مصر ===== */
+    // الحصول على الشهر الحالي بتنسيق YYYY-MM (للفلتر)
+function getCurrentMonth() {
+    const now = new Date();
+    const egyptTime = new Date(now.toLocaleString("en-US", {timeZone: "Africa/Cairo"}));
+    const y = egyptTime.getFullYear();
+    const m = String(egyptTime.getMonth() + 1).padStart(2, '0');
+    return `${y}-${m}`;
+}
+
+// الحصول على التاريخ الحالي بتنسيق YYYY-MM-DD (لإضافة شكوى)
+function getCurrentDate() {
+    const now = new Date();
+    const egyptTime = new Date(now.toLocaleString("en-US", {timeZone: "Africa/Cairo"}));
+    return egyptTime.toISOString().split('T')[0];
+}
 
     /* ===== أدوات مساعدة ===== */
     function showToast(msg, err) {
@@ -726,27 +721,7 @@
         el.querySelector('span').textContent = text;
     }
 
-    /* ===== تطبيق لون الموظف على الصفحة ===== */
-    function applyEmployeeTheme(color) {
-        const root = document.documentElement;
-        const c = color || '#00f2ff';
-        root.style.setProperty('--emp-accent', c);
-        root.style.setProperty('--emp-accent-8', hexToRgba(c, 0.08));
-        root.style.setProperty('--emp-accent-15', hexToRgba(c, 0.15));
-        root.style.setProperty('--emp-accent-20', hexToRgba(c, 0.2));
-        root.style.setProperty('--emp-accent-25', hexToRgba(c, 0.25));
-        root.style.setProperty('--emp-accent-30', hexToRgba(c, 0.3));
-        root.style.setProperty('--emp-accent-40', hexToRgba(c, 0.4));
-        /* لون ثانوي محسوب تلقائياً */
-        const hsl = hexToHSL(c);
-        const secondHue = (hsl.h + 60) % 360;
-        const secondColor = hslToHex(secondHue, Math.min(hsl.s, 100), Math.min(hsl.l, 60));
-        root.style.setProperty('--emp-accent2', secondColor);
-        root.style.setProperty('--emp-accent2-8', hexToRgba(secondColor, 0.08));
-        root.style.setProperty('--emp-accent2-15', hexToRgba(secondColor, 0.15));
-        document.body.classList.add('theme-applied');
-    }
-
+    /* ===== تحويل الألوان ===== */
     function hexToRgba(hex, alpha) {
         const r = parseInt(hex.slice(1,3), 16);
         const g = parseInt(hex.slice(3,5), 16);
@@ -782,15 +757,78 @@
         return `#${f(0)}${f(8)}${f(4)}`;
     }
 
+    /* ===== تطبيق لون الموظف على الصفحة ===== */
+    function applyEmployeeTheme(color) {
+        const root = document.documentElement;
+        const c = color || '#00f2ff';
+        root.style.setProperty('--emp-accent', c);
+        root.style.setProperty('--emp-accent-8', hexToRgba(c, 0.08));
+        root.style.setProperty('--emp-accent-15', hexToRgba(c, 0.15));
+        root.style.setProperty('--emp-accent-20', hexToRgba(c, 0.2));
+        root.style.setProperty('--emp-accent-25', hexToRgba(c, 0.25));
+        root.style.setProperty('--emp-accent-30', hexToRgba(c, 0.3));
+        root.style.setProperty('--emp-accent-40', hexToRgba(c, 0.4));
+        const hsl = hexToHSL(c);
+        const secondHue = (hsl.h + 60) % 360;
+        const secondColor = hslToHex(secondHue, Math.min(hsl.s, 100), Math.min(hsl.l, 60));
+        root.style.setProperty('--emp-accent2', secondColor);
+        root.style.setProperty('--emp-accent2-8', hexToRgba(secondColor, 0.08));
+        root.style.setProperty('--emp-accent2-15', hexToRgba(secondColor, 0.15));
+        document.body.classList.add('theme-applied');
+        const btn = document.getElementById('empThemeBtn');
+        if (btn) btn.style.background = c;
+        const picker = document.getElementById('empThemeColorPicker');
+        if (picker) picker.value = c;
+    }
+
     function removeEmployeeTheme() {
         document.body.classList.remove('theme-applied');
+    }
+
+    /* ===== حفظ لون الموظف في السحابة ===== */
+    async function saveThemeColorToCloud(color) {
+        if (!currentUserDocId) return;
+        const savingText = document.getElementById('themeSavingText');
+        if (savingText) savingText.classList.add('show');
+        try {
+            await updateDoc(doc(db, 'employees', currentUserDocId), {
+                themeColor: color,
+                updatedAt: serverTimestamp()
+            });
+            const idx = localEmpCache.findIndex(e => e.id === currentUserDocId);
+            if (idx !== -1) localEmpCache[idx].themeColor = color;
+            localStorage.setItem('db_employees_cache', JSON.stringify(localEmpCache));
+            localStorage.setItem('session_themeColor', color);
+            setTimeout(() => { if (savingText) savingText.classList.remove('show'); }, 800);
+        } catch(err) {
+            console.error('خطأ في حفظ اللون:', err);
+            if (savingText) savingText.classList.remove('show');
+            showToast('لم يتم حفظ اللون - تحقق من الاتصال', true);
+        }
+    }
+
+    /* ===== مستمع تغيير اللون ===== */
+    function initThemePicker() {
+        const picker = document.getElementById('empThemeColorPicker');
+        const btn = document.getElementById('empThemeBtn');
+        if (!picker || !btn) return;
+        /* إزالة أي مستمع سابق لمنع التكرار */
+        const newPicker = picker.cloneNode(true);
+        picker.parentNode.replaceChild(newPicker, picker);
+        newPicker.addEventListener('input', function() {
+            const color = this.value;
+            btn.style.background = color;
+            applyEmployeeTheme(color);
+            if (themeSaveTimeout) clearTimeout(themeSaveTimeout);
+            themeSaveTimeout = setTimeout(() => { saveThemeColorToCloud(color); }, 600);
+        });
     }
 
     /* ===== اقتراحات مكان التسليم ===== */
     window._showLocationSuggestions = function(val) {
         const box = document.getElementById('locationSuggestions');
+        if (!box) return;
         if (!val || val.length === 0) {
-            /* إظهار كل الاقتراحات عند الفocus */
             const all = LOCATION_SUGGESTIONS;
             if (all.length === 0) { box.classList.remove('open'); return; }
             box.innerHTML = all.map(s => `<div onmousedown="window._pickLocation('${s}')">${s}</div>`).join('');
@@ -806,22 +844,25 @@
         document.getElementById('location').value = val;
         document.getElementById('locationSuggestions').classList.remove('open');
     };
-    /* إغلاق القائمة عند الضغط خارجها */
     document.addEventListener('click', function(e) {
         const box = document.getElementById('locationSuggestions');
-        if (box && !e.target.closest('.location-input-wrap')) {
-            box.classList.remove('open');
-        }
+        if (box && !e.target.closest('.location-input-wrap')) box.classList.remove('open');
     });
 
-    function updateServerTime() {
-        const now = new Date();
-        const egyptTime = new Date(now.toLocaleString("en-US", {timeZone: "Africa/Cairo"}));
-        const datePart = egyptTime.toISOString().split('T')[0];
-        const timePart = egyptTime.toTimeString().split(' ')[0].substring(0, 5);
-        if (document.getElementById('date')) document.getElementById('date').value = datePart;
-        if (document.getElementById('complaintTime')) document.getElementById('complaintTime').value = timePart;
-    }
+   function updateServerTime() {
+    const now = new Date();
+    const egyptTime = new Date(now.toLocaleString("en-US", {timeZone: "Africa/Cairo"}));
+    const datePart = egyptTime.toISOString().split('T')[0];
+    const timePart = egyptTime.toTimeString().split(' ')[0].substring(0, 5);
+    
+    // وضع التاريخ الحالي في خانة تاريخ الشكوى
+    const dateInput = document.getElementById('date');
+    if (dateInput) dateInput.value = datePart;
+    
+    // وضع الوقت الحالي في خانة وقت تسجيل الشكوى
+    const timeInput = document.getElementById('complaintTime');
+    if (timeInput) timeInput.value = timePart;
+}
 
     /* ===== بناء صفوف الجداول ===== */
     function buildEmpRow(c, idx) {
@@ -849,273 +890,154 @@
         </tr>`;
     }
 
-    function matchFilters(c, month, name, phone, shift, type) {
+    function matchFilters(c, month, name, phone, type) {
+    const mMonth = !month || (c.date && c.date.startsWith(month));
+    const mName = !name || (c.customerName && c.customerName.toLowerCase().includes(name.toLowerCase()));
+    const mPhone = !phone || (c.phone && c.phone.includes(phone));
+    const mType = !type || c.type === type;
+    return mMonth && mName && mPhone && mType;
+}
+
+  // اجعل الدالة عامة لكي يراها المتصفح
+window.refreshEmployeeView = function() {
+    const month = document.getElementById('empMonthFilter').value;
+    const name = document.getElementById('empSearchName').value;
+    const phone = document.getElementById('empSearchPhone').value;
+    const type = document.getElementById('empTypeFilter').value;
+    const session = getSession();
+    
+    // الفلترة بناءً على المصفوفة الكلية
+    const filtered = allComplaints.filter(c =>
+        c.username === session.user && matchFilters(c, month, name, phone, type)
+    );
+    
+    const tbody = document.getElementById('empTableBody');
+    if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="15"><div class="empty-state"><i class="fas fa-inbox"></i><p>لا توجد شكاوى في هذا الشهر</p></div></td></tr>`;
+    } else {
+        tbody.innerHTML = filtered.map((c, i) => buildEmpRow(c, i)).join('');
+    }
+}
+
+window.loadManagerData = function() {
+    const month = document.getElementById('mgrMonthFilter').value;
+    const name = document.getElementById('searchName').value;
+    const phone = document.getElementById('searchPhone').value;
+    const user = document.getElementById('searchUser').value;
+
+    const filtered = allComplaints.filter(c => {
         const mMonth = !month || (c.date && c.date.startsWith(month));
-        const mName = !name || (c.customerName && c.customerName.toLowerCase().includes(name));
+        const mName = !name || (c.customerName && c.customerName.toLowerCase().includes(name.toLowerCase()));
         const mPhone = !phone || (c.phone && c.phone.includes(phone));
-        const mShift = !shift || c.shift === shift;
-        const mType = !type || c.type === type;
-        return mMonth && mName && mPhone && mShift && mType;
+        const mUser = !user || (c.callCenterUser && c.callCenterUser.toLowerCase().includes(user.toLowerCase()));
+        return mMonth && mName && mPhone && mUser;
+    });
+
+    const tbody = document.getElementById('managerTableBody');
+    if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="15"><div class="empty-state"><i class="fas fa-inbox"></i><p>لا توجد بيانات لهذا الشهر</p></div></td></tr>`;
+    } else {
+        tbody.innerHTML = filtered.map(c => buildMgrRow(c)).join('');
     }
 
-    function refreshEmployeeView() {
-        const user = getSession().user;
-        if (!user) return;
-        const month = document.getElementById('empMonthFilter').value;
-        const name = document.getElementById('empSearchName').value.toLowerCase();
-        const phone = document.getElementById('empSearchPhone').value;
-        const type = document.getElementById('empTypeFilter').value;
-        const tbody = document.getElementById('empTableBody');
-        tbody.innerHTML = '';
-        let count = 0;
-        for (let i = allComplaints.length - 1; i >= 0; i--) {
-            const c = allComplaints[i];
-            if (c.callCenterUser === user && matchFilters(c, month, name, phone, '', type)) {
-                tbody.innerHTML += buildEmpRow(c, i);
-                count++;
-            }
-        }
-        if (count === 0) {
-            tbody.innerHTML = '<tr><td colspan="15"><div class="empty-state"><i class="fas fa-inbox"></i><p>لا توجد شكاوى مطابقة للبحث</p></div></td></tr>';
-        }
+    // تحديث الإحصائيات لتتوافق مع الشهر المختار
+    updateManagerStats(month); 
+}
+
+// دالة مساعدة لتحديث الإحصائيات بناءً على الفلتر
+function updateManagerStats(selectedMonth) {
+    const today = new Date().toLocaleDateString("en-CA", {timeZone: "Africa/Cairo"});
+    
+    document.getElementById('statTotal').textContent = allComplaints.length;
+    document.getElementById('statToday').textContent = allComplaints.filter(c => c.date === today).length;
+    
+    // شكاوى الشهر المختار (بدلاً من الشهر الحالي الحقيقي دائماً)
+    if (selectedMonth) {
+        document.getElementById('statMonth').textContent = allComplaints.filter(c => c.date && c.date.startsWith(selectedMonth)).length;
     }
-    window.refreshEmployeeView = refreshEmployeeView;
+
+    document.getElementById('tabCountComplaints').textContent = allComplaints.length;
+}
 
     function loadManagerData() {
         const month = document.getElementById('mgrMonthFilter').value;
-        const name = document.getElementById('searchName').value.toLowerCase();
+        const name = document.getElementById('searchName').value;
         const phone = document.getElementById('searchPhone').value;
-        const userSearch = document.getElementById('searchUser').value.toLowerCase();
+        const user = document.getElementById('searchUser').value;
+        const filtered = allComplaints.filter(c => {
+            const mMonth = !month || (c.date && c.date.startsWith(month));
+            const mName = !name || (c.customerName && c.customerName.toLowerCase().includes(name.toLowerCase()));
+            const mPhone = !phone || (c.phone && c.phone.includes(phone));
+            const mUser = !user || (c.callCenterUser && c.callCenterUser.toLowerCase().includes(user.toLowerCase()));
+            return mMonth && mName && mPhone && mUser;
+        });
         const tbody = document.getElementById('managerTableBody');
-        tbody.innerHTML = '';
-        let count = 0;
-        for (let i = allComplaints.length - 1; i >= 0; i--) {
-            const c = allComplaints[i];
-            const mUser = !userSearch || (c.callCenterUser && c.callCenterUser.toLowerCase().includes(userSearch));
-            if (matchFilters(c, month, name, phone, '', '') && mUser) {
-                tbody.innerHTML += buildMgrRow(c);
-                count++;
-            }
-        }
-        if (count === 0) {
-            tbody.innerHTML = '<tr><td colspan="15"><div class="empty-state"><i class="fas fa-inbox"></i><p>لا توجد شكاوى مطابقة</p></div></td></tr>';
-        }
-        document.getElementById('tabCountComplaints').textContent = count;
-        updateStats();
-    }
-    window.loadManagerData = loadManagerData;
-
-    function updateStats() {
-        const today = new Date().toISOString().split('T')[0];
-        const thisMonth = new Date().toISOString().slice(0, 7);
-        const usersSet = new Set();
-        let todayCount = 0, monthCount = 0;
-        allComplaints.forEach(c => {
-            if (c.callCenterUser) usersSet.add(c.callCenterUser);
-            if (c.date === today) todayCount++;
-            if (c.date && c.date.startsWith(thisMonth)) monthCount++;
-        });
-        document.getElementById('statTotal').textContent = allComplaints.length;
-        document.getElementById('statToday').textContent = todayCount;
-        document.getElementById('statMonth').textContent = monthCount;
-        document.getElementById('statUsers').textContent = usersSet.size;
-        document.getElementById('statEmployees').textContent = allEmployees.length;
-    }
-
-    /* ===== التبويبات ===== */
-    window._switchTab = function(tab, el) {
-        document.querySelectorAll('.mgr-tab').forEach(t => t.classList.remove('active'));
-        el.classList.add('active');
-        document.getElementById('tab-complaints').classList.toggle('hidden', tab !== 'complaints');
-        document.getElementById('tab-employees').classList.toggle('hidden', tab !== 'employees');
-        if (tab === 'employees') renderEmployeesTable();
-    };
-
-    /* ===== إدارة الموظفين ===== */
-    window._openEmpModal = function(editData) {
-        const modal = document.getElementById('empModal');
-        const form = document.getElementById('empForm');
-        form.reset();
-        document.getElementById('empEditId').value = '';
-        document.getElementById('empActive').checked = true;
-        document.getElementById('empThemeColor').value = '#00f2ff';
-        document.getElementById('empColorPreview').style.background = '#00f2ff';
-        if (editData) {
-            document.getElementById('empModalTitle').innerHTML = '<i class="fas fa-user-edit"></i> تعديل بيانات الموظف';
-            document.getElementById('empSaveBtn').innerHTML = '<i class="fas fa-sync"></i> تحديث البيانات';
-            document.getElementById('empEditId').value = editData.id;
-            document.getElementById('empUsername').value = editData.username || '';
-            document.getElementById('empFullName').value = editData.fullName || '';
-            document.getElementById('empPassword').value = editData.password || '';
-            document.getElementById('empBranch').value = editData.branch || 'كل الفروع';
-            document.getElementById('empRole').value = editData.role || 'employee';
-            document.getElementById('empNotes').value = editData.notes || '';
-            document.getElementById('empActive').checked = editData.active !== false;
-            const tc = editData.themeColor || '#00f2ff';
-            document.getElementById('empThemeColor').value = tc;
-            document.getElementById('empColorPreview').style.background = tc;
+        if (filtered.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="15"><div class="empty-state"><i class="fas fa-inbox"></i><p>لا توجد شكاوى مطابقة</p></div></td></tr>`;
         } else {
-            document.getElementById('empModalTitle').innerHTML = '<i class="fas fa-user-plus"></i> إضافة موظف جديد';
-            document.getElementById('empSaveBtn').innerHTML = '<i class="fas fa-save"></i> حفظ الموظف';
+            tbody.innerHTML = filtered.map(c => buildMgrRow(c)).join('');
         }
-        modal.classList.add('active');
-    };
-
-    window._closeEmpModal = function() {
-        document.getElementById('empModal').classList.remove('active');
-    };
-
-    window._togglePass = function(inputId, btn) {
-        const inp = document.getElementById(inputId);
-        if (inp.type === 'password') { inp.type = 'text'; btn.querySelector('i').className = 'fas fa-eye-slash'; }
-        else { inp.type = 'password'; btn.querySelector('i').className = 'fas fa-eye'; }
-    };
-
-    window._saveEmployee = async function(e) {
-        e.preventDefault();
-        const editId = document.getElementById('empEditId').value;
-        const btn = document.getElementById('empSaveBtn');
-        const isEdit = editId !== '';
-        const username = document.getElementById('empUsername').value.trim().toLowerCase();
-        const fullName = document.getElementById('empFullName').value.trim();
-        const password = document.getElementById('empPassword').value;
-        const branch = document.getElementById('empBranch').value;
-        const role = document.getElementById('empRole').value;
-        const notes = document.getElementById('empNotes').value.trim();
-        const active = document.getElementById('empActive').checked;
-        const themeColor = document.getElementById('empThemeColor').value;
-
-        if (!username || !fullName || !password) { showToast('جميع الحقول المطلوبة يجب ملؤها', true); return; }
-
-        const duplicate = allEmployees.find(emp => emp.username === username && emp.id !== editId);
-        if (duplicate) { showToast('اسم المستخدم موجود بالفعل!', true); return; }
-
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الحفظ...';
-
-        const empData = { username, fullName, password, branch, role, notes, active, themeColor, updatedAt: serverTimestamp() };
-
-        try {
-            if (isEdit) {
-                await setDoc(doc(db, 'employees', editId), empData, { merge: true });
-                showToast('تم تحديث بيانات الموظف بنجاح');
-            } else {
-                empData.createdAt = serverTimestamp();
-                await addDoc(collection(db, 'employees'), empData);
-                showToast('تم إضافة الموظف بنجاح');
-            }
-            window._closeEmpModal();
-        } catch (error) {
-            console.error('خطأ في حفظ الموظف:', error);
-            showToast('فشل الحفظ! تحقق من الاتصال', true);
-        }
-        btn.disabled = false;
-        btn.innerHTML = isEdit ? '<i class="fas fa-sync"></i> تحديث البيانات' : '<i class="fas fa-save"></i> حفظ الموظف';
-    };
-
-    window._editEmployee = function(idx) { window._openEmpModal(allEmployees[idx]); };
-
-    window._deleteEmployee = async function(docId) {
-        const emp = allEmployees.find(e => e.id === docId);
-        if (!emp) return;
-        if (!confirm(`هل تريد حذف الموظف "${emp.fullName}" نهائياً؟`)) return;
-        try {
-            await deleteDoc(doc(db, 'employees', docId));
-            showToast('تم حذف الموظف بنجاح');
-        } catch (error) {
-            console.error('خطأ في حذف الموظف:', error);
-            showToast('فشل الحذف! تحقق من الاتصال', true);
-        }
-    };
-
-    function renderEmployeesTable() {
-        const search = (document.getElementById('empSearchInput').value || '').toLowerCase();
-        const roleFilter = document.getElementById('empRoleFilter').value;
-        const statusFilter = document.getElementById('empStatusFilter').value;
-        const tbody = document.getElementById('employeesTableBody');
-        tbody.innerHTML = '';
-        let count = 0;
-        allEmployees.forEach((emp, idx) => {
-            const matchSearch = !search || (emp.username||'').toLowerCase().includes(search) || (emp.fullName||'').toLowerCase().includes(search);
-            const matchRole = !roleFilter || emp.role === roleFilter;
-            const matchStatus = !statusFilter || (statusFilter === 'active' ? emp.active !== false : emp.active === false);
-            if (matchSearch && matchRole && matchStatus) {
-                const roleBadge = emp.role === 'manager' ? '<span class="badge badge-manager">مدير</span>' : '<span class="badge badge-employee">موظف</span>';
-                const statusBadge = emp.active !== false ? '<span class="badge badge-active">نشط</span>' : '<span class="badge badge-inactive">معطل</span>';
-                const createdDate = emp.createdAt ? (emp.createdAt.toDate ? emp.createdAt.toDate().toLocaleDateString('ar-EG') : '-') : '-';
-                const colorBox = `<div style="width:28px;height:28px;border-radius:8px;background:${emp.themeColor||'#00f2ff'};margin:0 auto;border:2px solid rgba(255,255,255,0.15);"></div>`;
-                tbody.innerHTML += `<tr>
-                    <td>${idx+1}</td><td>${emp.username||'-'}</td><td>${emp.fullName||'-'}</td>
-                    <td>${roleBadge}</td><td>${emp.branch||'-'}</td><td>${colorBox}</td>
-                    <td>${statusBadge}</td><td>${createdDate}</td><td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${emp.notes||'-'}</td>
-                    <td><button class="btn btn-sm btn-edit" onclick="window._editEmployee(${idx})"><i class="fas fa-pen"></i></button></td>
-                    <td><button class="btn btn-sm btn-del" onclick="window._deleteEmployee('${emp.id}')"><i class="fas fa-trash-alt"></i></button></td>
-                </tr>`;
-                count++;
-            }
-        });
-        if (count === 0) {
-            tbody.innerHTML = '<tr><td colspan="11"><div class="empty-state"><i class="fas fa-users-slash"></i><p>لا يوجد موظفين مطابقين</p></div></td></tr>';
-        }
-        document.getElementById('tabCountEmployees').textContent = allEmployees.length;
+        /* إحصائيات دائماً من كل الشكاوى (بدون فلتر) */
+        const today = new Date().toLocaleDateString("en-CA", {timeZone: "Africa/Cairo"});
+        const currentMonth = today.substring(0, 7);
+        document.getElementById('statTotal').textContent = allComplaints.length;
+        document.getElementById('statToday').textContent = allComplaints.filter(c => c.date === today).length;
+        document.getElementById('statMonth').textContent = allComplaints.filter(c => c.date && c.date.startsWith(currentMonth)).length;
+        document.getElementById('tabCountComplaints').textContent = allComplaints.length;
     }
-    window.renderEmployeesTable = renderEmployeesTable;
 
-    /* ===== حفظ شكوى ===== */
-    async function saveComplaint(e) {
+    /* ===== إرسال الشكوى ===== */
+    document.getElementById('complaintForm').addEventListener('submit', async function(e) {
         e.preventDefault();
-        const btn = document.getElementById('submitBtn');
-        const editId = document.getElementById('editDocId').value;
-        const isEdit = editId !== '';
         const session = getSession();
-
+        const editId = document.getElementById('editDocId').value;
         const data = {
             date: document.getElementById('date').value,
             branch: document.getElementById('branch').value,
-            orderNo: document.getElementById('orderNo').value.trim(),
-            customerName: document.getElementById('customerName').value.trim(),
-            phone: document.getElementById('phone').value.trim(),
+            orderNo: document.getElementById('orderNo').value,
+            customerName: document.getElementById('customerName').value,
+            phone: document.getElementById('phone').value,
             type: document.getElementById('complaintType').value,
             orderTime: document.getElementById('orderTime').value,
             complaintTime: document.getElementById('complaintTime').value,
-            location: document.getElementById('location').value.trim(),
-            callCenterInfo: document.getElementById('callCenterInfo').value.trim(),
-            branchUser: document.getElementById('branchUser').value.trim(),
-            branchInfo: document.getElementById('branchInfo').value.trim(),
-            details: document.getElementById('details').value.trim(),
-            callCenterUser: session.user,
+            location: document.getElementById('location').value,
+            callCenterInfo: document.getElementById('callCenterInfo').value,
+            branchUser: document.getElementById('branchUser').value,
+            branchInfo: document.getElementById('branchInfo').value,
+            details: document.getElementById('details').value,
+            username: session.user,
+            callCenterUser: session.fullName || session.user,
             updatedAt: serverTimestamp()
         };
-
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الحفظ السريع...';
-
         try {
-            if (isEdit) {
+            if (editId) {
                 await setDoc(doc(db, 'complaints', editId), data, { merge: true });
-                showToast('تم تحديث الشكوى بسرعة على السحابة');
+                showToast('تم تعديل الشكوى بنجاح');
                 document.getElementById('editDocId').value = '';
             } else {
                 data.createdAt = serverTimestamp();
                 await addDoc(collection(db, 'complaints'), data);
-                showToast('تم حفظ الشكوى بسرعة على السحابة');
+                showToast('تم حفظ الشكوى على السحابة بنجاح');
             }
-            document.getElementById('complaintForm').reset();
+            this.reset();
             updateServerTime();
-        } catch (error) {
-            console.error('خطأ في الحفظ:', error);
-            /* حفظ محلي كاحتياطي */
-            localCache.push({ ...data, id: 'local_' + Date.now() });
-            localStorage.setItem('db_complaints_cache', JSON.stringify(localCache));
-            showToast('تم الحفظ محلياً - سيتم الرفع عند الاتصال', true);
+        } catch(err) {
+            console.error(err);
+            showToast('خطأ في الحفظ: ' + err.message, true);
         }
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fas fa-save"></i> حفظ وتأمين البيانات على السحابة';
-    }
+    });
 
     /* ===== تعديل شكوى ===== */
     window._startEdit = function(idx) {
-        const c = allComplaints[idx];
+        const month = document.getElementById('empMonthFilter').value;
+        const name = document.getElementById('empSearchName').value;
+        const phone = document.getElementById('empSearchPhone').value;
+        const type = document.getElementById('empTypeFilter').value;
+        const session = getSession();
+        const filtered = allComplaints.filter(c =>
+            c.username === session.user && matchFilters(c, month, name, phone, type)
+        );
+        const c = filtered[idx];
         if (!c) return;
         document.getElementById('editDocId').value = c.id;
         document.getElementById('date').value = c.date || '';
@@ -1132,29 +1054,29 @@
         document.getElementById('branchInfo').value = c.branchInfo || '';
         document.getElementById('details').value = c.details || '';
         window.scrollTo({ top: 0, behavior: 'smooth' });
-        showToast('تم تحميل البيانات - قم بالتعديل واضغط حفظ');
+        showToast('جاري تعديل الشكوى - قم بالتعديل ثم اضغط حفظ');
     };
 
     /* ===== حذف شكوى ===== */
-    window._deleteComplaint = async function(docId) {
-        if (!confirm('هل تريد حذف هذه الشكوى نهائياً؟')) return;
+    window._deleteComplaint = async function(id) {
+        if (!confirm('هل أنت متأكد من حذف هذه الشكوى؟')) return;
         try {
-            await deleteDoc(doc(db, 'complaints', docId));
-            showToast('تم حذف الشكوى بنجاح');
-        } catch (error) {
-            console.error('خطأ في الحذف:', error);
-            showToast('فشل الحذف! تحقق من الاتصال', true);
+            await deleteDoc(doc(db, 'complaints', id));
+            showToast('تم حذف الشكوى');
+        } catch(err) {
+            showToast('خطأ في الحذف', true);
         }
     };
 
     /* ===== تصدير Excel ===== */
-    /* ===== تصدير Excel مطابق تماماً للصورة ===== */
-/* ===== وظيفة تصدير Excel المحدثة والمطابقة للصورة الثانية (14 عمود) ===== */
-    /* ===== وظيفة تصدير Excel المحدثة - إضافة عمود متلقى الفرع بعد شكوى الكول مباشرة ===== */
-    function exportToExcel() {
-        if (allComplaints.length === 0) { showToast('لا توجد بيانات للتصدير', true); return; }
+/* ===== تصدير Excel المطور بالتنسيق والأعمدة الجديدة ===== */
+    window.exportToExcel = function() {
+        if (allComplaints.length === 0) { 
+            showToast('لا توجد بيانات للتصدير', true); 
+            return; 
+        }
 
-        // 1. العناوين الـ 15 (إضافة متلقى الفرع في المركز الـ 12)
+        // 1. العناوين الـ 15 (بالترتيب المطلوب)
         const headers = [
             "التاريخ", 
             "الفرع", 
@@ -1167,35 +1089,35 @@
             "وقت الشكوي", 
             "المكان", 
             "متلقي شكوى من الكول سنتر", 
-            "متلقى الشكوى من الفرع", // العمود الجديد المضاف بناءً على طلبك
+            "متلقى الشكوى من الفرع", 
             "تفاصيل الشكوى", 
             "افاده الفرع", 
             "افاده الكول سنتر"
         ];
 
-        // 2. تعبئة البيانات بالترتيب الجديد
+        // 2. تعبئة البيانات من مصفوفة allComplaints
         const data = allComplaints.map(c => [
-            c.date || '',           // التاريخ
-            c.branch || '',         // الفرع
-            c.orderNo || '',        // رقم الاوردر
-            c.customerName || '',   // اسم العميل
-            c.phone || '',          // رقم التليفون
-            c.type || '',           // نوع الشكوي
-            c.date || '',           // تاريخ الشكوي
-            c.orderTime || '',      // وقت الطلب
-            c.complaintTime || '',  // وقت الشكوي
-            c.location || '',       // المكان
-            c.callCenterUser || '', // شكوى من الكول (اسم موظف الكول سنتر)
-            c.branchUser || '',     // متلقى الشكوى من الفرع (اسم الموظف بالفرع) - العمود الجديد
-            c.details || '',        // تفاصيل الشكوى
-            c.branchInfo || '',     // افاده الفرع
-            c.callCenterInfo || ''  // افاده الكول سنتر
+            c.date || '',           
+            c.branch || '',         
+            c.orderNo || '',        
+            c.customerName || '',   
+            c.phone || '',          
+            c.type || '',           
+            c.date || '',           
+            c.orderTime || '',      
+            c.complaintTime || '',  
+            c.location || '',       
+            c.callCenterUser || '', 
+            c.branchUser || '',     
+            c.details || '',        
+            c.branchInfo || '',     
+            c.callCenterInfo || ''  
         ]);
 
         const worksheetData = [headers, ...data];
         const ws = XLSX.utils.aoa_to_sheet(worksheetData);
 
-        // 3. التنسيق (خلفية سوداء للهيدر + حدود)
+        // 3. التنسيق (خلفية سوداء للهيدر + حدود + خط Cairo)
         const range = XLSX.utils.decode_range(ws['!ref']);
         for (let R = range.s.r; R <= range.e.r; ++R) {
             for (let C = range.s.c; C <= range.e.c; ++C) {
@@ -1211,6 +1133,7 @@
                     font: { name: "Cairo", sz: 10 }
                 };
 
+                // تنسيق الهيدر (الصف الأول)
                 if (R === 0) {
                     ws[cellAddress].s.fill = { fgColor: { rgb: "000000" } };
                     ws[cellAddress].s.font = { color: { rgb: "FFFFFF" }, bold: true, name: "Cairo", sz: 10.5 };
@@ -1218,11 +1141,11 @@
             }
         }
 
-        // 4. ضبط عرض الأعمدة (أضفت قيمة للعرض للعمود الجديد رقم 12)
+        // 4. ضبط عرض الأعمدة ليكون مناسباً للمحتوى العربي
         ws['!cols'] = [
-            { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 18 }, { wch: 14 }, 
-            { wch: 14 }, { wch: 12 }, { wch: 10 }, { wch: 10 }, { wch: 15 }, 
-            { wch: 15 }, { wch: 18 }, { wch: 35 }, { wch: 25 }, { wch: 25 }
+            { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 20 }, { wch: 15 }, 
+            { wch: 15 }, { wch: 12 }, { wch: 10 }, { wch: 10 }, { wch: 15 }, 
+            { wch: 20 }, { wch: 20 }, { wch: 40 }, { wch: 30 }, { wch: 30 }
         ];
 
         const wb = XLSX.utils.book_new();
@@ -1231,209 +1154,351 @@
         const fileName = `تقرير_الشكاوى_${new Date().toISOString().split('T')[0]}.xlsx`;
         XLSX.writeFile(wb, fileName);
         
-        showToast('تم التعديل وإضافة عمود متلقى الفرع بنجاح');
+        showToast('تم تصدير ملف Excel بنجاح');
+    };
+
+    /* ===== تبويبات المدير ===== */
+    window._switchTab = function(tab, el) {
+        document.querySelectorAll('.mgr-tab').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
+        document.getElementById('tab-complaints').classList.toggle('hidden', tab !== 'complaints');
+        document.getElementById('tab-employees').classList.toggle('hidden', tab !== 'employees');
+        if (tab === 'employees') renderEmployeesTable();
+    };
+
+    /* ===== جدول الموظفين ===== */
+    function renderEmployeesTable() {
+        const search = (document.getElementById('empSearchInput')?.value || '').toLowerCase();
+        const roleF = document.getElementById('empRoleFilter')?.value || '';
+        const statusF = document.getElementById('empStatusFilter')?.value || '';
+        let filtered = allEmployees.filter(e => {
+            const mSearch = !search || (e.fullName || '').toLowerCase().includes(search) || (e.username || '').toLowerCase().includes(search);
+            const mRole = !roleF || e.role === roleF;
+            const mStatus = !statusF || (statusF === 'active' ? e.active !== false : e.active === false);
+            return mSearch && mRole && mStatus;
+        });
+        const tbody = document.getElementById('employeesTableBody');
+        if (filtered.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="11"><div class="empty-state"><i class="fas fa-users-slash"></i><p>لا يوجد موظفون مطابقون</p></div></td></tr>`;
+        } else {
+            tbody.innerHTML = filtered.map((e, i) => `<tr>
+                <td>${i+1}</td>
+                <td>${e.username||'-'}</td>
+                <td>${e.fullName||'-'}</td>
+                <td><span class="badge badge-${e.role === 'manager' ? 'manager' : 'employee'}">${e.role === 'manager' ? 'مدير' : 'موظف'}</span></td>
+                <td>${e.branch||'-'}</td>
+                <td><div class="emp-color-cell"><div class="emp-color-dot" style="background:${e.themeColor || '#00f2ff'}"></div><span style="font-size:11px;color:#94a3b8;">${e.themeColor || '#00f2ff'}</span></div></td>
+                <td><span class="badge badge-${e.active !== false ? 'active' : 'inactive'}">${e.active !== false ? 'نشط' : 'معطل'}</span></td>
+                <td>${e.createdAt ? new Date(e.createdAt.seconds*1000).toLocaleDateString('ar-EG') : '-'}</td>
+                <td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${e.notes||'-'}</td>
+                <td><button class="btn btn-sm btn-edit" onclick="window._editEmployee('${e.id}')"><i class="fas fa-pen"></i></button></td>
+                <td><button class="btn btn-sm btn-del" onclick="window._deleteEmployee('${e.id}')"><i class="fas fa-trash-alt"></i></button></td>
+            </tr>`).join('');
+        }
+        document.getElementById('tabCountEmployees').textContent = allEmployees.length;
+        const activeCount = allEmployees.filter(e => e.active !== false).length;
+        document.getElementById('statUsers').textContent = activeCount;
+        document.getElementById('statEmployees').textContent = allEmployees.length;
     }
-    window.exportToExcel = exportToExcel;
+
+    /* ===== مودال الموظفين ===== */
+    window._openEmpModal = function() {
+        document.getElementById('empModalTitle').innerHTML = '<i class="fas fa-user-plus"></i> إضافة موظف جديد';
+        document.getElementById('empEditId').value = '';
+        document.getElementById('empForm').reset();
+        document.getElementById('empActive').checked = true;
+        document.getElementById('empModal').classList.add('active');
+    };
+    window._closeEmpModal = function() {
+        document.getElementById('empModal').classList.remove('active');
+    };
+    window._togglePass = function(fieldId, btn) {
+        const f = document.getElementById(fieldId);
+        if (f.type === 'password') { f.type = 'text'; btn.innerHTML = '<i class="fas fa-eye-slash"></i>'; }
+        else { f.type = 'password'; btn.innerHTML = '<i class="fas fa-eye"></i>'; }
+    };
+
+    window._editEmployee = function(id) {
+        const emp = allEmployees.find(e => e.id === id);
+        if (!emp) return;
+        document.getElementById('empModalTitle').innerHTML = '<i class="fas fa-user-edit"></i> تعديل بيانات الموظف';
+        document.getElementById('empEditId').value = emp.id;
+        document.getElementById('empUsername').value = emp.username || '';
+        document.getElementById('empFullName').value = emp.fullName || '';
+        document.getElementById('empPassword').value = emp.password || '';
+        document.getElementById('empBranch').value = emp.branch || 'كل الفروع';
+        document.getElementById('empRole').value = emp.role || 'employee';
+        document.getElementById('empActive').checked = emp.active !== false;
+        document.getElementById('empNotes').value = emp.notes || '';
+        document.getElementById('empModal').classList.add('active');
+    };
+
+    window._saveEmployee = async function(e) {
+        e.preventDefault();
+        const editId = document.getElementById('empEditId').value;
+        const data = {
+            username: document.getElementById('empUsername').value.trim(),
+            fullName: document.getElementById('empFullName').value.trim(),
+            password: document.getElementById('empPassword').value,
+            branch: document.getElementById('empBranch').value,
+            role: document.getElementById('empRole').value,
+            active: document.getElementById('empActive').checked,
+            notes: document.getElementById('empNotes').value.trim(),
+            updatedAt: serverTimestamp()
+        };
+        try {
+            if (editId) {
+                const existing = allEmployees.find(e => e.id === editId);
+                if (existing && existing.themeColor) data.themeColor = existing.themeColor;
+                await setDoc(doc(db, 'employees', editId), data, { merge: true });
+                showToast('تم تعديل بيانات الموظف');
+            } else {
+                data.themeColor = '#00f2ff';
+                data.createdAt = serverTimestamp();
+                await addDoc(collection(db, 'employees'), data);
+                showToast('تم إضافة الموظف بنجاح');
+            }
+            window._closeEmpModal();
+        } catch(err) {
+            showToast('خطأ: ' + err.message, true);
+        }
+    };
+
+    window._deleteEmployee = async function(id) {
+        if (!confirm('هل أنت متأكد من حذف هذا الموظف؟')) return;
+        try {
+            await deleteDoc(doc(db, 'employees', id));
+            showToast('تم حذف الموظف');
+        } catch(err) {
+            showToast('خطأ في الحذف', true);
+        }
+    };
 
     /* ===== تسجيل الدخول ===== */
-    window.handleLogin = async function() {
-        const username = document.getElementById('username').value.trim().toLowerCase();
-        const password = document.getElementById('password').value;
-        const errEl = document.getElementById('error-msg');
-        const btn = document.getElementById('loginBtn');
+   window.handleLogin = async function() {
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value;
+    if (!username || !password) { showToast('أدخل اسم المستخدم وكلمة المرور', true); return; }
 
-        if (!username || !password) { errEl.classList.remove('hidden'); errEl.textContent = 'أدخل اسم المستخدم وكلمة المرور'; return; }
+    /* 1. التحقق من المدير الافتراضي (الأدمن العام) */
+    const defaultManager = DEFAULT_MANAGERS.find(m => m.username === username && m.password === password);
+    if (defaultManager) {
+        saveSession(username, 'manager', defaultManager.fullName, '#fbbf24');
+        removeEmployeeTheme();
+        showSection('manager-section');
+        startSessionTimer();
+        startManagerListeners();
+        return;
+    }
 
-        errEl.classList.add('hidden');
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحقق...';
-
-        /* التحقق من المديرين الافتراضيين */
-        const defaultMgr = DEFAULT_MANAGERS.find(m => m.username === username && m.password === password);
-        if (defaultMgr) {
-            saveSession(username, 'manager', defaultMgr.fullName, '#fbbf24');
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-arrow-right"></i> دخول النظام';
-            enterManagerView();
+    /* 2. التحقق من الموظفين والمدراء في Firestore */
+    try {
+        const q = query(collection(db, 'employees'), where('username', '==', username));
+        const snap = await getDocs(q);
+        
+        if (snap.empty) {
+            document.getElementById('error-msg').classList.remove('hidden');
+            setTimeout(() => document.getElementById('error-msg').classList.add('hidden'), 3000);
             return;
         }
 
-        /* التحقق من موظفين Firestore */
-        try {
-            const q = query(collection(db, 'employees'), where('username', '==', username));
-            const snap = await getDocs(q);
-            if (!snap.empty) {
-                const empDoc = snap.docs[0];
-                const empData = empDoc.data();
-                if (empData.password === password) {
-                    if (empData.active === false) {
-                        errEl.classList.remove('hidden');
-                        errEl.textContent = 'هذا الحساب معطل - تواصل مع المدير';
-                        btn.disabled = false;
-                        btn.innerHTML = '<i class="fas fa-arrow-right"></i> دخول النظام';
-                        return;
-                    }
-                    const role = empData.role || 'employee';
-                    const themeColor = empData.themeColor || '#00f2ff';
-                    saveSession(username, role, empData.fullName, themeColor);
-                    btn.disabled = false;
-                    btn.innerHTML = '<i class="fas fa-arrow-right"></i> دخول النظام';
-                    if (role === 'manager') {
-                        enterManagerView();
-                    } else {
-                        enterEmployeeView(username, empData.fullName, empData.branch, themeColor);
-                    }
-                    return;
-                }
-            }
-            errEl.classList.remove('hidden');
-            errEl.textContent = 'اسم المستخدم أو كلمة المرور غير صحيحة';
-        } catch (error) {
-            console.error('خطأ في التحقق:', error);
-            /* محاولة الدخول بالكاش المحلي */
-            const cached = localEmpCache.find(e => e.username === username && e.password === password);
-            if (cached) {
-                const themeColor = cached.themeColor || '#00f2ff';
-                saveSession(username, cached.role || 'employee', cached.fullName, themeColor);
-                if ((cached.role || 'employee') === 'manager') {
-                    enterManagerView();
-                } else {
-                    enterEmployeeView(username, cached.fullName, cached.branch, themeColor);
-                }
-            } else {
-                errEl.classList.remove('hidden');
-                errEl.textContent = 'فشل الاتصال - تحقق من الإنترنت';
-            }
+        const empDoc = snap.docs[0];
+        const emp = empDoc.data();
+
+        if (emp.password !== password) {
+            document.getElementById('error-msg').classList.remove('hidden');
+            setTimeout(() => document.getElementById('error-msg').classList.add('hidden'), 3000);
+            return;
         }
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fas fa-arrow-right"></i> دخول النظام';
-    };
 
-    /* ===== دخول مدير ===== */
- function enterManagerView() {
-    removeEmployeeTheme();
-    applyEmployeeTheme('#fbbf24');
-    showSection('manager-section');
-    
-    setCurrentMonthDefault(); // <--- أضف هذا السطر هنا
-    
-    startSessionTimer();
-    startComplaintsListener();
-    startEmployeesListener();
-    loadManagerData();
-    setCloudStatus('mgr', 'synced', 'متصل بالسحابة');
-}
+        if (emp.active === false) {
+            showToast('هذا الحساب معطل - تواصل مع المدير', true);
+            return;
+        }
 
-    /* ===== دخول موظف ===== */
-  function enterEmployeeView(username, fullName, branch, themeColor) {
-    applyEmployeeTheme(themeColor);
-    showSection('employee-section');
-    document.getElementById('emp-name-display').textContent = fullName || username;
-    
-    setCurrentMonthDefault(); // <--- أضف هذا السطر هنا
-    
-    // ... باقي الكود كما هو ...
-    startSessionTimer();
-    updateServerTime();
-    startComplaintsListener();
-    startEmployeesListener();
-    setCloudStatus('emp', 'synced', 'متصل بالسحابة');
-}
+        // --- التعديل الجوهري هنا ---
+        const userRole = emp.role || 'employee'; // نجلب الدور من قاعدة البيانات
+        const themeColor = emp.themeColor || '#00f2ff';
+        
+        // حفظ الجلسة بالدور الصحيح (مدير أو موظف)
+        saveSession(username, userRole, emp.fullName, themeColor);
+        currentUserDocId = empDoc.id;
 
-    /* ===== خروج ===== */
+        if (userRole === 'manager') {
+            // إذا كان دوره مدير
+            removeEmployeeTheme();
+            showSection('manager-section');
+            startManagerListeners();
+        } else {
+            // إذا كان دوره موظف
+            document.getElementById('emp-name-display').textContent = emp.fullName || username;
+            applyEmployeeTheme(themeColor);
+            initThemePicker();
+            showSection('employee-section');
+            startEmployeeListeners();
+        }
+        
+        startSessionTimer();
+        updateServerTime();
+
+    } catch(err) {
+        console.error(err);
+        showToast('خطأ في الاتصال بالسحابة', true);
+    }
+};
+    /* ===== تسجيل الخروج ===== */
     window.handleLogout = function() {
-        clearSession();
-        removeEmployeeTheme();
         if (unsubSnapshot) { unsubSnapshot(); unsubSnapshot = null; }
         if (unsubEmpSnapshot) { unsubEmpSnapshot(); unsubEmpSnapshot = null; }
-        allComplaints = [];
-        allEmployees = [];
-        showSection('login-section');
+        currentUser = null;
+        currentUserDocId = null;
+        clearSession();
+        removeEmployeeTheme();
         document.getElementById('username').value = '';
         document.getElementById('password').value = '';
-        document.getElementById('error-msg').classList.add('hidden');
-        showToast('تم تسجيل الخروج بنجاح');
+        showSection('login-section');
     };
 
-    /* ===== الاستماع الفوري للشكاوى (onSnapshot - سريع جداً) ===== */
-    function startComplaintsListener() {
-        if (unsubSnapshot) unsubSnapshot();
-        setCloudStatus(getSession().role === 'manager' ? 'mgr' : 'emp', 'pending', 'جاري التحميل...');
-        const q = query(collection(db, 'complaints'), orderBy('createdAt', 'desc'));
-        unsubSnapshot = onSnapshot(q, (snap) => {
-            allComplaints = [];
-            snap.forEach(doc => {
-                allComplaints.push({ id: doc.id, ...doc.data() });
-            });
-            localStorage.setItem('db_complaints_cache', JSON.stringify(allComplaints));
-            const role = getSession().role;
-            if (role === 'manager') {
-                loadManagerData();
-            } else {
-                refreshEmployeeView();
-            }
-            setCloudStatus(role === 'manager' ? 'mgr' : 'emp', 'synced', 'متصل بالسحابة');
-        }, (error) => {
-            console.error('خطأ في الاستماع:', error);
-            allComplaints = localCache;
-            const role = getSession().role;
-            if (role === 'manager') loadManagerData();
-            else refreshEmployeeView();
-            setCloudStatus(role === 'manager' ? 'mgr' : 'emp', 'offline', 'غير متصل - بيانات محلية');
-        });
-    }
-
-    /* ===== الاستماع الفوري للموظفين ===== */
-    function startEmployeesListener() {
-        if (unsubEmpSnapshot) unsubEmpSnapshot();
-        const q = query(collection(db, 'employees'), orderBy('createdAt', 'desc'));
-        unsubEmpSnapshot = onSnapshot(q, (snap) => {
-            allEmployees = [];
-            snap.forEach(doc => {
-                allEmployees.push({ id: doc.id, ...doc.data() });
-            });
-            localStorage.setItem('db_employees_cache', JSON.stringify(allEmployees));
-            if (getSession().role === 'manager') renderEmployeesTable();
-        }, (error) => {
-            console.error('خطأ في تحميل الموظفين:', error);
-            allEmployees = localEmpCache;
-        });
-    }
-
-    /* ===== ربط النموذج ===== */
-    document.getElementById('complaintForm').addEventListener('submit', saveComplaint);
-
-    /* ===== تشغيل تلقائي عند فتح الصفحة ===== */
-    document.getElementById('loginBtn').addEventListener('click', window.handleLogin);
-    document.getElementById('username').addEventListener('keydown', function(e) { if (e.key === 'Enter') window.handleLogin(); });
-    document.getElementById('password').addEventListener('keydown', function(e) { if (e.key === 'Enter') window.handleLogin(); });
-
-    (function init() {
+    /* ===== مستمعي Firestore ===== */
+    function startEmployeeListeners() {
         const session = getSession();
-        if (session.user && session.role) {
-            if (session.role === 'manager') {
-                enterManagerView();
-            } else {
-                enterEmployeeView(session.user, session.fullName, null, session.themeColor);
+        setCloudStatus('emp', 'pending', 'جاري التحميل...');
+        try {
+            unsubSnapshot = onSnapshot(
+                query(collection(db, 'complaints'), orderBy('createdAt', 'desc')),
+                snap => {
+                    allComplaints = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                    localCache = allComplaints;
+                    localStorage.setItem('db_complaints_cache', JSON.stringify(localCache));
+                    setCloudStatus('emp', 'synced', 'متصل بالسحابة');
+                    refreshEmployeeView();
+                },
+                err => {
+                    console.error(err);
+                    setCloudStatus('emp', 'offline', 'غير متصل - وضع محلي');
+                    allComplaints = localCache;
+                    refreshEmployeeView();
+                }
+            );
+            if (currentUserDocId) {
+                unsubEmpSnapshot = onSnapshot(doc(db, 'employees', currentUserDocId), empSnap => {
+                    if (empSnap.exists()) {
+                        const emp = empSnap.data();
+                        if (emp.themeColor) {
+                            localStorage.setItem('session_themeColor', emp.themeColor);
+                            applyEmployeeTheme(emp.themeColor);
+                        }
+                    }
+                }, err => console.error(err));
             }
-        } else {
-            showSection('login-section');
+        } catch(err) {
+            setCloudStatus('emp', 'offline', 'غير متصل - وضع محلي');
+            allComplaints = localCache;
+            refreshEmployeeView();
         }
-    })();
-    function setCurrentMonthDefault() {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = (now.getMonth() + 1).toString().padStart(2, '0');
-    const monthString = `${year}-${month}`;
-    
-    // تعيين القيمة في فلتر الموظف
-    const empFilter = document.getElementById('empMonthFilter');
-    if (empFilter) empFilter.value = monthString;
-    
-    // تعيين القيمة في فلتر المدير
-    const mgrFilter = document.getElementById('mgrMonthFilter');
-    if (mgrFilter) mgrFilter.value = monthString;
+    }
+
+    function startManagerListeners() {
+        setCloudStatus('mgr', 'pending', 'جاري التحميل...');
+        try {
+            unsubSnapshot = onSnapshot(
+                query(collection(db, 'complaints'), orderBy('createdAt', 'desc')),
+                snap => {
+                    allComplaints = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                    localCache = allComplaints;
+                    localStorage.setItem('db_complaints_cache', JSON.stringify(localCache));
+                    setCloudStatus('mgr', 'synced', 'متصل بالسحابة');
+                    loadManagerData();
+                },
+                err => {
+                    console.error(err);
+                    setCloudStatus('mgr', 'offline', 'غير متصل');
+                    allComplaints = localCache;
+                    loadManagerData();
+                }
+            );
+            unsubEmpSnapshot = onSnapshot(
+                query(collection(db, 'employees'), orderBy('createdAt', 'desc')),
+                snap => {
+                    allEmployees = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                    localEmpCache = allEmployees;
+                    localStorage.setItem('db_employees_cache', JSON.stringify(localEmpCache));
+                    renderEmployeesTable();
+                },
+                err => {
+                    console.error(err);
+                    allEmployees = localEmpCache;
+                    renderEmployeesTable();
+                }
+            );
+        } catch(err) {
+            setCloudStatus('mgr', 'offline', 'غير متصل');
+            allComplaints = localCache;
+            allEmployees = localEmpCache;
+            loadManagerData();
+            renderEmployeesTable();
+        }
+    }
+
+    /* ===== تهيئة الصفحة ===== */
+  function init() {
+    const session = getSession();
+    const currentMonth = getCurrentMonth();
+    const currentDate = getCurrentDate();
+
+    if (session.user && session.role === 'manager') {
+        removeEmployeeTheme();
+        showSection('manager-section');
+        startSessionTimer();
+        
+        // تثبيت الفلتر على الشهر الحالي للمدير
+        const mgrFilter = document.getElementById('mgrMonthFilter');
+        if (mgrFilter) {
+            mgrFilter.value = currentMonth;
+        }
+        
+        startManagerListeners(); // ستقوم هذه الدالة تلقائياً بجلب بيانات الشهر المختار
+        return;
+    }
+
+    if (session.user && session.role === 'employee') {
+        getDocs(query(collection(db, 'employees'), where('username', '==', session.user))).then(snap => {
+            if (!snap.empty) {
+                currentUserDocId = snap.docs[0].id;
+                const emp = snap.docs[0].data();
+                if (emp.active === false) { clearSession(); showSection('login-section'); return; }
+                
+                const themeColor = emp.themeColor || session.themeColor || '#00f2ff';
+                document.getElementById('emp-name-display').textContent = session.fullName || session.user;
+                
+                // تثبيت التاريخ اليومي وفلتر الشهر للموظف
+                if (document.getElementById('date')) document.getElementById('date').value = currentDate;
+                if (document.getElementById('empMonthFilter')) document.getElementById('empMonthFilter').value = currentMonth;
+                
+                applyEmployeeTheme(themeColor);
+                initThemePicker();
+                showSection('employee-section');
+                startSessionTimer();
+                updateServerTime();
+                startEmployeeListeners();
+            } else {
+                clearSession();
+                showSection('login-section');
+            }
+        }).catch(() => {
+            // حالة الأوفلاين (Local Cache)
+            showSection('employee-section');
+            if (document.getElementById('empMonthFilter')) document.getElementById('empMonthFilter').value = currentMonth;
+            if (document.getElementById('date')) document.getElementById('date').value = currentDate;
+            refreshEmployeeView();
+        });
+        return;
+    }
+
+    showSection('login-section');
 }
+
+    init();
 </script>
 </body>
 </html>
