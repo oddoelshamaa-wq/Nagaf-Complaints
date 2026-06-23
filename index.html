@@ -1696,6 +1696,24 @@
             // ابدأ المستمعين بعد عرض الكاش
             startRealtimeListeners();
         });
+        // --- الكود الجديد لضبط الشهر الحالي تلقائياً ---
+const currentMonthVal = getCurrentMonth();
+
+// ضبط فلتر الموظف
+const empMonth = document.getElementById('empMonthFilter');
+if (empMonth) empMonth.value = currentMonthVal;
+
+// ضبط فلتر المدير
+const mgrMonth = document.getElementById('mgrMonthFilter');
+if (mgrMonth) mgrMonth.value = currentMonthVal;
+
+// تحديث البيانات بناءً على الشهر الافتراضي الجديد
+if (sData.role === 'manager' || sData.role === 'viewer') {
+    loadManagerData(); 
+} else {
+    refreshEmployeeView();
+}
+// ---------------------------------------------
 
             document.getElementById('password')?.addEventListener('keydown', function(e) {
                 if (e.key === 'Enter') handleLogin();
