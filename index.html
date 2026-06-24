@@ -685,22 +685,29 @@
     </div>
     <div class="stats-bar">
         <div class="stat-card"><div class="stat-num" id="statTotal">0</div><div class="stat-label">إجمالي الشكاوى</div></div>
+            <div class="stat-card" style="border-color: var(--secondary);"><div class="stat-num" id="statUniqueOrders">0</div><div class="stat-label">إجمالي الأوردرات</div></div>
         <div class="stat-card"><div class="stat-num" id="statToday">0</div><div class="stat-label">شكاوى اليوم</div></div>
         <div class="stat-card"><div class="stat-num" id="statMonth">0</div><div class="stat-label">شكاوى الشهر</div></div>
         <div class="stat-card"><div class="stat-num" id="statUsers">0</div><div class="stat-label">موظفين نشطين</div></div>
         <div class="stat-card"><div class="stat-num" id="statEmployees">0</div><div class="stat-label">إجمالي الموظفين</div></div>
     </div>
-    <div class="mgr-tabs">
-        <div class="mgr-tab active" onclick="window._switchTab('complaints', this)">
-            <i class="fas fa-list-alt"></i> سجل الشكاوى <span class="tab-count" id="tabCountComplaints">0</span>
-        </div>
-        <div class="mgr-tab" onclick="window._switchTab('reports', this)">
-    <i class="fas fa-chart-pie"></i> التقارير <span class="tab-count" id="tabCountReports">0</span>
-</div>
-        <div class="mgr-tab" id="mgrEmpTab" onclick="window._switchTab('employees', this)">
-            <i class="fas fa-users-cog"></i> إدارة الموظفين <span class="tab-count" id="tabCountEmployees">0</span>
-        </div>
+    <!-- البحث عن هذا الجزء في الكود الخاص بك واستبداله -->
+<div class="mgr-tabs">
+    <div class="mgr-tab active" onclick="window._switchTab('complaints', this)">
+        <i class="fas fa-list-alt"></i> سجل الشكاوى <span class="tab-count" id="tabCountComplaints">0</span>
     </div>
+    <!-- أضفنا ID هنا: mgrReportsTab -->
+    <div class="mgr-tab" id="mgrReportsTab" onclick="window._switchTab('reports', this)">
+        <i class="fas fa-chart-pie"></i> التقارير <span class="tab-count" id="tabCountReports">0</span>
+    </div>
+    <div class="mgr-tab" id="mgrEmpTab" onclick="window._switchTab('employees', this)">
+        <i class="fas fa-users-cog"></i> إدارة الموظفين <span class="tab-count" id="tabCountEmployees">0</span>
+    </div>
+    <!-- أضفنا ID هنا: mgrUpdateOrdersBtn -->
+    <button id="mgrUpdateOrdersBtn" class="btn btn-add-emp" onclick="window._openOrderCountModal()" style="background: linear-gradient(45deg, #a855f7, #7000ff); margin-right: 10px;">
+        <i class="fas fa-list-ol"></i> تحديث عداد أوردرات الفروع
+    </button>
+</div>
     <div id="tab-complaints" class="card">
         <h3><i class="fas fa-project-diagram"></i> سجل الشكاوى العام - جميع الموظفين</h3>
         <div class="filter-bar" style="justify-content: space-between;">
@@ -758,6 +765,7 @@
         <i class="fas fa-building"></i> تقرير تفصيلي لكل فرع
         
     </button>
+
 </div>
     
     <!-- ملخص أعلى -->
@@ -924,26 +932,48 @@
     }
 
     function applyViewerRestrictions() {
-        const empTab = document.getElementById('mgrEmpTab');
-        const exportDrop = document.getElementById('mgrExportDropdown');
-        const deleteTh = document.getElementById('mgrDeleteTh');
-        const mgrIcon = document.getElementById('mgrIcon');
-        const mgrTitle = document.getElementById('mgrTitleSpan');
+    const empTab = document.getElementById('mgrEmpTab');
+    const reportsTab = document.getElementById('mgrReportsTab'); // تبويب التقارير
+    const updateOrdersBtn = document.getElementById('mgrUpdateOrdersBtn'); // زر التحديث البنفسجي
+    const exportDrop = document.getElementById('mgrExportDropdown');
+    const deleteTh = document.getElementById('mgrDeleteTh');
+    const mgrIcon = document.getElementById('mgrIcon');
+    const mgrTitle = document.getElementById('mgrTitleSpan');
 
-        if (isViewerUser()) {
-            if (empTab) empTab.style.display = 'none';
-            if (exportDrop) exportDrop.style.display = 'none';
-            if (deleteTh) deleteTh.style.display = 'none';
-            if (mgrIcon) { mgrIcon.className = 'fas fa-eye'; mgrIcon.style.color = '#a855f7'; }
-            if (mgrTitle) mgrTitle.innerHTML = '<strong>' + (currentUserData.fullName || 'مشاهد') + '</strong> <span class="viewer-badge-session">(مدير🤵‍♂️)</span>';
-        } else {
-            if (empTab) empTab.style.display = '';
-            if (exportDrop) exportDrop.style.display = '';
-            if (deleteTh) deleteTh.style.display = '';
-            if (mgrIcon) { mgrIcon.className = 'fas fa-crown'; mgrIcon.style.color = '#fbbf24'; }
-            if (mgrTitle) mgrTitle.textContent = 'المدير العام';
+    if (isViewerUser()) {
+        // إخفاء كل شيء ما عدا جدول الشكاوى
+        if (empTab) empTab.style.display = 'none';
+        if (reportsTab) reportsTab.style.display = 'none';
+        if (updateOrdersBtn) updateOrdersBtn.style.display = 'none';
+        if (exportDrop) exportDrop.style.display = 'none';
+        if (deleteTh) deleteTh.style.display = 'none';
+        
+        // تغيير شكل الهوية للمشاهد
+        if (mgrIcon) { 
+            mgrIcon.className = 'fas fa-eye'; 
+            mgrIcon.style.color = '#a855f7'; 
         }
+        if (mgrTitle) {
+            mgrTitle.innerHTML = '<strong>' + (currentUserData.fullName || 'مشاهد') + '</strong> <span class="viewer-badge-session">(المدير🧑‍💼)</span>';
+        }
+
+        // التأكد من أن المشاهد يرى تبويب الشكاوى فقط حتى لو حاول الدخول لغيره
+        window._switchTab('complaints', document.querySelector('.mgr-tab.active'));
+    } else {
+        // إظهار كل شيء للمدير
+        if (empTab) empTab.style.display = '';
+        if (reportsTab) reportsTab.style.display = '';
+        if (updateOrdersBtn) updateOrdersBtn.style.display = '';
+        if (exportDrop) exportDrop.style.display = '';
+        if (deleteTh) deleteTh.style.display = '';
+        
+        if (mgrIcon) { 
+            mgrIcon.className = 'fas fa-crown'; 
+            mgrIcon.style.color = '#fbbf24'; 
+        }
+        if (mgrTitle) mgrTitle.textContent = 'المدير العام';
     }
+}
 
     async function handleLogin() {
         const username = document.getElementById('username').value.trim();
@@ -1574,8 +1604,7 @@ window._switchTab = function(tabName, clickedEl) {
     };
 
     function startRealtimeListeners() {
-        const cQuery = query(collection(db, 'complaints'), orderBy('date', 'desc'));
-        unsubSnapshot = onSnapshot(cQuery, (snap) => {
+const cQuery = query(collection(db, 'complaints'), orderBy('date', 'desc'), limit(200));        unsubSnapshot = onSnapshot(cQuery, (snap) => {
             allComplaints = snap.docs.map(d => ({ id: d.id, ...d.data() }));
             localCache = allComplaints;
             localStorage.setItem('db_complaints_cache', JSON.stringify(localCache));
@@ -1809,33 +1838,58 @@ window._renderReports = function(complaints) {
 
 // 2. دالة التقرير التفصيلي (مرتبطة بنفس الفلتر)
 
-window._openBranchDetailReport = function() {
+window._openBranchDetailReport = async function() {
     const dateFrom = document.getElementById('rptDateFrom')?.value;
     const dateTo = document.getElementById('rptDateTo')?.value;
 
-    let data = allComplaints;
-    if (dateFrom) data = data.filter(c => tsToDateStr(c.date) >= dateFrom);
-    if (dateTo) data = data.filter(c => tsToDateStr(c.date) <= dateTo);
+    let complaintsData = allComplaints;
+    if (dateFrom) complaintsData = complaintsData.filter(c => tsToDateStr(c.date) >= dateFrom);
+    if (dateTo) complaintsData = complaintsData.filter(c => tsToDateStr(c.date) <= dateTo);
 
-    const total = data.length;
+    const totalComplaints = complaintsData.length;
     const container = document.getElementById('branchDetailContent');
 
-    if (total === 0) {
-        container.innerHTML = '<div class="empty-state"><i class="fas fa-chart-bar"></i>لا توجد بيانات للفترة المختارة</div>';
+    if (totalComplaints === 0) {
+        container.innerHTML = '<div class="empty-state"><i class="fas fa-chart-bar"></i>لا توجد شكاوى للفترة المختارة</div>';
         document.getElementById('branchDetailModal').classList.add('active');
         return;
     }
 
-    const branchData = {};
-    data.forEach(c => {
+    // --- جلب بيانات الأوردرات من السحابة ---
+    showToast("جاري حساب النسب بناءً على الأوردرات...");
+    let branchOrderTotals = {};
+    try {
+        // نجلب كل وثائق الأوردرات للفترة المحددة
+        const ordersRef = collection(db, "daily_orders");
+        let q;
+        if (dateFrom && dateTo) {
+            q = query(ordersRef, where("__name__", ">=", dateFrom), where("__name__", "<=", dateTo));
+        } else {
+            q = query(ordersRef); // إذا لم يحدد تاريخ يجلب الكل (أو يمكنك تقييدها بشهر)
+        }
+        
+        const orderSnap = await getDocs(q);
+        orderSnap.forEach(doc => {
+            const dayData = doc.data();
+            for (let bName in dayData) {
+                branchOrderTotals[bName] = (branchOrderTotals[bName] || 0) + (Number(dayData[bName]) || 0);
+            }
+        });
+    } catch (err) {
+        console.error("خطأ في جلب الأوردرات:", err);
+    }
+
+    // تجميع بيانات الشكاوى حسب الفرع
+    const branchStats = {};
+    complaintsData.forEach(c => {
         const b = c.branch || 'غير محدد';
-        if (!branchData[b]) branchData[b] = { count: 0, types: {} };
-        branchData[b].count++;
+        if (!branchStats[b]) branchStats[b] = { count: 0, types: {} };
+        branchStats[b].count++;
         const t = c.complaintType || 'غير محدد';
-        branchData[b].types[t] = (branchData[b].types[t] || 0) + 1;
+        branchStats[b].types[t] = (branchStats[b].types[t] || 0) + (1);
     });
 
-    const branchArr = Object.entries(branchData).sort((a, b) => b[1].count - a[1].count);
+    const branchArr = Object.entries(branchStats).sort((a, b) => b[1].count - a[1].count);
 
     container.innerHTML = branchArr.map(([name, info]) => {
         const sortedTypes = Object.entries(info.types).sort((a, b) => b[1] - a[1]);
@@ -1844,12 +1898,9 @@ window._openBranchDetailReport = function() {
         const typesHTML = sortedTypes.map(([typeName, typeCount]) => {
             const barW = ((typeCount / maxTypeCount) * 100).toFixed(1);
             const isHighest = typeCount === maxTypeCount;
-
             return `
                 <div class="brd-type-row ${isHighest ? 'is-highest' : ''}">
-                    <div class="brd-type-name" title="${typeName}">
-                        ${isHighest ? '<i class="fas fa-fire-alt"></i> ' : ''}${typeName}
-                    </div>
+                    <div class="brd-type-name" title="${typeName}">${typeName}</div>
                     <div class="brd-type-bar-track">
                         <div class="brd-type-bar-fill ${isHighest ? 'highest' : 'normal'}" style="width:${barW}%"></div>
                     </div>
@@ -1857,32 +1908,159 @@ window._openBranchDetailReport = function() {
                 </div>`;
         }).join('');
 
-        const branchPercentage = ((info.count / total) * 100).toFixed(1);
+        // الحساب الجديد: نسبة الشكاوى إلى الأوردرات في هذا الفرع
+        const ordersInBranch = branchOrderTotals[name] || 0;
+        let rateDisplay = "";
+        
+        if (ordersInBranch > 0) {
+            const complaintRate = ((info.count / ordersInBranch) * 100).toFixed(2);
+            rateDisplay = `نسبة الشكاوى إلى أوردرات الفرع: <strong>${complaintRate}%</strong> 
+                           <br><small>(إجمالي الأوردرات المسجلة للفرع: ${ordersInBranch})</small>`;
+        } else {
+            rateDisplay = `<span style="color:#ef4444;">لم يتم إدخال عدد أوردرات لهذا الفرع في هذه الفترة</span>`;
+        }
 
         return `
             <div class="brd-card">
                 <div class="brd-card-header">
-                    <div class="brd-card-name">
-                        <i class="fas fa-building"></i>
-                        <span>${name}</span>
-                    </div>
+                    <div class="brd-card-name"><i class="fas fa-building"></i> ${name}</div>
                     <div class="brd-card-total">${info.count} شكوى</div>
                 </div>
-                <div class="brd-types-container">
-                    ${typesHTML}
-                </div>
-                <div class="brd-footer-info">
-                    <i class="fas fa-percentage"></i> يمثل هذا الفرع <strong>${branchPercentage}%</strong> من إجمالي شكاوى الفترة
+                <div class="brd-types-container">${typesHTML}</div>
+                <div class="brd-footer-info" style="margin-top:15px; padding-top:10px; border-top:1px dashed rgba(255,255,255,0.1); text-align:center; font-size:13px; line-height:1.6;">
+                    ${rateDisplay}
                 </div>
             </div>`;
     }).join('');
 
     document.getElementById('branchDetailModal').classList.add('active');
 };
-
 window._closeBranchDetailModal = function() {
     document.getElementById('branchDetailModal').classList.remove('active');
 };
+// قائمة الفروع الثابتة في النظام
+// قائمة الفروع الثابتة
+const ALL_BRANCHES = ["العباسيه", "عبده باشا", "نادي السكه", "عباس العقاد", "يوسف عباس", "المعهد", "مركز الاتصالات"];
+
+// 1. فتح المودال وتجهيزه للتاريخ اليومي
+window._openOrderCountModal = function() {
+    const modal = document.getElementById('orderCountModal');
+    const container = document.getElementById('branchOrderInputs');
+    const dateInput = document.getElementById('targetDate');
+
+    // تعيين تاريخ اليوم كافتراضي بصيغة YYYY-MM-DD
+    const now = new Date();
+    const today = now.toISOString().split('T')[0];
+    dateInput.value = today;
+
+    // توليد الخانات للفروع
+    container.innerHTML = ALL_BRANCHES.map(branch => `
+        <div class="rpt-bar-row" style="padding: 10px;">
+            <div class="rpt-bar-name" style="min-width: 120px;">${branch}</div>
+            <div class="field-wrap" style="flex: 1;">
+                <input type="number" id="order_vol_${branch}" placeholder="عدد أوردرات اليوم" style="padding: 8px 15px;">
+            </div>
+        </div>
+    `).join('');
+
+    // تحميل البيانات إذا كانت موجودة لهذا اليوم
+    window._loadDailyOrders(today);
+    modal.classList.add('active');
+};
+
+// 2. تحميل البيانات من Firebase بناءً على التاريخ المختار
+window._loadDailyOrders = async function(date) {
+    if (!date) return;
+    try {
+        // نغير اسم المجموعة إلى daily_orders لتمييزها
+        const docRef = doc(db, "daily_orders", date);
+        const docSnap = await getDoc(docRef);
+        
+        // تفريغ الحقول أولاً
+        ALL_BRANCHES.forEach(b => document.getElementById(`order_vol_${b}`).value = "");
+
+        if (docSnap.exists()) {
+            const data = docSnap.data();
+            Object.entries(data).forEach(([branch, count]) => {
+                const input = document.getElementById(`order_vol_${branch}`);
+                if (input) input.value = count;
+            });
+        }
+    } catch (err) {
+        console.error("Error loading daily orders:", err);
+    }
+};
+
+// 3. حفظ البيانات في Firebase للتاريخ المحدد
+window._saveDailyOrders = async function() {
+    const selectedDate = document.getElementById('targetDate').value;
+    if (!selectedDate) return showToast("يرجى اختيار التاريخ", true);
+
+    const data = {};
+    ALL_BRANCHES.forEach(branch => {
+        const val = document.getElementById(`order_vol_${branch}`).value;
+        data[branch] = val ? parseInt(val) : 0;
+    });
+
+    try {
+        // الحفظ في مجموعة daily_orders باستخدام التاريخ كمعرف (Document ID)
+        await setDoc(doc(db, "daily_orders", selectedDate), data);
+        showToast("تم تحديث أوردرات يوم " + selectedDate + " بنجاح");
+        document.getElementById('orderCountModal').classList.remove('active');
+        
+        // تحديث الإحصائيات إذا لزم الأمر
+        if (typeof window._renderReports === "function") window._renderReports();
+    } catch (err) {
+        showToast("فشل الحفظ: " + err.message, true);
+    }
+};
+
+// 3. حفظ البيانات في Firebase
+window._saveMonthlyOrders = async function() {
+    const month = document.getElementById('targetMonth').value;
+    if (!month) return showToast("يرجى اختيار الشهر", true);
+
+    const data = {};
+    ALL_BRANCHES.forEach(branch => {
+        const val = document.getElementById(`order_vol_${branch}`).value;
+        data[branch] = val ? parseInt(val) : 0;
+    });
+
+    try {
+        // حفظ الوثيقة باستخدام معرف (السنة-الشهر)
+        await setDoc(doc(db, "monthly_orders", month), data);
+        showToast("تم تحديث عداد الأوردرات بنجاح");
+        document.getElementById('orderCountModal').classList.remove('active');
+        
+        // إذا كان تقرير التقارير مفتوحاً، قم بتحديثه
+        if (typeof window._renderReports === "function") window._renderReports();
+    } catch (err) {
+        showToast("فشل الحفظ: " + err.message, true);
+    }
+};
 </script>
+<!-- مودال إدخال إجمالي الأوردرات للفروع -->
+<!-- مودال إدخال إجمالي الأوردرات للفروع (يومي) -->
+<div class="modal-overlay" id="orderCountModal">
+    <div class="modal-box" style="max-width: 500px;">
+        <div class="modal-header">
+            <h3><i class="fas fa-calculator"></i> إدخال أوردرات الفروع (يومي)</h3>
+            <button class="modal-close" onclick="document.getElementById('orderCountModal').classList.remove('active')"><i class="fas fa-times"></i></button>
+        </div>
+        <div style="margin-bottom: 20px;">
+            <label style="color: var(--primary); font-weight: bold; display: block; margin-bottom: 10px;">اختر التاريخ:</label>
+            <!-- تغيير النوع هنا إلى date -->
+            <input type="date" id="targetDate" onchange="window._loadDailyOrders(this.value)" style="width: 100%;">
+        </div>
+        <div id="branchOrderInputs" style="display: flex; flex-direction: column; gap: 12px; max-height: 400px; overflow-y: auto; padding-left: 10px;">
+            <!-- توليد الفروع تلقائياً -->
+        </div>
+        <div class="modal-actions" style="margin-top: 25px;">
+            <button class="btn btn-neon" onclick="window._saveDailyOrders()"><i class="fas fa-save"></i> حفظ أعداد اليوم</button>
+            <button class="btn btn-cancel" onclick="document.getElementById('orderCountModal').classList.remove('active')">إلغاء</button>
+        </div>
+    </div>
+</div>
+</div>
 </body>
 </html>
