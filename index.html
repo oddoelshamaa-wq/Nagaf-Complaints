@@ -838,7 +838,7 @@
     import {
         getFirestore, collection, addDoc, setDoc, doc, getDocs, getDoc,
         query, where, orderBy, deleteDoc, onSnapshot, serverTimestamp,
-        writeBatch, Timestamp, updateDoc
+         writeBatch, Timestamp, updateDoc, limit // أضفنا limit هنا
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -1265,72 +1265,75 @@
     }
     window.refreshEmployeeView = refreshEmployeeView;
 
-    function loadManagerData() {
-        const month = document.getElementById('mgrMonthFilter')?.value;
-        const dateFrom = document.getElementById('mgrDateFrom')?.value;
-        const dateTo = document.getElementById('mgrDateTo')?.value;
-        const nameSearch = document.getElementById('searchName')?.value.trim().toLowerCase();
-        const phoneSearch = document.getElementById('searchPhone')?.value.trim().toLowerCase();
-        const userSearch = document.getElementById('searchUser')?.value.trim().toLowerCase();
-        const isViewer = isViewerUser();
+   function loadManagerData() {
+    console.log("جاري تحميل بيانات المدير... إجمالي الشكاوى المتاحة:", allComplaints.length);
 
-        let filtered = allComplaints.filter(c => {
-            if (month && !tsToDateStr(c.date)?.startsWith(month)) return false;
-            if (dateFrom && tsToDateStr(c.date) < dateFrom) return false;
-            if (dateTo && tsToDateStr(c.date) > dateTo) return false;
-            if (nameSearch && !c.customerName?.toLowerCase().includes(nameSearch)) return false;
-            if (phoneSearch && !c.phone?.toLowerCase().includes(phoneSearch)) return false;
-            if (userSearch && !(c.employeeName || c.addedBy || c.userName || '').toLowerCase().includes(userSearch)) return false;
-            return true;
-        });
+    const month = document.getElementById('mgrMonthFilter')?.value;
+    const dateFrom = document.getElementById('mgrDateFrom')?.value;
+    const dateTo = document.getElementById('mgrDateTo')?.value;
+    const nameSearch = document.getElementById('searchName')?.value.trim().toLowerCase();
+    const phoneSearch = document.getElementById('searchPhone')?.value.trim().toLowerCase();
+    const userSearch = document.getElementById('searchUser')?.value.trim().toLowerCase();
+    const isViewer = isViewerUser();
 
-        const todayStr = getCurrentDate();
-        const currentMonth = getCurrentMonth();
+    // الفلترة
+    let filtered = allComplaints.filter(c => {
+        const cDate = tsToDateStr(c.date);
+        if (month && !cDate?.startsWith(month)) return false;
+        if (dateFrom && cDate < dateFrom) return false;
+        if (dateTo && cDate > dateTo) return false;
+        if (nameSearch && !c.customerName?.toLowerCase().includes(nameSearch)) return false;
+        if (phoneSearch && !c.phone?.toLowerCase().includes(phoneSearch)) return false;
+        if (userSearch && !(c.employeeName || c.addedBy || c.userName || '').toLowerCase().includes(userSearch)) return false;
+        return true;
+    });
 
-        const totalCount = allComplaints.length;
-        const todayCount = allComplaints.filter(c => tsToDateStr(c.date) === todayStr).length;
-        const monthCount = allComplaints.filter(c => tsToDateStr(c.date)?.startsWith(currentMonth)).length;
-        const activeUsers = allEmployees.filter(e => e.active).length;
+    console.log("البيانات بعد التصفية:", filtered.length);
 
-        document.getElementById('statTotal').textContent = totalCount;
-        document.getElementById('statToday').textContent = todayCount;
-        document.getElementById('statMonth').textContent = monthCount;
-        document.getElementById('statUsers').textContent = activeUsers;
-        document.getElementById('statEmployees').textContent = allEmployees.length;
-        document.getElementById('tabCountComplaints').textContent = filtered.length;
-        document.getElementById('tabCountEmployees').textContent = allEmployees.length;
+    // تحديث الإحصائيات
+    const todayStr = getCurrentDate();
+    const currentMonth = getCurrentMonth();
 
-        const tbody = document.getElementById('managerTableBody');
-        if (filtered.length === 0) {
-            const colSpan = isViewer ? 15 : 16;
-            tbody.innerHTML = `<tr><td colspan="${colSpan}" class="empty-state"><i class="fas fa-inbox"></i>لا توجد شكاوى مطابقة</td></tr>`;
-            return;
-        }
+    document.getElementById('statTotal').textContent = allComplaints.length;
+    document.getElementById('statToday').textContent = allComplaints.filter(c => tsToDateStr(c.date) === todayStr).length;
+    document.getElementById('statMonth').textContent = allComplaints.filter(c => tsToDateStr(c.date)?.startsWith(currentMonth)).length;
+    document.getElementById('statUsers').textContent = allEmployees.filter(e => e.active).length;
+    document.getElementById('statEmployees').textContent = allEmployees.length;
+    
+    document.getElementById('tabCountComplaints').textContent = filtered.length;
 
-        tbody.innerHTML = filtered.map(c => {
-            let row = `
-                <td>${tsToDateStr(c.date)}</td>
-                <td>${c.branch || ''}</td>
-                <td>${c.orderNo || ''}</td>
-                <td>${c.customerName || ''}</td>
-                <td>${c.phone || ''}</td>
-                <td>${c.complaintType || ''}</td>
-                <td>${tsToDateStr(c.date)}</td>
-                <td>${c.orderTime || ''}</td>
-                <td>${c.complaintTime || ''}</td>
-                <td>${c.location || ''}</td>
-                <td>${c.employeeName || c.addedBy || c.userName || ''}</td>
-                <td>${c.branchUser || ''}</td>
-                <td class="details-cell">${c.details || ''}</td>
-                <td>${c.branchInfo || ''}</td>
-                <td>${c.callCenterInfo || ''}</td>
-            `;
-            if (!isViewer) {
-                row += `<td><button class="btn btn-sm btn-del" onclick="window._deleteComplaint('${c.id}')"><i class="fas fa-trash"></i> حذف</button></td>`;
-            }
-            return `<tr>${row}</tr>`;
-        }).join('');
+    // رص البيانات في الجدول
+    const tbody = document.getElementById('managerTableBody');
+    if (filtered.length === 0) {
+        const colSpan = isViewer ? 15 : 16;
+        tbody.innerHTML = `<tr><td colspan="${colSpan}" class="empty-state"><i class="fas fa-inbox"></i>لا توجد شكاوى حالياً. تأكد من إعدادات الفلتر أو التاريخ.</td></tr>`;
+        return;
     }
+
+    tbody.innerHTML = filtered.map(c => {
+        let row = `
+            <td>${tsToDateStr(c.date)}</td>
+            <td>${c.branch || ''}</td>
+            <td>${c.orderNo || ''}</td>
+            <td>${c.customerName || ''}</td>
+            <td>${c.phone || ''}</td>
+            <td>${c.complaintType || ''}</td>
+            <td>${tsToDateStr(c.date)}</td>
+            <td>${c.orderTime || ''}</td>
+            <td>${c.complaintTime || ''}</td>
+            <td>${c.location || ''}</td>
+            <td>${c.employeeName || c.addedBy || c.userName || ''}</td>
+            <td>${c.branchUser || ''}</td>
+            <td class="details-cell">${c.details || ''}</td>
+            <td>${c.branchInfo || ''}</td>
+            <td>${c.callCenterInfo || ''}</td>
+        `;
+        if (!isViewer) {
+            row += `<td><button class="btn btn-sm btn-del" onclick="window._deleteComplaint('${c.id}')"><i class="fas fa-trash"></i></button></td>`;
+        }
+        return `<tr>${row}</tr>`;
+    }).join('');
+}
     window.loadManagerData = loadManagerData;
 
 window._switchTab = function(tabName, clickedEl) {
@@ -1604,16 +1607,29 @@ window._switchTab = function(tabName, clickedEl) {
     };
 
     function startRealtimeListeners() {
-const cQuery = query(collection(db, 'complaints'), orderBy('date', 'desc'), limit(200));        unsubSnapshot = onSnapshot(cQuery, (snap) => {
+        // 1. مراقب الشكاوى (Complaints Listener)
+        const cQuery = query(collection(db, 'complaints'), orderBy('date', 'desc'), limit(500));
+        unsubSnapshot = onSnapshot(cQuery, (snap) => {
             allComplaints = snap.docs.map(d => ({ id: d.id, ...d.data() }));
             localCache = allComplaints;
             localStorage.setItem('db_complaints_cache', JSON.stringify(localCache));
+
+            // تحديث عداد الشكاوى في التبويب
+            const complaintsCountEl = document.getElementById('tabCountComplaints');
+            if (complaintsCountEl) {
+                complaintsCountEl.textContent = allComplaints.length;
+            }
 
             if (currentUserData?.role === 'manager' || currentUserData?.role === 'viewer') {
                 loadManagerData();
             } else if (currentUserData?.role === 'employee') {
                 refreshEmployeeView();
             }
+            
+            // تغيير حالة السحابة إلى متصل
+            document.getElementById('mgrCloudStatus')?.classList.replace('offline', 'synced');
+            document.getElementById('empCloudStatus')?.classList.replace('offline', 'synced');
+            
         }, (err) => {
             console.error('Snap error:', err);
             document.getElementById('mgrCloudStatus')?.classList.replace('synced', 'offline');
@@ -1625,11 +1641,19 @@ const cQuery = query(collection(db, 'complaints'), orderBy('date', 'desc'), limi
             }
         });
 
+        // 2. مراقب الموظفين (Employees Listener)
         const eQuery = query(collection(db, 'employees'), orderBy('createdAt', 'desc'));
         unsubEmpSnapshot = onSnapshot(eQuery, (snap) => {
             allEmployees = snap.docs.map(d => ({ id: d.id, ...d.data() }));
             localEmpCache = allEmployees;
             localStorage.setItem('db_employees_cache', JSON.stringify(localEmpCache));
+
+            // --- تحديث عداد الموظفين في التبويب ---
+            const empCountEl = document.getElementById('tabCountEmployees');
+            if (empCountEl) {
+                empCountEl.textContent = allEmployees.length;
+            }
+
             if (currentUserData?.role === 'manager' || currentUserData?.role === 'viewer') {
                 loadManagerData();
                 renderEmployeesTable();
