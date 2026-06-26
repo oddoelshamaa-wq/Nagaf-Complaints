@@ -4,9 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>نظام الشكاوى - متصل بالسحابة</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
+    <!-- وضع هذا السطر داخل الـ <head> -->
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <!-- إضافة مكتبة تصدير الإكسيل مع التنسيقات -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
+<script>
+(function(){
+var s=document.createElement('link');
+s.rel='stylesheet';
+s.href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css';
+s.media='print';
+document.head.appendChild(s);
+s.onload=function(){s.media='all';};
+})();
+
+</script>    <!-- احذف السطر أعلاه واستبدله بتحميل ديناميكي -->
+
     <style>
         :root {
             --bg: #030712;
@@ -46,12 +59,10 @@
             z-index: -1;
             animation: pulseBg 10s infinite alternate;
         }
-        @keyframes pulseBg { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
         .hidden { display: none !important; }
         .app-container { width: 100%; max-width: 100%; margin: auto; padding: 20px; }
         .card {
             background: var(--glass);
-            backdrop-filter: blur(25px);
             border: 1px solid var(--border);
             border-radius: 20px;
             padding: 30px;
@@ -344,95 +355,25 @@
             font-size: 12px;
             font-weight: 800;
         }
-.rpt-bar-row {
-    display: flex; align-items: center; gap: 10px;
-    background: rgba(0,0,0,0.3); border: 1px solid var(--border);
-    border-radius: 12px; padding: 12px 16px; transition: border-color 0.3s, background 0.3s;
-}
-.rpt-bar-row:hover { border-color: rgba(0,242,255,0.25); background: rgba(0,0,0,0.45); }
-.rpt-bar-row.is-top { border-color: rgba(239,68,68,0.5); background: rgba(239,68,68,0.06); }
-.rpt-bar-name { min-width: 110px; font-size: 13px; font-weight: 700; color: #e2e8f0; text-align: right; white-space: nowrap; }
-.rpt-bar-track { flex: 1; height: 26px; background: rgba(255,255,255,0.04); border-radius: 8px; overflow: hidden; position: relative; }
-.rpt-bar-fill { height: 100%; border-radius: 8px; transition: width 0.8s cubic-bezier(0.25,1,0.5,1); display: flex; align-items: center; justify-content: flex-end; padding: 0 8px; min-width: fit-content; }
-.rpt-bar-fill.fill-branch { background: linear-gradient(90deg, rgba(0,242,255,0.2), rgba(0,242,255,0.45)); }
-.rpt-bar-fill.fill-type { background: linear-gradient(90deg, rgba(112,0,255,0.2), rgba(112,0,255,0.45)); }
-.rpt-bar-fill.fill-top-branch { background: linear-gradient(90deg, rgba(239,68,68,0.25), rgba(239,68,68,0.55)); }
-.rpt-bar-fill.fill-top-type { background: linear-gradient(90deg, rgba(251,191,36,0.25), rgba(251,191,36,0.55)); }
-.rpt-bar-count { font-size: 12px; font-weight: 800; color: #fff; white-space: nowrap; }
-.rpt-bar-pct { min-width: 50px; text-align: left; font-size: 13px; font-weight: 900; color: var(--primary); }
-.rpt-bar-row.is-top .rpt-bar-pct { color: #ef4444; }
-.rpt-bar-row.is-top-type .rpt-bar-pct { color: #fbbf24; }
-.rpt-bar-row.is-top-type { border-color: rgba(251,191,36,0.5); background: rgba(251,191,36,0.06); }
 
-@media (max-width: 700px) {
-    #tab-reports > div[style*="grid-template-columns:1fr 1fr"] { grid-template-columns: 1fr !important; }
-    .rpt-bar-name { min-width: 80px; font-size: 12px; }
-}
         @media (max-width: 1000px) { .grid-layout { grid-template-columns: 1fr 1fr; } }
-        @media (max-width: 700px) {
-            .grid-layout { grid-template-columns: 1fr; }
-            .filter-bar .f-item { min-width: 100%; }
-            .session-bar { flex-direction: column; text-align: center; align-items: stretch; }
-            .session-bar > * { justify-content: center; }
-            .stats-bar { flex-direction: column; }
-            .modal-grid { grid-template-columns: 1fr; }
-            .modal-grid .full-width { grid-column: span 1; }
-            .theme-picker-bar { justify-content: center; }
-            .export-dropdown-menu { left: auto; right: 0; min-width: 250px; }
-        }
-        .brd-card {
-    background: rgba(0,0,0,0.35);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 20px;
-    transition: border-color 0.3s;
+    @media (max-width: 700px) {
+    .card { backdrop-filter: none; background: rgba(15,23,42,0.95); }
+    .card::after { display: none; }
 }
-.brd-card:hover { border-color: rgba(0,242,255,0.3); }
-.brd-card.brd-top { border-color: rgba(239,68,68,0.45); background: rgba(239,68,68,0.04); }
-.brd-card-header {
-    display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--border);
+        /* تغيير لون أيقونة التقويم الافتراضية داخل خانة التاريخ والمستعرض */
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="month"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator {
+    /* هذا الفلتر سيحول اللون الرمادي الافتراضي إلى اللون البينك */
+    filter: invert(55%) sepia(82%) saturate(3574%) hue-rotate(300deg) brightness(101%) contrast(101%);
+    cursor: pointer;
+    border-radius: 4px;
 }
-.brd-card-name {
-    font-size: 18px; font-weight: 900; color: var(--primary);
-    display: flex; align-items: center; gap: 8px;
-}
-.brd-card.brd-top .brd-card-name { color: #ef4444; }
-.brd-card-total {
-    background: rgba(0,242,255,0.1); color: var(--primary);
-    padding: 6px 16px; border-radius: 10px; font-weight: 900; font-size: 14px;
-}
-.brd-card.brd-top .brd-card-total { background: rgba(239,68,68,0.12); color: #ef4444; }
-.brd-stats-row {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px;
-}
-.brd-stat-item {
-    background: rgba(255,255,255,0.03); border-radius: 10px; padding: 10px 14px;
-    display: flex; flex-direction: column; gap: 2px;
-}
-.brd-stat-label { font-size: 11px; color: #64748b; font-weight: 700; }
-.brd-stat-value { font-size: 15px; font-weight: 900; color: #e2e8f0; }
-.brd-stat-value.highlight { color: #fbbf24; }
-.brd-types-title { font-size: 12px; color: #94a3b8; font-weight: 700; margin-bottom: 8px; display:flex; align-items:center; gap:6px; }
-.brd-type-row {
-    display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
-}
-.brd-type-name { min-width: 120px; font-size: 12px; color: #cbd5e1; font-weight: 700; text-align: right; }
-.brd-type-bar-track { flex: 1; height: 18px; background: rgba(255,255,255,0.04); border-radius: 6px; overflow: hidden; }
-.brd-type-bar-fill { height: 100%; border-radius: 6px; transition: width 0.6s ease; display: flex; align-items: center; justify-content: flex-end; padding: 0 6px; }
-.brd-type-bar-fill.normal { background: linear-gradient(90deg, rgba(0,242,255,0.15), rgba(0,242,255,0.35)); }
-.brd-type-bar-fill.highest { background: linear-gradient(90deg, rgba(251,191,36,0.2), rgba(251,191,36,0.5)); }
-.brd-type-count { font-size: 11px; font-weight: 800; color: #fff; }
-.brd-type-pct { min-width: 42px; text-align: left; font-size: 12px; font-weight: 800; color: #94a3b8; }
-.brd-type-row.is-highest .brd-type-pct { color: #fbbf24; }
-.brd-no-data { text-align: center; color: #64748b; padding: 40px; font-size: 14px; }
-.brd-pct-of-all { font-size: 11px; color: #64748b; text-align: center; margin-top: 10px; }
-.brd-pct-of-all strong { color: var(--primary); font-size: 13px; }
 
-@media (max-width: 700px) {
-    .brd-stats-row { grid-template-columns: 1fr; }
-    .brd-type-name { min-width: 80px; font-size: 11px; }
-    .brd-card-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+/* لجعلها تتوهج قليلاً عند الوقوف عليها (اختياري) */
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+    filter: invert(55%) sepia(82%) saturate(5000%) hue-rotate(310deg) brightness(110%) contrast(110%);
 }
     </style>
 </head>
@@ -481,7 +422,6 @@
                         </select>
                     </div>
                 </div>
-
                 <div class="input-box">
                     <label>الوظيفة / الدور</label>
                     <div class="field-wrap"><i class="fas fa-user-tag"></i>
@@ -508,34 +448,41 @@
         </form>
     </div>
 </div>
-<!-- ========== مودال التقرير التفصيلي للفروع ========== -->
-<div class="modal-overlay" id="branchDetailModal">
-    <div class="modal-box" style="max-width:800px;">
-        <div class="modal-header">
-            <h3><i class="fas fa-building"></i> تقرير تفصيلي لكل فرع</h3>
-            <button class="modal-close" onclick="window._closeBranchDetailModal()"><i class="fas fa-times"></i></button>
-        </div>
-        <div id="branchDetailContent" style="display:flex; flex-direction:column; gap:18px; max-height:70vh; overflow-y:auto; padding:4px;"></div>
-    </div>
-</div>
 
-<!-- ========== شاشة الدخول ========== -->
+<!-- ========== شاشة الدخول المحدثة ========== -->
 <div id="login-section" class="app-container hidden">
-    <div class="card login-card" style="text-align: center;">
-        <div style="font-size: 55px; color: var(--primary); margin-bottom: 18px;"><i class="fas fa-fingerprint"></i></div>
-        <h3 style="font-size: 2.8rem; margin-bottom: 20px;">Complaints</h3>
-        <div class="input-box">
-            <label style="font-size: 25px;">Login</label>
-            <div class="field-wrap"><i class="fas fa-user-circle"></i><input type="text" id="username" placeholder="Username"></div>
+    <div class="card login-card" style="max-width: 400px; margin: 60px auto; backdrop-filter: blur(15px); border: 1px solid rgba(0, 242, 255, 0.2);">
+        <div style="text-align: center; margin-bottom: 30px;">
+          <div style="width: 80px; height: 80px; background: rgba(0, 242, 255, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; border: 1px solid var(--primary);">
+                <i class="fas fa-user-lock" style="font-size: 35px; color: var(--primary);"></i>
+            </div>
+            <h3 style="margin-bottom: 5px; font-size: 1.8rem;">Complaints System</h3>
+            <p style="color: #94a3b8; font-size: 14px;">Welcome to Najaf complaints system.</p>
         </div>
-        <div class="input-box" style="margin-top: 14px;">
+
+        <div class="input-box">
+            <label>اسم الموظف</label>
             <div class="field-wrap">
-                <i class="fas fa-key"></i>
-                <input type="password" id="password" placeholder="password">
+                <i class="fas fa-user-tie"></i>
+                <select id="usernameSelect" style="padding-right: 45px;">
+                    <option value="" disabled selected>جاري تحميل الأسماء...</option>
+                </select>
             </div>
         </div>
-        <button class="btn btn-neon" id="loginBtn" onclick="handleLogin()"><i class="fas fa-arrow-right"></i> دخول النظام</button>
-        <p id="error-msg" class="hidden" style="color:#ef4444; margin-top:14px; font-weight:bold;">بيانات الاعتماد غير صالدة!</p>
+
+        <div class="input-box" style="margin-top: 20px;">
+            <label>كلمة المرور</label>
+            <div class="field-wrap">
+                <i class="fas fa-key"></i>
+                <input type="password" id="password" placeholder="••••••••" style="padding-right: 45px;">
+            </div>
+        </div>
+
+        <button class="btn btn-neon" id="loginBtn" onclick="handleLogin()" style="margin-top: 30px; height: 50px; font-size: 16px;">
+            <i class="fas fa-sign-in-alt"></i> دخول النظام
+        </button>
+        
+        <p id="error-msg" class="hidden" style="color:#ef4444; margin-top:15px; font-weight:bold; text-align:center; font-size: 13px; background: rgba(239, 68, 68, 0.1); padding: 10px; border-radius: 10px;"></p>
     </div>
 </div>
 
@@ -589,16 +536,56 @@
                 <div class="input-box"><label>وقت الطلب</label><div class="field-wrap"><i class="fas fa-clock"></i><input type="time" id="orderTime"></div></div>
                 <div class="input-box"><label>وقت تسجيل الشكوى</label><div class="field-wrap"><i class="fas fa-history"></i><input type="time" id="complaintTime"></div></div>
                 <div class="input-box">
-                    <label>مكان التسليم</label>
-                    <div class="field-wrap location-input-wrap">
-                        <i class="fas fa-map-pin"></i>
-                        <input type="text" id="location" placeholder="اكتب مكان التسليم..." autocomplete="off" oninput="window._showLocationSuggestions(this.value)" onfocus="window._showLocationSuggestions(this.value)">
-                        <div class="location-suggestions" id="locationSuggestions"></div>
-                    </div>
+                 <div class="input-box">
+    <label>مكان التسليم</label>
+    <div class="field-wrap">
+        <i class="fas fa-map-pin"></i>
+        <input type="text" id="location" list="locationOptions" placeholder="اكتب أو اختر مكان التسليم...">
+        <datalist id="locationOptions">
+            <option value="مكان عمل">
+            <option value="منزل">
+            <option value="Talabat">
+        </datalist>
+    </div>
+</div>
                 </div>
                 <div class="input-box"><label>الموظف المستلم بالفرع</label><div class="field-wrap"><i class="fas fa-user-check"></i><input type="text" id="branchUser"></div></div>
-                <div class="input-box"><label>إفادة الفرع النهائية</label><div class="field-wrap"><i class="fas fa-file-alt"></i><input type="text" id="branchInfo"></div></div>
-                <div class="input-box"><label>إفادة الكول سنتر</label><div class="field-wrap"><i class="fas fa-headset"></i><input type="text" id="callCenterInfo"></div></div>
+                <!-- إفادة الفرع النهائية -->
+<!-- إفادة الفرع النهائية (كتابة + اختيار) -->
+<div class="input-box">
+    <label>إفادة الفرع النهائية</label>
+    <div class="field-wrap">
+        <i class="fas fa-file-alt"></i>
+        <input type="text" id="branchInfo" list="branchOptions" placeholder="اكتب أو اختر الإفادة...">
+        <datalist id="branchOptions">
+            <option value="هيتم إرساله">
+            <option value="اقرب اوردر">
+            <option value="تم إبلاغ الفرع">
+            <option value="إصرار الفرع على اكتمال الاوردر و رفض الارسال">
+            <option value="العميل لا يريد سوى الاهتمام فقط">
+            <option value="تم الغاء الطلب">
+        </datalist>
+    </div>
+</div>
+
+<!-- إفادة الكول سنتر (كتابة + اختيار) -->
+<div class="input-box">
+    <label>إفادة الكول سنتر</label>
+    <div class="field-wrap">
+        <i class="fas fa-headset"></i>
+        <input type="text" id="callCenterInfo" list="callCenterOptions" placeholder="اكتب أو اختر الإفادة...">
+        <datalist id="callCenterOptions">
+            <option value="تم الارسال بنجاح">
+            <option value="خصم ج في اقرب اوردر">
+            <option value="العميل لا يريد سوى الاهتمام فقط">
+            <option value="لم يصل">
+            <option value="لم يصل بعد">
+            <option value="لا يمكن الوصول للعميل">
+            <option value="اقرب اوردر">
+            <option value="العميل رفض استلام الاوردر">
+        </datalist>
+    </div>
+</div>
                 <div style="grid-column: span 3;" class="input-box">
                     <label>تفاصيل الشكوى الدقيقة</label>
                     <textarea id="details" rows="3" placeholder="اكتب هنا كل ما يتعلق بالشكوى..."></textarea>
@@ -623,14 +610,12 @@
                     <option value="جودة">جودة</option><option value="سوء خدمة">سوء خدمة</option>
                     <option value="خطأ متلقي">خطأ متلقي</option><option value="خطأ متلقي طلبات">خطأ متلقي طلبات</option>
                 </select>
-                <!-- زر التصدير للموظف -->
-<!-- استبدل زر التصدير القديم في قسم الموظف بهذا الكود -->
-<div class="export-dropdown" id="empExportDropdown" style="margin-right: 10px;">
-    <button class="btn export-btn" onclick="window._toggleEmpExport(event)">
-        <i class="fas fa-file-excel"></i> تصدير Excel
-    </button>
+            </div>
+            <!-- زر التصدير للموظف -->
+<div class="export-dropdown" id="empExportDropdown" style="flex-shrink:0;">
+    <button class="btn export-btn" onclick="window._toggleEmpExport(event)"><i class="fas fa-file-excel"></i> تصدير Excel</button>
     <div class="export-dropdown-menu" id="empExportMenu">
-        <div class="exp-title"><i class="fas fa-download"></i> اختر نطاق التصدير</div>
+        <div class="exp-title"><i class="fas fa-download"></i> تصدير بياناتي</div>
         <div class="exp-row">
             <label>من:</label>
             <input type="date" id="empExpFrom">
@@ -640,19 +625,12 @@
             <input type="date" id="empExpTo">
         </div>
         <div class="exp-actions" style="flex-direction:column; gap:6px;">
-            <button class="btn btn-exp-month" onclick="window._empExportMonth()">
-                <i class="fas fa-calendar"></i> تصدير الشهر المحدد بالفلتر
-            </button>
-            <button class="btn btn-exp-range" onclick="window._empExportRange()">
-                <i class="fas fa-arrows-alt-h"></i> تصدير من تاريخ - إلى تاريخ
-            </button>
-            <button class="btn btn-exp-all" onclick="window._empExportAll()">
-                <i class="fas fa-database"></i> تصدير كل البيانات الخاصة بي
-            </button>
+            <button class="btn btn-exp-month" onclick="window._empExportMonth()"><i class="fas fa-calendar"></i> تصدير الشهر المختار</button>
+            <button class="btn btn-exp-range" onclick="window._empExportRange()"><i class="fas fa-arrows-alt-h"></i> تصدير النطاق الزمني</button>
+            <button class="btn btn-exp-all" onclick="window._empExportAll()"><i class="fas fa-database"></i> تصدير كل بياناتي</button>
         </div>
     </div>
 </div>
-            </div>
         </div>
         <div class="table-wrap">
             <table id="empTable">
@@ -666,7 +644,9 @@
                 <tbody id="empTableBody"></tbody>
             </table>
         </div>
+        
     </div>
+    
 </div>
 
 <!-- ========== شاشة المدير / المشاهد ========== -->
@@ -685,29 +665,23 @@
     </div>
     <div class="stats-bar">
         <div class="stat-card"><div class="stat-num" id="statTotal">0</div><div class="stat-label">إجمالي الشكاوى</div></div>
-            <div class="stat-card" style="border-color: var(--secondary);"><div class="stat-num" id="statUniqueOrders">0</div><div class="stat-label">إجمالي الأوردرات</div></div>
         <div class="stat-card"><div class="stat-num" id="statToday">0</div><div class="stat-label">شكاوى اليوم</div></div>
         <div class="stat-card"><div class="stat-num" id="statMonth">0</div><div class="stat-label">شكاوى الشهر</div></div>
         <div class="stat-card"><div class="stat-num" id="statUsers">0</div><div class="stat-label">موظفين نشطين</div></div>
         <div class="stat-card"><div class="stat-num" id="statEmployees">0</div><div class="stat-label">إجمالي الموظفين</div></div>
     </div>
-    <!-- البحث عن هذا الجزء في الكود الخاص بك واستبداله -->
-<div class="mgr-tabs">
-    <div class="mgr-tab active" onclick="window._switchTab('complaints', this)">
-        <i class="fas fa-list-alt"></i> سجل الشكاوى <span class="tab-count" id="tabCountComplaints">0</span>
-    </div>
-    <!-- أضفنا ID هنا: mgrReportsTab -->
-    <div class="mgr-tab" id="mgrReportsTab" onclick="window._switchTab('reports', this)">
-        <i class="fas fa-chart-pie"></i> التقارير <span class="tab-count" id="tabCountReports">0</span>
-    </div>
-    <div class="mgr-tab" id="mgrEmpTab" onclick="window._switchTab('employees', this)">
-        <i class="fas fa-users-cog"></i> إدارة الموظفين <span class="tab-count" id="tabCountEmployees">0</span>
-    </div>
-    <!-- أضفنا ID هنا: mgrUpdateOrdersBtn -->
-    <button id="mgrUpdateOrdersBtn" class="btn btn-add-emp" onclick="window._openOrderCountModal()" style="background: linear-gradient(45deg, #a855f7, #7000ff); margin-right: 10px;">
-        <i class="fas fa-list-ol"></i> تحديث عداد أوردرات الفروع
-    </button>
+    <div class="mgr-tabs">
+        <div class="mgr-tab active" onclick="window._switchTab('complaints', this)">
+            <i class="fas fa-list-alt"></i> سجل الشكاوى <span class="tab-count" id="tabCountComplaints">0</span>
+        </div>
+        <div class="mgr-tab" id="mgrEmpTab" onclick="window._switchTab('employees', this)">
+            <i class="fas fa-users-cog"></i> إدارة الموظفين <span class="tab-count" id="tabCountEmployees">0</span>
+        </div>
+        <!-- أضف هذا الزر داخل mgr-tabs -->
+<div class="mgr-tab" id="mgrReportTab" onclick="window._switchTab('reports', this)">
+    <i class="fas fa-chart-line"></i> تحليل أداء الفروع
 </div>
+    </div>
     <div id="tab-complaints" class="card">
         <h3><i class="fas fa-project-diagram"></i> سجل الشكاوى العام - جميع الموظفين</h3>
         <div class="filter-bar" style="justify-content: space-between;">
@@ -752,58 +726,13 @@
             </table>
         </div>
     </div>
-    <div id="tab-reports" class="card hidden">
-    <h3><i class="fas fa-chart-pie"></i> تقرير تحليل الشكاوى</h3>
-    <div style="display:flex; justify-content:flex-end; margin-bottom:18px;">
-        <div class="filter-bar" style="margin-bottom: 20px; background: rgba(0,0,0,0.2);">
-        <span class="f-label">تحديد فترة التقرير:</span>
-        <div class="f-item narrow"><i class="fas fa-calendar-alt"></i><input type="date" id="rptDateFrom" onchange="window._renderReports()" title="من تاريخ"></div>
-        <div class="f-item narrow"><i class="fas fa-calendar-alt"></i><input type="date" id="rptDateTo" onchange="window._renderReports()" title="إلى تاريخ"></div>
-        <button class="btn btn-sm" onclick="document.getElementById('rptDateFrom').value=''; document.getElementById('rptDateTo').value=''; window._renderReports();" style="background:var(--border); color:white;">إعادة تعيين</button>
-    </div>
-    <button class="btn btn-add-emp" onclick="window._openBranchDetailReport()" style="background:linear-gradient(45deg,#0ea5e9,#0369a1); box-shadow:0 8px 20px rgba(14,165,233,0.3);">
-        <i class="fas fa-building"></i> تقرير تفصيلي لكل فرع
-        
-    </button>
-
-</div>
-    
-    <!-- ملخص أعلى -->
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px;">
-        <div style="background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.25); border-radius:16px; padding:20px; text-align:center;">
-            <div style="color:#94a3b8; font-size:12px; font-weight:700; margin-bottom:8px;">أعلى فرع في الشكاوى</div>
-            <div id="rptTopBranch" style="font-size:22px; font-weight:900; color:#ef4444;">—</div>
-            <div id="rptTopBranchCount" style="font-size:13px; color:#64748b; margin-top:4px;"></div>
-        </div>
-        <div style="background:rgba(251,191,36,0.08); border:1px solid rgba(251,191,36,0.25); border-radius:16px; padding:20px; text-align:center;">
-            <div style="color:#94a3b8; font-size:12px; font-weight:700; margin-bottom:8px;">أعلى نوع شكوى</div>
-            <div id="rptTopType" style="font-size:22px; font-weight:900; color:#fbbf24;">—</div>
-            <div id="rptTopTypeCount" style="font-size:13px; color:#64748b; margin-top:4px;"></div>
-        </div>
-    </div>
-
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
-        <!-- تقرير الفروع -->
-        <div>
-            <div style="font-size:15px; font-weight:800; color:var(--primary); margin-bottom:14px; display:flex; align-items:center; gap:8px;">
-                <i class="fas fa-map-marked-alt"></i> الشكاوى حسب الفرع
-            </div>
-            <div id="rptBranchList" style="display:flex; flex-direction:column; gap:10px;"></div>
-        </div>
-        <!-- تقرير الأنواع -->
-        <div>
-            <div style="font-size:15px; font-weight:800; color:var(--primary); margin-bottom:14px; display:flex; align-items:center; gap:8px;">
-                <i class="fas fa-tags"></i> الشكاوى حسب النوع
-            </div>
-            <div id="rptTypeList" style="display:flex; flex-direction:column; gap:10px;"></div>
-        </div>
-    </div>
-</div>
     <div id="tab-employees" class="card hidden">
         <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:22px; flex-wrap:wrap; gap:12px;">
             <h3 style="margin-bottom:0;"><i class="fas fa-users-cog"></i> إدارة الموظفين</h3>
             <button class="btn btn-add-emp" onclick="window._openEmpModal()"><i class="fas fa-user-plus"></i> إضافة موظف جديد</button>
+            
         </div>
+        
         <div class="filter-bar" style="margin-bottom:16px;">
             <span class="f-label">بحث:</span>
             <div class="f-item"><i class="fas fa-search"></i><input type="text" id="empSearchInput" oninput="renderEmployeesTable()" placeholder="بحث بالاسم أو اسم المستخدم..." style="width:100%;"></div>
@@ -828,17 +757,86 @@
                 <tbody id="employeesTableBody"></tbody>
             </table>
         </div>
+        
+    </div>
+    <!-- قسم التقارير والتحليل - أضف هذا الجزء هنا -->
+    <div id="tab-reports" class="card hidden">
+        <h3><i class="fas fa-chart-pie"></i> تقرير نسب الشكاوى والأداء</h3>
+        
+       <!-- مدخلات عدد الأوردرات المحدثة -->
+<div class="filter-bar" style="background: rgba(0, 242, 255, 0.05); border: 1px dashed var(--primary);">
+    <span class="f-label">إدخال أوردرات اليوم:</span>
+    <div class="f-item narrow">
+        <i class="fas fa-calendar-day"></i>
+        <input type="date" id="orderEntryDate" onchange="window._loadDailyOrdersForDate()">
+    </div>
+    <div class="f-item narrow">
+        <select id="orderBranchSelect" onchange="window._loadDailyOrdersForDate()">
+            <option value="العباسيه">العباسيه</option>
+            <option value="عبده باشا">عبده باشا</option>
+            <option value="نادي السكه">نادي السكه</option>
+            <option value="عباس العقاد">عباس العقاد</option>
+            <option value="يوسف عباس">يوسف عباس</option>
+            <option value="المعهد">المعهد</option>
+        </select>
+    </div>
+    <div class="f-item narrow">
+        <i class="fas fa-shopping-basket"></i>
+        <input type="number" id="orderCountInput" placeholder="عدد الأوردرات">
+    </div>
+    <button class="btn btn-sm btn-neon" onclick="window._saveDailyOrders()" style="width:auto; margin:0;">
+        <i class="fas fa-check"></i> حفظ
+    </button>
+</div>
+        <!-- فلتر عرض التقرير -->
+   <!-- فلتر عرض التقرير المحدث -->
+<div class="filter-bar">
+    <span class="f-label">تحديد أيام:</span>
+    <div class="f-item narrow">
+        <i class="fas fa-calendar-alt"></i>
+        <input type="date" id="repDateFrom" onchange="window._generateReport()" title="من تاريخ">
+    </div>
+    <div class="f-item narrow">
+        <i class="fas fa-arrow-left"></i>
+        <input type="date" id="repDateTo" onchange="window._generateReport()" title="إلى تاريخ">
+    </div>
+    <div class="f-item narrow" style="border-right: 1px solid var(--border); padding-right: 15px;">
+        <i class="fas fa-filter"></i>
+        <input type="month" id="reportMonthFilter" onchange="window._generateReport()">
+    </div>
+    <button class="btn btn-sm btn-cancel" onclick="window._resetReportFilters()">
+        <i class="fas fa-sync-alt"></i> مسح الفلاتر
+    </button>
+</div>
+
+        <div class="table-wrap">
+            <table id="reportTable">
+                <thead>
+                    <tr>
+                        <th>الفرع</th>
+                        <th>إجمالي الشكاوى</th>
+                        <th>تأخير</th>
+                        <th>ناقص/خطأ</th>
+                        <th>جودة/أخرى</th>
+                        <th>إجمالي الأوردرات</th>
+                        <th>نسبة الشكاوى</th>
+                    </tr>
+                </thead>
+                <tbody id="reportTableBody">
+                    <!-- سيتم التوليد برمجياً -->
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
 <script type="module">
-    
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAuth, onAuthStateChanged, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     import {
         getFirestore, collection, addDoc, setDoc, doc, getDocs, getDoc,
         query, where, orderBy, deleteDoc, onSnapshot, serverTimestamp,
-         writeBatch, Timestamp, updateDoc, limit // أضفنا limit هنا
+        writeBatch, Timestamp, updateDoc
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -872,9 +870,12 @@
     }
 
     const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+const auth = getAuth(app);
     const db = getFirestore(app);
-
+    
+    // أضف هذين السطرين لجعل المتغيرات متاحة لجميع أجزاء الكود
+    window.db = db;
+    window.auth = auth;
     let currentUser = null;
     let currentUserDocId = null;
     let currentUserData = null;
@@ -899,17 +900,13 @@
         return `${y}-${m}`;
     }
 
-    function getCurrentDate() {
-        const now = new Date();
-        const egyptStr = now.toLocaleString("en-US", {
-            timeZone: "Africa/Cairo",
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit'
-        });
-        const [m, d, y] = egyptStr.split('/');
-        return `${y}-${m}-${d}`;
-    }
+   function getCurrentDate() {
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = String(now.getMonth() + 1).padStart(2, '0');
+    const d = String(now.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`; // التنسيق المطلوب من المتصفحات هو YYYY-MM-DD
+}
 
     function tsToDateStr(val) {
         if (!val) return '';
@@ -931,64 +928,52 @@
         return currentUserData && currentUserData.role === 'viewer';
     }
 
-    function applyViewerRestrictions() {
+  function applyViewerRestrictions() {
     const empTab = document.getElementById('mgrEmpTab');
-    const reportsTab = document.getElementById('mgrReportsTab'); // تبويب التقارير
-    const updateOrdersBtn = document.getElementById('mgrUpdateOrdersBtn'); // زر التحديث البنفسجي
     const exportDrop = document.getElementById('mgrExportDropdown');
     const deleteTh = document.getElementById('mgrDeleteTh');
     const mgrIcon = document.getElementById('mgrIcon');
     const mgrTitle = document.getElementById('mgrTitleSpan');
+    // السطر الجديد للتحكم في زر التقارير
+    const reportTab = document.getElementById('mgrReportTab'); 
 
     if (isViewerUser()) {
-        // إخفاء كل شيء ما عدا جدول الشكاوى
         if (empTab) empTab.style.display = 'none';
-        if (reportsTab) reportsTab.style.display = 'none';
-        if (updateOrdersBtn) updateOrdersBtn.style.display = 'none';
         if (exportDrop) exportDrop.style.display = 'none';
         if (deleteTh) deleteTh.style.display = 'none';
         
-        // تغيير شكل الهوية للمشاهد
-        if (mgrIcon) { 
-            mgrIcon.className = 'fas fa-eye'; 
-            mgrIcon.style.color = '#a855f7'; 
-        }
-        if (mgrTitle) {
-            mgrTitle.innerHTML = '<strong>' + (currentUserData.fullName || 'مشاهد') + '</strong> <span class="viewer-badge-session">(المدير🧑‍💼)</span>';
-        }
-
-        // التأكد من أن المشاهد يرى تبويب الشكاوى فقط حتى لو حاول الدخول لغيره
-        window._switchTab('complaints', document.querySelector('.mgr-tab.active'));
+        // --- إضافة هذا السطر لإخفاء زر تحليل أداء الفروع ---
+        if (reportTab) reportTab.style.display = 'none'; 
+        
+        if (mgrIcon) { mgrIcon.className = 'fas fa-eye'; mgrIcon.style.color = '#a855f7'; }
+        if (mgrTitle) mgrTitle.innerHTML = '<strong>' + (currentUserData.fullName || 'مشاهد') + '</strong> <span class="viewer-badge-session">(مدير🤵‍♂️)</span>';
     } else {
-        // إظهار كل شيء للمدير
         if (empTab) empTab.style.display = '';
-        if (reportsTab) reportsTab.style.display = '';
-        if (updateOrdersBtn) updateOrdersBtn.style.display = '';
         if (exportDrop) exportDrop.style.display = '';
         if (deleteTh) deleteTh.style.display = '';
         
-        if (mgrIcon) { 
-            mgrIcon.className = 'fas fa-crown'; 
-            mgrIcon.style.color = '#fbbf24'; 
-        }
+        // --- إظهار الزر للمدير العام ---
+        if (reportTab) reportTab.style.display = ''; 
+
+        if (mgrIcon) { mgrIcon.className = 'fas fa-crown'; mgrIcon.style.color = '#fbbf24'; }
         if (mgrTitle) mgrTitle.textContent = 'المدير العام';
     }
 }
+  async function handleLogin() {
+    const selectedValue = document.getElementById('usernameSelect').value;
+    const password = document.getElementById('password').value.trim();
+    const errorEl = document.getElementById('error-msg');
+    
+    if (!selectedValue) {
+        errorEl.textContent = 'يرجى اختيار اسم المستخدم!';
+        errorEl.classList.remove('hidden');
+        return;
+    }
 
-    async function handleLogin() {
-        const username = document.getElementById('username').value.trim();
-        const password = document.getElementById('password').value.trim();
-        const errorEl = document.getElementById('error-msg');
-        errorEl.classList.add('hidden');
-
-        if (!username || !password) {
-            errorEl.textContent = 'يرجى ملء جميع الحقول!';
-            errorEl.classList.remove('hidden');
-            return;
-        }
-
-        try {
-            const defMgr = DEFAULT_MANAGERS.find(m => m.username === username && m.password === password);
+    try {
+        // 1. التحقق إذا كان المختار هو المدير العام (Admin)
+        if (selectedValue === 'admin') {
+            const defMgr = DEFAULT_MANAGERS.find(m => m.username === 'admin' && m.password === password);
             if (defMgr) {
                 currentUserData = { ...defMgr, branch: 'كل الفروع', active: true, id: 'default_admin' };
                 sessionStorage.setItem('active_session', JSON.stringify(currentUserData));
@@ -998,55 +983,67 @@
                 loadManagerData();
                 startSessionTimer();
                 return;
-            }
-
-            const q = query(collection(db, 'employees'), where('username', '==', username));
-            const snap = await getDocs(q);
-            if (snap.empty) {
-                errorEl.textContent = 'اسم المستخدم غير موجود!';
-                errorEl.classList.remove('hidden');
-                return;
-            }
-
-            const empDoc = snap.docs[0];
-            const empData = empDoc.data();
-
-            if (empData.password !== password) {
-                errorEl.textContent = 'كلمة المرور غير صحيحة!';
-                errorEl.classList.remove('hidden');
-                return;
-            }
-
-            if (!empData.active) {
-                errorEl.textContent = 'هذا الحساب معطل، تواصل مع المدير!';
-                errorEl.classList.remove('hidden');
-                return;
-            }
-
-            currentUserDocId = empDoc.id;
-            currentUserData = { id: empDoc.id, ...empData };
-            sessionStorage.setItem('active_session', JSON.stringify(currentUserData));
-
-            document.getElementById('login-section').classList.add('hidden');
-
-            if (empData.role === 'manager' || empData.role === 'viewer') {
-                document.getElementById('manager-section').classList.remove('hidden');
-                applyViewerRestrictions();
-                loadManagerData();
             } else {
-                document.getElementById('employee-section').classList.remove('hidden');
-                document.getElementById('emp-name-display').textContent = empData.fullName || username;
-                if (empData.themeColor) applyThemeColor(empData.themeColor);
-                refreshEmployeeView();
+                errorEl.textContent = 'كلمة مرور المدير غير صحيحة!';
+                errorEl.classList.remove('hidden');
+                return;
             }
-            startSessionTimer();
-
-        } catch (e) {
-            console.error(e);
-            errorEl.textContent = 'حدث خطأ في الاتصال!';
-            errorEl.classList.remove('hidden');
         }
+
+        // 2. البحث في قاعدة البيانات عن الموظف باستخدام "الاسم الكامل" (القيمة المخفية 1212)
+        const q = query(collection(db, 'employees'), where('fullName', '==', selectedValue));
+        const snap = await getDocs(q);
+
+        if (snap.empty) {
+            errorEl.textContent = 'اسم المستخدم غير موجود في قاعدة البيانات!';
+            errorEl.classList.remove('hidden');
+            return;
+        }
+
+        const empDoc = snap.docs[0];
+        const empData = empDoc.data();
+
+        // 3. التحقق من كلمة المرور
+        if (empData.password !== password) {
+            errorEl.textContent = 'كلمة المرور غير صحيحة!';
+            errorEl.classList.remove('hidden');
+            return;
+        }
+
+        // 4. التحقق من حالة الحساب
+        if (!empData.active) {
+            errorEl.textContent = 'هذا الحساب معطل، تواصل مع المدير!';
+            errorEl.classList.remove('hidden');
+            return;
+        }
+
+        // 5. نجاح الدخول - إعداد الجلسة
+        currentUserDocId = empDoc.id;
+        currentUserData = { id: empDoc.id, ...empData };
+        sessionStorage.setItem('active_session', JSON.stringify(currentUserData));
+
+        document.getElementById('login-section').classList.add('hidden');
+
+        // توجيه المستخدم حسب الرتبة
+        if (empData.role === 'manager' || empData.role === 'viewer') {
+            document.getElementById('manager-section').classList.remove('hidden');
+            applyViewerRestrictions();
+            loadManagerData();
+        } else {
+            document.getElementById('employee-section').classList.remove('hidden');
+            // عرض اسم المستخدم (محمد) في شريط الحالة
+            document.getElementById('emp-name-display').textContent = empData.username;
+            if (empData.themeColor) applyThemeColor(empData.themeColor);
+            refreshEmployeeView();
+        }
+        startSessionTimer();
+
+    } catch (e) {
+        console.error("Login Error:", e);
+        errorEl.textContent = 'حدث خطأ تقني: ' + e.message;
+        errorEl.classList.remove('hidden');
     }
+}
     window.handleLogin = handleLogin;
 
     function handleLogout() {
@@ -1127,14 +1124,16 @@
         box.innerHTML = filtered.map(s => `<div onclick="document.getElementById('location').value='${s}'; document.getElementById('locationSuggestions').classList.remove('open');">${s}</div>`).join('');
         box.classList.add('open');
     };
-    document.addEventListener('click', function(e) {
-        if (!e.target.closest('.location-input-wrap')) {
-            document.getElementById('locationSuggestions')?.classList.remove('open');
-        }
-        if (!e.target.closest('.export-dropdown')) {
-            document.getElementById('mgrExportMenu')?.classList.remove('open');
-        }
-    });
+   document.addEventListener('click', function(e) {
+    if (!e.target.closest('.location-input-wrap')) {
+        document.getElementById('locationSuggestions')?.classList.remove('open');
+    }
+    // إغلاق قوائم التصدير (للمدير والموظف) عند الضغط خارجها
+    if (!e.target.closest('.export-dropdown')) {
+        document.getElementById('mgrExportMenu')?.classList.remove('open');
+        document.getElementById('empExportMenu')?.classList.remove('open');
+    }
+});
 
     document.getElementById('complaintForm')?.addEventListener('submit', async function(e) {
         e.preventDefault();
@@ -1216,102 +1215,44 @@
         }
     };
 
-    function refreshEmployeeView() {
-        const month = document.getElementById('empMonthFilter')?.value;
-        const dateFrom = document.getElementById('empDateFrom')?.value;
-        const dateTo = document.getElementById('empDateTo')?.value;
-        const nameSearch = document.getElementById('empSearchName')?.value.trim().toLowerCase();
-        const phoneSearch = document.getElementById('empSearchPhone')?.value.trim().toLowerCase();
-        const typeFilter = document.getElementById('empTypeFilter')?.value;
+  function refreshEmployeeView() {
+    const month = document.getElementById('empMonthFilter')?.value;
+    const dateFrom = document.getElementById('empDateFrom')?.value;
+    const dateTo = document.getElementById('empDateTo')?.value;
+    const nameSearch = document.getElementById('empSearchName')?.value.trim().toLowerCase();
+    const phoneSearch = document.getElementById('empSearchPhone')?.value.trim().toLowerCase();
+    const typeFilter = document.getElementById('empTypeFilter')?.value;
 
-        let filtered = allComplaints.filter(c => {
-            if (currentUserData && currentUserData.branch !== 'كل الفروع' && c.branch !== currentUserData.branch) return false;
-            if (month && !tsToDateStr(c.date)?.startsWith(month)) return false;
-            if (dateFrom && tsToDateStr(c.date) < dateFrom) return false;
-            if (dateTo && tsToDateStr(c.date) > dateTo) return false;
-            if (nameSearch && !c.customerName?.toLowerCase().includes(nameSearch)) return false;
-            if (phoneSearch && !c.phone?.toLowerCase().includes(phoneSearch)) return false;
-            if (typeFilter && c.complaintType !== typeFilter) return false;
-            return true;
-        });
-
-        const tbody = document.getElementById('empTableBody');
-        if (filtered.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="17" class="empty-state"><i class="fas fa-inbox"></i>لا توجد شكاوى مطابقة</td></tr>';
-            return;
-        }
-
-        tbody.innerHTML = filtered.map(c => `
-            <tr>
-                <td>${tsToDateStr(c.date)}</td>
-                <td>${c.branch || ''}</td>
-                <td>${c.orderNo || ''}</td>
-                <td>${c.customerName || ''}</td>
-                <td>${c.phone || ''}</td>
-                <td>${c.complaintType || ''}</td>
-                <td>${tsToDateStr(c.date)}</td>
-                <td>${c.orderTime || ''}</td>
-                <td>${c.complaintTime || ''}</td>
-                <td>${c.location || ''}</td>
-                <td>${c.employeeName || c.addedBy || c.userName || ''}</td>
-                <td>${c.branchUser || ''}</td>
-                <td class="details-cell">${c.details || ''}</td>
-                <td>${c.branchInfo || ''}</td>
-                <td>${c.callCenterInfo || ''}</td>
-                <td><button class="btn btn-sm btn-edit" onclick="window._editComplaint('${c.id}')"><i class="fas fa-edit"></i></button></td>
-                <td><button class="btn btn-sm btn-del" onclick="window._deleteComplaint('${c.id}')"><i class="fas fa-trash"></i></button></td>
-            </tr>
-        `).join('');
-    }
-    window.refreshEmployeeView = refreshEmployeeView;
-
-   function loadManagerData() {
-    console.log("جاري تحميل بيانات المدير... إجمالي الشكاوى المتاحة:", allComplaints.length);
-
-    const month = document.getElementById('mgrMonthFilter')?.value;
-    const dateFrom = document.getElementById('mgrDateFrom')?.value;
-    const dateTo = document.getElementById('mgrDateTo')?.value;
-    const nameSearch = document.getElementById('searchName')?.value.trim().toLowerCase();
-    const phoneSearch = document.getElementById('searchPhone')?.value.trim().toLowerCase();
-    const userSearch = document.getElementById('searchUser')?.value.trim().toLowerCase();
-    const isViewer = isViewerUser();
-
-    // الفلترة
     let filtered = allComplaints.filter(c => {
-        const cDate = tsToDateStr(c.date);
-        if (month && !cDate?.startsWith(month)) return false;
-        if (dateFrom && cDate < dateFrom) return false;
-        if (dateTo && cDate > dateTo) return false;
+        // --- تعديل ذكي للمرشح (Filter) ---
+        // سيظهر الشكوى إذا كان الـ ID متطابق
+        // أو إذا كان الاسم المسجل في الشكوى يطابق اسم المستخدم الحالي (للشكاوى القديمة)
+        const isOwnerByID = c.userId === currentUserDocId;
+        const isOwnerByName = (c.employeeName === currentUserData.fullName) || (c.userName === currentUserData.fullName);
+
+        if (!isOwnerByID && !isOwnerByName) return false;
+        // ---------------------------------
+
+        if (month && !tsToDateStr(c.date)?.startsWith(month)) return false;
+        if (dateFrom && tsToDateStr(c.date) < dateFrom) return false;
+        if (dateTo && tsToDateStr(c.date) > dateTo) return false;
         if (nameSearch && !c.customerName?.toLowerCase().includes(nameSearch)) return false;
         if (phoneSearch && !c.phone?.toLowerCase().includes(phoneSearch)) return false;
-        if (userSearch && !(c.employeeName || c.addedBy || c.userName || '').toLowerCase().includes(userSearch)) return false;
+        if (typeFilter && c.complaintType !== typeFilter) return false;
+
         return true;
     });
 
-    console.log("البيانات بعد التصفية:", filtered.length);
+    const tbody = document.getElementById('empTableBody');
+    if (!tbody) return;
 
-    // تحديث الإحصائيات
-    const todayStr = getCurrentDate();
-    const currentMonth = getCurrentMonth();
-
-    document.getElementById('statTotal').textContent = allComplaints.length;
-    document.getElementById('statToday').textContent = allComplaints.filter(c => tsToDateStr(c.date) === todayStr).length;
-    document.getElementById('statMonth').textContent = allComplaints.filter(c => tsToDateStr(c.date)?.startsWith(currentMonth)).length;
-    document.getElementById('statUsers').textContent = allEmployees.filter(e => e.active).length;
-    document.getElementById('statEmployees').textContent = allEmployees.length;
-    
-    document.getElementById('tabCountComplaints').textContent = filtered.length;
-
-    // رص البيانات في الجدول
-    const tbody = document.getElementById('managerTableBody');
     if (filtered.length === 0) {
-        const colSpan = isViewer ? 15 : 16;
-        tbody.innerHTML = `<tr><td colspan="${colSpan}" class="empty-state"><i class="fas fa-inbox"></i>لا توجد شكاوى حالياً. تأكد من إعدادات الفلتر أو التاريخ.</td></tr>`;
+        tbody.innerHTML = '<tr><td colspan="17" class="empty-state"><i class="fas fa-inbox"></i>لا توجد شكاوى خاصة بك</td></tr>';
         return;
     }
 
-    tbody.innerHTML = filtered.map(c => {
-        let row = `
+    tbody.innerHTML = filtered.map(c => `
+        <tr>
             <td>${tsToDateStr(c.date)}</td>
             <td>${c.branch || ''}</td>
             <td>${c.orderNo || ''}</td>
@@ -1327,28 +1268,220 @@
             <td class="details-cell">${c.details || ''}</td>
             <td>${c.branchInfo || ''}</td>
             <td>${c.callCenterInfo || ''}</td>
-        `;
-        if (!isViewer) {
-            row += `<td><button class="btn btn-sm btn-del" onclick="window._deleteComplaint('${c.id}')"><i class="fas fa-trash"></i></button></td>`;
-        }
-        return `<tr>${row}</tr>`;
-    }).join('');
+            <td><button class="btn btn-sm btn-edit" onclick="window._editComplaint('${c.id}')"><i class="fas fa-edit"></i></button></td>
+            <td><button class="btn btn-sm btn-del" onclick="window._deleteComplaint('${c.id}')"><i class="fas fa-trash"></i></button></td>
+        </tr>
+    `).join('');
 }
+    window.refreshEmployeeView = refreshEmployeeView;
+
+    function loadManagerData() {
+        const month = document.getElementById('mgrMonthFilter')?.value;
+        const dateFrom = document.getElementById('mgrDateFrom')?.value;
+        const dateTo = document.getElementById('mgrDateTo')?.value;
+        const nameSearch = document.getElementById('searchName')?.value.trim().toLowerCase();
+        const phoneSearch = document.getElementById('searchPhone')?.value.trim().toLowerCase();
+        const userSearch = document.getElementById('searchUser')?.value.trim().toLowerCase();
+        const isViewer = isViewerUser();
+
+        let filtered = allComplaints.filter(c => {
+            if (month && !tsToDateStr(c.date)?.startsWith(month)) return false;
+            if (dateFrom && tsToDateStr(c.date) < dateFrom) return false;
+            if (dateTo && tsToDateStr(c.date) > dateTo) return false;
+            if (nameSearch && !c.customerName?.toLowerCase().includes(nameSearch)) return false;
+            if (phoneSearch && !c.phone?.toLowerCase().includes(phoneSearch)) return false;
+            if (userSearch && !(c.employeeName || c.addedBy || c.userName || '').toLowerCase().includes(userSearch)) return false;
+            return true;
+        });
+
+        const todayStr = getCurrentDate();
+        const currentMonth = getCurrentMonth();
+
+        const totalCount = allComplaints.length;
+        const todayCount = allComplaints.filter(c => tsToDateStr(c.date) === todayStr).length;
+        const monthCount = allComplaints.filter(c => tsToDateStr(c.date)?.startsWith(currentMonth)).length;
+        const activeUsers = allEmployees.filter(e => e.active).length;
+
+        document.getElementById('statTotal').textContent = totalCount;
+        document.getElementById('statToday').textContent = todayCount;
+        document.getElementById('statMonth').textContent = monthCount;
+        document.getElementById('statUsers').textContent = activeUsers;
+        document.getElementById('statEmployees').textContent = allEmployees.length;
+        document.getElementById('tabCountComplaints').textContent = filtered.length;
+        document.getElementById('tabCountEmployees').textContent = allEmployees.length;
+
+        const tbody = document.getElementById('managerTableBody');
+        if (filtered.length === 0) {
+            const colSpan = isViewer ? 15 : 16;
+            tbody.innerHTML = `<tr><td colspan="${colSpan}" class="empty-state"><i class="fas fa-inbox"></i>لا توجد شكاوى مطابقة</td></tr>`;
+            return;
+        }
+
+        tbody.innerHTML = filtered.map(c => {
+            let row = `
+                <td>${tsToDateStr(c.date)}</td>
+                <td>${c.branch || ''}</td>
+                <td>${c.orderNo || ''}</td>
+                <td>${c.customerName || ''}</td>
+                <td>${c.phone || ''}</td>
+                <td>${c.complaintType || ''}</td>
+                <td>${tsToDateStr(c.date)}</td>
+                <td>${c.orderTime || ''}</td>
+                <td>${c.complaintTime || ''}</td>
+                <td>${c.location || ''}</td>
+                <td>${c.employeeName || c.addedBy || c.userName || ''}</td>
+                <td>${c.branchUser || ''}</td>
+                <td class="details-cell">${c.details || ''}</td>
+                <td>${c.branchInfo || ''}</td>
+                <td>${c.callCenterInfo || ''}</td>
+            `;
+            if (!isViewer) {
+                row += `<td><button class="btn btn-sm btn-del" onclick="window._deleteComplaint('${c.id}')"><i class="fas fa-trash"></i> حذف</button></td>`;
+            }
+            return `<tr>${row}</tr>`;
+        }).join('');
+    }
     window.loadManagerData = loadManagerData;
 
-window._switchTab = function(tabName, clickedEl) {
+   // 1. وظيفة التبديل بين الأقسام
+window._switchTab = function(tab, el) {
+    // تفعيل الزر المختار
     document.querySelectorAll('.mgr-tab').forEach(t => t.classList.remove('active'));
-    if (clickedEl) clickedEl.classList.add('active');
+    el.classList.add('active');
+
+    // إخفاء جميع الأقسام
     document.getElementById('tab-complaints').classList.add('hidden');
     document.getElementById('tab-employees').classList.add('hidden');
-    document.getElementById('tab-reports').classList.add('hidden');
-    if (tabName === 'complaints') {
-        document.getElementById('tab-complaints').classList.remove('hidden');
-    } else if (tabName === 'employees') {
-        document.getElementById('tab-employees').classList.remove('hidden');
-    } else if (tabName === 'reports') {
-        document.getElementById('tab-reports').classList.remove('hidden');
-        window._renderReports();
+    const reportTab = document.getElementById('tab-reports');
+    if (reportTab) reportTab.classList.add('hidden');
+
+    // إظهار القسم المطلوب
+    const target = document.getElementById('tab-' + tab);
+    if (target) target.classList.remove('hidden');
+
+    // تشغيل تحديث البيانات
+    if (tab === 'employees') renderEmployeesTable();
+if (tab === 'reports') {
+    const now = new Date();
+    document.getElementById('reportMonthFilter').value = now.toISOString().substring(0, 7);
+    document.getElementById('orderEntryDate').value = now.toISOString().substring(0, 10);
+    
+    // تشغيل الجلب فوراً لليوم الحالي
+    window._loadDailyOrdersForDate(); 
+    window._generateReport();
+}
+};
+
+// 2. وظيفة حفظ الأوردرات اليومية
+window._saveDailyOrders = async function() {
+    const date = document.getElementById('orderEntryDate').value;
+    const branch = document.getElementById('orderBranchSelect').value;
+    const count = parseInt(document.getElementById('orderCountInput').value);
+
+    if (!date || !count) {
+        showToast('يرجى إدخال التاريخ وعدد الأوردرات', true);
+        return;
+    }
+
+    try {
+        const docId = `${date}_${branch}`;
+        // استخدام db المعرف عالمياً
+        const { doc, setDoc, serverTimestamp } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
+        
+        await setDoc(doc(window.db, 'daily_orders', docId), {
+            date: date,
+            branch: branch,
+            count: count,
+            updatedAt: serverTimestamp()
+        });
+        showToast(`تم حفظ ${count} أوردر لفرع ${branch}`);
+        document.getElementById('orderCountInput').value = '';
+        window._generateReport();
+    } catch (e) {
+        showToast('خطأ في الحفظ: ' + e.message, true);
+    }
+};
+
+window._generateReport = async function() {
+    const month = document.getElementById('reportMonthFilter').value;
+    const dateFrom = document.getElementById('repDateFrom').value;
+    const dateTo = document.getElementById('repDateTo').value;
+    
+    const tbody = document.getElementById('reportTableBody');
+    if (!tbody) return;
+
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:30px;"><i class="fas fa-spinner fa-spin"></i> جاري تحليل البيانات...</td></tr>';
+
+    try {
+        // جلب البيانات
+        const ordersSnap = await getDocs(collection(db, 'daily_orders'));
+        let branchOrdersMap = {}; 
+
+        ordersSnap.forEach(doc => {
+            const data = doc.data();
+            // --- تأمين البيانات هنا ---
+            if (!data || !data.date || !data.branch) return; 
+
+            const orderDate = data.date;
+            let isIncluded = false;
+
+            if (dateFrom && dateTo) {
+                if (orderDate >= dateFrom && orderDate <= dateTo) isIncluded = true;
+            } else if (month && orderDate.startsWith(month)) {
+                isIncluded = true;
+            }
+
+            if (isIncluded) {
+                branchOrdersMap[data.branch] = (branchOrdersMap[data.branch] || 0) + (data.count || 0);
+            }
+        });
+        
+        // باقي كود توليد الـ HTML للفروع...
+        // (تأكد من استخدام أسماء الفروع الصحيحة)
+
+const branches = ["العباسيه", "عبده باشا", "نادي السكه", "عباس العقاد", "يوسف عباس", "المعهد"];
+        
+        let reportHtml = '';
+        branches.forEach(br => {
+            const brComplaints = allComplaints.filter(c => {
+                const cDate = tsToDateStr(c.date);
+                if (c.branch !== br || !cDate) return false;
+
+                if (dateFrom && dateTo) {
+                    return (cDate >= dateFrom && cDate <= dateTo);
+                } else if (month) {
+                    return cDate.startsWith(month);
+                }
+                return true;
+            });
+            
+            const totalComplaints = brComplaints.length;
+            const delayCount = brComplaints.filter(c => c.complaintType === 'تأخير').length;
+            const errorCount = brComplaints.filter(c => ['ناقص', 'طلب خطأ'].includes(c.complaintType)).length;
+            const qualityCount = totalComplaints - (delayCount + errorCount);
+            
+            const totalOrders = branchOrdersMap[br] || 0;
+            const percentage = totalOrders > 0 ? ((totalComplaints / totalOrders) * 100).toFixed(2) : "0.00";
+            const statusColor = percentage > 3 ? '#ef4444' : '#10b981';
+
+            reportHtml += `
+                <tr>
+                    <td style="font-weight:bold; color:var(--primary)">${br}</td>
+                    <td style="font-size:16px; font-weight:bold;">${totalComplaints}</td>
+                    <td>${delayCount}</td>
+                    <td>${errorCount}</td>
+                    <td>${qualityCount}</td>
+                    <td style="color:#94a3b8">${totalOrders.toLocaleString()}</td>
+                    <td style="color:${statusColor}; font-weight:900; font-size:16px;">${percentage}%</td>
+                </tr>
+            `;
+        });
+
+        tbody.innerHTML = reportHtml || '<tr><td colspan="7">لا توجد بيانات للفترة المختارة</td></tr>';
+
+    } catch (e) {
+        console.error("Report Error:", e);
+        tbody.innerHTML = '<tr><td colspan="7" style="color:var(--danger); font-weight:bold; padding:20px;">حدث خطأ تقني: ' + e.message + '</td></tr>';
     }
 };
 
@@ -1484,10 +1617,19 @@ window._switchTab = function(tabName, clickedEl) {
         }
     };
 
-    window._toggleMgrExport = function(e) {
-        e.stopPropagation();
-        document.getElementById('mgrExportMenu').classList.toggle('open');
-    };
+   // دالة فتح وإغلاق قائمة التصدير للموظف (دي اللي كانت ناقصة)
+window._toggleEmpExport = function(e) {
+    e.stopPropagation();
+    const menu = document.getElementById('empExportMenu');
+    if (menu) menu.classList.toggle('open');
+};
+
+// دالة فتح وإغلاق قائمة التصدير للمدير (موجودة عندك وتأكد منها)
+window._toggleMgrExport = function(e) {
+    e.stopPropagation();
+    const menu = document.getElementById('mgrExportMenu');
+    if (menu) menu.classList.toggle('open');
+};
 
     function getFilteredForExport(from, to) {
         let data = allComplaints;
@@ -1607,29 +1749,16 @@ window._switchTab = function(tabName, clickedEl) {
     };
 
     function startRealtimeListeners() {
-        // 1. مراقب الشكاوى (Complaints Listener)
-        const cQuery = query(collection(db, 'complaints'), orderBy('date', 'desc'), limit(500));
-        unsubSnapshot = onSnapshot(cQuery, (snap) => {
+const cQuery = query(collection(db, 'complaints'), orderBy('date', 'asc'));        unsubSnapshot = onSnapshot(cQuery, (snap) => {
             allComplaints = snap.docs.map(d => ({ id: d.id, ...d.data() }));
             localCache = allComplaints;
             localStorage.setItem('db_complaints_cache', JSON.stringify(localCache));
-
-            // تحديث عداد الشكاوى في التبويب
-            const complaintsCountEl = document.getElementById('tabCountComplaints');
-            if (complaintsCountEl) {
-                complaintsCountEl.textContent = allComplaints.length;
-            }
 
             if (currentUserData?.role === 'manager' || currentUserData?.role === 'viewer') {
                 loadManagerData();
             } else if (currentUserData?.role === 'employee') {
                 refreshEmployeeView();
             }
-            
-            // تغيير حالة السحابة إلى متصل
-            document.getElementById('mgrCloudStatus')?.classList.replace('offline', 'synced');
-            document.getElementById('empCloudStatus')?.classList.replace('offline', 'synced');
-            
         }, (err) => {
             console.error('Snap error:', err);
             document.getElementById('mgrCloudStatus')?.classList.replace('synced', 'offline');
@@ -1641,19 +1770,11 @@ window._switchTab = function(tabName, clickedEl) {
             }
         });
 
-        // 2. مراقب الموظفين (Employees Listener)
         const eQuery = query(collection(db, 'employees'), orderBy('createdAt', 'desc'));
         unsubEmpSnapshot = onSnapshot(eQuery, (snap) => {
             allEmployees = snap.docs.map(d => ({ id: d.id, ...d.data() }));
             localEmpCache = allEmployees;
             localStorage.setItem('db_employees_cache', JSON.stringify(localEmpCache));
-
-            // --- تحديث عداد الموظفين في التبويب ---
-            const empCountEl = document.getElementById('tabCountEmployees');
-            if (empCountEl) {
-                empCountEl.textContent = allEmployees.length;
-            }
-
             if (currentUserData?.role === 'manager' || currentUserData?.role === 'viewer') {
                 loadManagerData();
                 renderEmployeesTable();
@@ -1670,24 +1791,30 @@ window._switchTab = function(tabName, clickedEl) {
         });
     }
 
-onAuthStateChanged(auth, async (user) => {
+  // دالة التحقق من حالة تسجيل الدخول وتعيين الإعدادات الافتراضية
+    onAuthStateChanged(auth, async (user) => {
     const session = sessionStorage.getItem('active_session');
+    const today = getCurrentDate(); // YYYY-MM-DD
+    const month = getCurrentMonth(); // YYYY-MM (هذا هو الشهر الحالي)
+
+    // 1. تعيين التواريخ الافتراضية لكل الحقول الممكنة
+    const dateFields = ['date', 'empDateFrom', 'empDateTo', 'mgrDateFrom', 'mgrDateTo'];
+    dateFields.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = today;
+    });
+
+    // 2. تعيين الشهر الحالي لفلتر الشهر (هذا ما طلبته)
+    const monthFields = ['empMonthFilter', 'mgrMonthFilter'];
+    monthFields.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = month;
+    });
+
     if (session) {
         const sData = JSON.parse(session);
         currentUserData = sData;
         currentUserDocId = sData.id || null;
-
-        // --- التعديل هنا: استخدام الكاش فوراً قبل بدء المستمع ---
-        if (localCache.length > 0) {
-            allComplaints = localCache;
-            // عرض البيانات الموجودة في الكاش حالاً
-            if (sData.role === 'manager' || sData.role === 'viewer') {
-                loadManagerData(); 
-            } else {
-                refreshEmployeeView();
-            }
-        }
-        // --------------------------------------------------
 
         if (sData.role === 'manager' || sData.role === 'viewer') {
             document.getElementById('login-section').classList.add('hidden');
@@ -1696,395 +1823,226 @@ onAuthStateChanged(auth, async (user) => {
         } else {
             document.getElementById('login-section').classList.add('hidden');
             document.getElementById('employee-section').classList.remove('hidden');
-            document.getElementById('emp-name-display').textContent = sData.fullName || sData.username || '';
-            if (sData.themeColor) applyThemeColor(sData.themeColor);
-        }
+// هذا السطر سيعرض اسم المستخدم (الإنجليزي) فقط في الأعلى
+document.getElementById('emp-name-display').textContent = sData.username;            if (sData.themeColor) applyThemeColor(sData.themeColor);
+        }   
         startSessionTimer();
     } else {
         document.getElementById('login-section').classList.remove('hidden');
     }
 
-    // تأكد من ضبط التاريخ الافتراضي
-    const dateInput = document.getElementById('date');
-    if (dateInput) dateInput.value = getCurrentDate();
-
-    // ابدأ المستمعين بعد عرض الكاش
     startRealtimeListeners();
 });
 
+    // إضافة مستمعات الأحداث للمفاتيح (Enter)
     document.getElementById('password')?.addEventListener('keydown', function(e) {
         if (e.key === 'Enter') handleLogin();
     });
     document.getElementById('username')?.addEventListener('keydown', function(e) {
         if (e.key === 'Enter') document.getElementById('password').focus();
     });
-    window._empExportExcel = function() {
-    // 1. جلب قيم الفلاتر الحالية من واجهة الموظف
-    const month = document.getElementById('empMonthFilter')?.value;
-    const dateFrom = document.getElementById('empDateFrom')?.value;
-    const dateTo = document.getElementById('empDateTo')?.value;
-    const nameSearch = document.getElementById('empSearchName')?.value.trim().toLowerCase();
-    const phoneSearch = document.getElementById('empSearchPhone')?.value.trim().toLowerCase();
-    const typeFilter = document.getElementById('empTypeFilter')?.value;
 
-    // 2. تصفية البيانات (نفس منطق العرض في الجدول)
-    let filtered = allComplaints.filter(c => {
-        // التأكد أن البيانات تخص فرع الموظف إذا كان مقيداً بفرع
-        if (currentUserData && currentUserData.branch !== 'كل الفروع' && c.branch !== currentUserData.branch) return false;
+// وظيفة مساعدة لفلترة بيانات الموظف الحالي فقط (خاص بالموظف فقط)
+function getEmployeeFilteredData(from, to, month) {
+    return allComplaints.filter(c => {
+        // الشرط الأساسي: يجب أن يكون الـ ID الخاص بالمستخدم مطابق أو الاسم مطابق
+        const isOwner = (c.userId === currentUserDocId) || (c.userName === currentUserData.fullName);
         
-        // تطبيق فلاتر التاريخ والبحث
-        if (month && !tsToDateStr(c.date)?.startsWith(month)) return false;
-        if (dateFrom && tsToDateStr(c.date) < dateFrom) return false;
-        if (dateTo && tsToDateStr(c.date) > dateTo) return false;
-        if (nameSearch && !c.customerName?.toLowerCase().includes(nameSearch)) return false;
-        if (phoneSearch && !c.phone?.toLowerCase().includes(phoneSearch)) return false;
-        if (typeFilter && c.complaintType !== typeFilter) return false;
+        if (!isOwner) return false; // لو مش بتاعه مياخدهاش
+
+        const cDate = tsToDateStr(c.date);
+        if (month && !cDate.startsWith(month)) return false;
+        if (from && cDate < from) return false;
+        if (to && cDate > to) return false;
         
         return true;
     });
-
-    if (filtered.length === 0) {
-        showToast('لا توجد بيانات لتصديرها في القائمة الحالية', true);
-        return;
-    }
-
-    // 3. استدعاء دالة التصدير العامة الموجودة مسبقاً في الكود
-    const fileName = `شكاوايا_${currentUserData.fullName || 'الموظف'}_${getCurrentDate()}`;
-    doExport(filtered, fileName);
-};
-// دالة فتح وإغلاق قائمة التصدير للموظف
-window._toggleEmpExport = function(e) {
-    e.stopPropagation();
-    document.getElementById('empExportMenu').classList.toggle('open');
-};
-
-// دالة تصدير الشهر المحدد للموظف
+}
+// تصدير الشهر المحدد للموظف
 window._empExportMonth = function() {
     const month = document.getElementById('empMonthFilter')?.value;
     if (!month) { showToast('اختر شهراً من الفلتر أولاً', true); return; }
-    
-    const data = allComplaints.filter(c => {
-        const belongsToBranch = currentUserData && (currentUserData.branch === 'كل الفروع' || c.branch === currentUserData.branch);
-        return belongsToBranch && tsToDateStr(c.date)?.startsWith(month);
-    });
-    
-    doExport(data, `شكاوايا_شهر_${month}`);
+    const data = getEmployeeFilteredData(null, null, month);
+    doExport(data, `بياناتي_شهر_${month}`);
     document.getElementById('empExportMenu').classList.remove('open');
 };
 
-// دالة تصدير نطاق تاريخ محدد للموظف
+// تصدير نطاق زمني للموظف
 window._empExportRange = function() {
     const from = document.getElementById('empExpFrom').value;
     const to = document.getElementById('empExpTo').value;
     if (!from || !to) { showToast('اختر من تاريخ وإلى تاريخ', true); return; }
-    
-    const data = allComplaints.filter(c => {
-        const belongsToBranch = currentUserData && (currentUserData.branch === 'كل الفروع' || c.branch === currentUserData.branch);
-        const inRange = tsToDateStr(c.date) >= from && tsToDateStr(c.date) <= to;
-        return belongsToBranch && inRange;
-    });
-    
-    doExport(data, `شكاوايا_من_${from}_إلى_${to}`);
+    const data = getEmployeeFilteredData(from, to);
+    doExport(data, `بياناتي_من_${from}_إلى_${to}`);
     document.getElementById('empExportMenu').classList.remove('open');
 };
 
-// دالة تصدير كل بيانات الموظف
+// تصدير كل بيانات الموظف
+// تصدير كل بيانات الموظف (الموظف المسجل حالياً فقط)
 window._empExportAll = function() {
     const data = allComplaints.filter(c => {
-        return currentUserData && (currentUserData.branch === 'كل الفروع' || c.branch === currentUserData.branch);
+        return (c.userId === currentUserDocId) || (c.userName === currentUserData.fullName);
     });
-    
-    doExport(data, `كل_شكاوايا_${getCurrentDate()}`);
+    doExport(data, `كل_بياناتي_${getCurrentDate()}`);
     document.getElementById('empExportMenu').classList.remove('open');
 };
 
-// تحديث مستمع النقرات لإغلاق القائمة عند النقر خارجها
-document.addEventListener('click', function(e) {
-    if (!e.target.closest('#empExportDropdown')) {
-        document.getElementById('empExportMenu')?.classList.remove('open');
-    }
-});
-// 1. دالة تحديث التقارير الرئيسية بناءً على الفلتر
-window._renderReports = function(complaints) {
-    const dateFrom = document.getElementById('rptDateFrom')?.value;
-    const dateTo = document.getElementById('rptDateTo')?.value;
 
-    // فلترة البيانات بناءً على التاريخ المختار في التقارير
-    let filtered = complaints || allComplaints;
-    if (dateFrom) filtered = filtered.filter(c => tsToDateStr(c.date) >= dateFrom);
-    if (dateTo) filtered = filtered.filter(c => tsToDateStr(c.date) <= dateTo);
+let currentPage = 1;
+const PAGE_SIZE = 30;
 
-    const total = filtered.length;
-    document.getElementById('tabCountReports').textContent = total;
+function renderTable(data) {
+    const start = (currentPage - 1) * PAGE_SIZE;
+    const pageData = data.slice(start, start + PAGE_SIZE);
+    // ارسم pageData بس...
+}
 
-    if (total === 0) {
-        document.getElementById('rptBranchList').innerHTML = '<div style="text-align:center; padding:30px;">لا توجد بيانات</div>';
-        document.getElementById('rptTypeList').innerHTML = '<div style="text-align:center; padding:30px;">لا توجد بيانات</div>';
-        return;
-    }
+// ضيف دي فوق في السكريبت
+let _searchTimeout = null;
 
-    // حساب الفروع
-    const branchMap = {};
-    filtered.forEach(c => { branchMap[c.branch || 'غير محدد'] = (branchMap[c.branch || 'غير محدد'] || 0) + 1; });
-    const branchArr = Object.entries(branchMap).sort((a, b) => b[1] - a[1]);
-    
-    document.getElementById('rptTopBranch').textContent = branchArr[0][0];
-    document.getElementById('rptTopBranchCount').textContent = branchArr[0][1] + " شكوى";
+function debouncedManagerSearch() {
+    clearTimeout(_searchTimeout);
+    _searchTimeout = setTimeout(() => {
+        loadManagerData();
+    }, 500); // استنى نص ثانية بعد آخر حرف
+}
 
-    document.getElementById('rptBranchList').innerHTML = branchArr.map(([name, count]) => {
-        const pct = ((count / total) * 100).toFixed(1);
-        return `
-            <div class="rpt-bar-row">
-                <div class="rpt-bar-name">${name}</div>
-                <div class="rpt-bar-track"><div class="rpt-bar-fill fill-branch" style="width:${pct}%"></div></div>
-                <div class="rpt-bar-pct">${count}</div> <!-- عرض العدد بدلاً من النسبة -->
-            </div>`;
-    }).join('');
+function debouncedEmpSearch() {
+    clearTimeout(_searchTimeout);
+    _searchTimeout = setTimeout(() => {
+        refreshEmployeeView();
+    }, 500);
+}
+// دالة لجلب أسماء الموظفين ووضعها في القائمة المنسدلة
+// تأكد أن الدالة موجودة ومكتوبة بهذا الشكل
+   async function populateUsersDropdown() {
+    const userSelect = document.getElementById('usernameSelect');
+    if (!userSelect) return;
 
-    // حساب الأنواع
-    const typeMap = {};
-    filtered.forEach(c => { typeMap[c.complaintType || 'غير محدد'] = (typeMap[c.complaintType || 'غير محدد'] || 0) + 1; });
-    const typeArr = Object.entries(typeMap).sort((a, b) => b[1] - a[1]);
-    
-    document.getElementById('rptTopType').textContent = typeArr[0][0];
-    document.getElementById('rptTopTypeCount').textContent = typeArr[0][1] + " شكوى";
-
-    document.getElementById('rptTypeList').innerHTML = typeArr.map(([name, count]) => {
-        const pct = ((count / total) * 100).toFixed(1);
-        return `
-            <div class="rpt-bar-row">
-                <div class="rpt-bar-name">${name}</div>
-                <div class="rpt-bar-track"><div class="rpt-bar-fill fill-type" style="width:${pct}%"></div></div>
-                <div class="rpt-bar-pct">${count}</div> <!-- عرض العدد بدلاً من النسبة -->
-            </div>`;
-    }).join('');
-};
-
-// 2. دالة التقرير التفصيلي (مرتبطة بنفس الفلتر)
-
-window._openBranchDetailReport = async function() {
-    const dateFrom = document.getElementById('rptDateFrom')?.value;
-    const dateTo = document.getElementById('rptDateTo')?.value;
-
-    let complaintsData = allComplaints;
-    if (dateFrom) complaintsData = complaintsData.filter(c => tsToDateStr(c.date) >= dateFrom);
-    if (dateTo) complaintsData = complaintsData.filter(c => tsToDateStr(c.date) <= dateTo);
-
-    const totalComplaints = complaintsData.length;
-    const container = document.getElementById('branchDetailContent');
-
-    if (totalComplaints === 0) {
-        container.innerHTML = '<div class="empty-state"><i class="fas fa-chart-bar"></i>لا توجد شكاوى للفترة المختارة</div>';
-        document.getElementById('branchDetailModal').classList.add('active');
-        return;
-    }
-
-    // --- جلب بيانات الأوردرات من السحابة ---
-    showToast("جاري حساب النسب بناءً على الأوردرات...");
-    let branchOrderTotals = {};
     try {
-        // نجلب كل وثائق الأوردرات للفترة المحددة
-        const ordersRef = collection(db, "daily_orders");
-        let q;
-        if (dateFrom && dateTo) {
-            q = query(ordersRef, where("__name__", ">=", dateFrom), where("__name__", "<=", dateTo));
-        } else {
-            q = query(ordersRef); // إذا لم يحدد تاريخ يجلب الكل (أو يمكنك تقييدها بشهر)
-        }
+        const q = query(collection(db, 'employees'), where('active', '==', true));
+        const querySnapshot = await getDocs(q);
         
-        const orderSnap = await getDocs(q);
-        orderSnap.forEach(doc => {
-            const dayData = doc.data();
-            for (let bName in dayData) {
-                branchOrderTotals[bName] = (branchOrderTotals[bName] || 0) + (Number(dayData[bName]) || 0);
-            }
+        let options = '<option value="" disabled selected>اختر اسمك من القائمة</option>';
+        options += `<option value="admin">مدير النظام (Admin)</option>`;
+
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            // التعديل هنا:
+            // القيمة (value) ستكون الاسم الكامل (مثل 1212)
+            // النص الظاهر سيكون اسم المستخدم (مثل محمد)
+            options += `<option value="${data.fullName}">${data.username}</option>`;
         });
-    } catch (err) {
-        console.error("خطأ في جلب الأوردرات:", err);
+
+        userSelect.innerHTML = options;
+    } catch (error) {
+        console.error("Error fetching users:", error);
+    }
+}
+
+    // تأكد من استدعائها هنا أيضاً لضمان التشغيل فوراً
+    populateUsersDropdown();
+    // --- وظيفة حفظ عدد الأوردرات اليومية لكل فرع ---
+window._saveDailyOrders = async function() {
+    const date = document.getElementById('orderEntryDate').value;
+    const branch = document.getElementById('orderBranchSelect').value;
+    const count = parseInt(document.getElementById('orderCountInput').value);
+
+    if (!date || !count || count <= 0) {
+        showToast('يرجى إدخال التاريخ وعدد أوردرات صحيح', true);
+        return;
     }
 
-    // تجميع بيانات الشكاوى حسب الفرع
-    const branchStats = {};
-    complaintsData.forEach(c => {
-        const b = c.branch || 'غير محدد';
-        if (!branchStats[b]) branchStats[b] = { count: 0, types: {} };
-        branchStats[b].count++;
-        const t = c.complaintType || 'غير محدد';
-        branchStats[b].types[t] = (branchStats[b].types[t] || 0) + (1);
-    });
-
-    const branchArr = Object.entries(branchStats).sort((a, b) => b[1].count - a[1].count);
-
-    container.innerHTML = branchArr.map(([name, info]) => {
-        const sortedTypes = Object.entries(info.types).sort((a, b) => b[1] - a[1]);
-        const maxTypeCount = sortedTypes[0][1];
-        
-        const typesHTML = sortedTypes.map(([typeName, typeCount]) => {
-            const barW = ((typeCount / maxTypeCount) * 100).toFixed(1);
-            const isHighest = typeCount === maxTypeCount;
-            return `
-                <div class="brd-type-row ${isHighest ? 'is-highest' : ''}">
-                    <div class="brd-type-name" title="${typeName}">${typeName}</div>
-                    <div class="brd-type-bar-track">
-                        <div class="brd-type-bar-fill ${isHighest ? 'highest' : 'normal'}" style="width:${barW}%"></div>
-                    </div>
-                    <div class="brd-type-count">${typeCount}</div>
-                </div>`;
-        }).join('');
-
-        // الحساب الجديد: نسبة الشكاوى إلى الأوردرات في هذا الفرع
-        const ordersInBranch = branchOrderTotals[name] || 0;
-        let rateDisplay = "";
-        
-        if (ordersInBranch > 0) {
-            const complaintRate = ((info.count / ordersInBranch) * 100).toFixed(2);
-            rateDisplay = `نسبة الشكاوى إلى أوردرات الفرع: <strong>${complaintRate}%</strong> 
-                           <br><small>(إجمالي الأوردرات المسجلة للفرع: ${ordersInBranch})</small>`;
-        } else {
-            rateDisplay = `<span style="color:#ef4444;">لم يتم إدخال عدد أوردرات لهذا الفرع في هذه الفترة</span>`;
-        }
-
-        return `
-            <div class="brd-card">
-                <div class="brd-card-header">
-                    <div class="brd-card-name"><i class="fas fa-building"></i> ${name}</div>
-                    <div class="brd-card-total">${info.count} شكوى</div>
-                </div>
-                <div class="brd-types-container">${typesHTML}</div>
-                <div class="brd-footer-info" style="margin-top:15px; padding-top:10px; border-top:1px dashed rgba(255,255,255,0.1); text-align:center; font-size:13px; line-height:1.6;">
-                    ${rateDisplay}
-                </div>
-            </div>`;
-    }).join('');
-
-    document.getElementById('branchDetailModal').classList.add('active');
-};
-window._closeBranchDetailModal = function() {
-    document.getElementById('branchDetailModal').classList.remove('active');
-};
-// قائمة الفروع الثابتة في النظام
-// قائمة الفروع الثابتة
-const ALL_BRANCHES = ["العباسيه", "عبده باشا", "نادي السكه", "عباس العقاد", "يوسف عباس", "المعهد", ];
-
-// 1. فتح المودال وتجهيزه للتاريخ اليومي
-window._openOrderCountModal = function() {
-    const modal = document.getElementById('orderCountModal');
-    const container = document.getElementById('branchOrderInputs');
-    const dateInput = document.getElementById('targetDate');
-
-    // تعيين تاريخ اليوم كافتراضي بصيغة YYYY-MM-DD
-    const now = new Date();
-    const today = now.toISOString().split('T')[0];
-    dateInput.value = today;
-
-    // توليد الخانات للفروع
-    container.innerHTML = ALL_BRANCHES.map(branch => `
-        <div class="rpt-bar-row" style="padding: 10px;">
-            <div class="rpt-bar-name" style="min-width: 120px;">${branch}</div>
-            <div class="field-wrap" style="flex: 1;">
-                <input type="number" id="order_vol_${branch}" placeholder="عدد أوردرات اليوم" style="padding: 8px 15px;">
-            </div>
-        </div>
-    `).join('');
-
-    // تحميل البيانات إذا كانت موجودة لهذا اليوم
-    window._loadDailyOrders(today);
-    modal.classList.add('active');
-};
-
-// 2. تحميل البيانات من Firebase بناءً على التاريخ المختار
-window._loadDailyOrders = async function(date) {
-    if (!date) return;
     try {
-        // نغير اسم المجموعة إلى daily_orders لتمييزها
-        const docRef = doc(db, "daily_orders", date);
-        const docSnap = await getDoc(docRef);
+        // إنشاء معرف فريد يجمع بين التاريخ والفرع (عشان ميتكررش لنفس اليوم)
+        const docId = `${date}_${branch}`;
         
-        // تفريغ الحقول أولاً
-        ALL_BRANCHES.forEach(b => document.getElementById(`order_vol_${b}`).value = "");
+        // استيراد الدوال اللازمة من Firestore
+        const { doc, setDoc, serverTimestamp } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
+        
+        await setDoc(doc(db, 'daily_orders', docId), {
+            date: date,
+            branch: branch,
+            count: count,
+            updatedAt: serverTimestamp()
+        });
+        
+        showToast(`تم حفظ ${count} أوردر لفرع ${branch} بنجاح`);
+        document.getElementById('orderCountInput').value = ''; // مسح الخانة بعد الحفظ
+        window._generateReport(); // تحديث التقرير فوراً
+    } catch (e) {
+        showToast('فشل في حفظ البيانات: ' + e.message, true);
+    }
+};
+window._resetReportFilters = function() {
+    document.getElementById('repDateFrom').value = '';
+    document.getElementById('repDateTo').value = '';
+    const now = new Date();
+    document.getElementById('reportMonthFilter').value = now.toISOString().substring(0, 7);
+    window._generateReport(); // إعادة تحديث البيانات
+};
+// وظيفة لجلب عدد الأوردرات المسجل مسبقاً عند تغيير التاريخ أو الفرع
+// 1. وظيفة الجلب التلقائي (بمجرد تغيير التاريخ أو الفرع)
+window._loadDailyOrdersForDate = async function() {
+    const date = document.getElementById('orderEntryDate').value;
+    const branch = document.getElementById('orderBranchSelect').value;
+    const countInput = document.getElementById('orderCountInput');
+
+    if (!date || !branch) return;
+
+    try {
+        // بناء المعرف (نفس المعرف المستخدم في الحفظ)
+        const docId = `${date}_${branch}`;
+        
+        // جلب المستند مباشرة باستخدام الدوال المستوردة في أعلى الملف
+        const docRef = doc(db, 'daily_orders', docId);
+        const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
-            const data = docSnap.data();
-            Object.entries(data).forEach(([branch, count]) => {
-                const input = document.getElementById(`order_vol_${branch}`);
-                if (input) input.value = count;
-            });
+            countInput.value = docSnap.data().count;
+            countInput.style.backgroundColor = "rgba(16, 185, 129, 0.1)"; // تلوين الخانة بالأخضر خفيف لو موجودة
+        } else {
+            countInput.value = ''; // تصفير الخانة لو مفيش بيانات
+            countInput.style.backgroundColor = "transparent";
         }
-    } catch (err) {
-        console.error("Error loading daily orders:", err);
+    } catch (e) {
+        console.error("Error loading orders:", e);
     }
 };
 
-// 3. حفظ البيانات في Firebase للتاريخ المحدد
+// 2. وظيفة الحفظ المحدثة
 window._saveDailyOrders = async function() {
-    const selectedDate = document.getElementById('targetDate').value;
-    if (!selectedDate) return showToast("يرجى اختيار التاريخ", true);
+    const date = document.getElementById('orderEntryDate').value;
+    const branch = document.getElementById('orderBranchSelect').value;
+    const count = parseInt(document.getElementById('orderCountInput').value);
 
-    const data = {};
-    ALL_BRANCHES.forEach(branch => {
-        const val = document.getElementById(`order_vol_${branch}`).value;
-        data[branch] = val ? parseInt(val) : 0;
-    });
-
-    try {
-        // الحفظ في مجموعة daily_orders باستخدام التاريخ كمعرف (Document ID)
-        await setDoc(doc(db, "daily_orders", selectedDate), data);
-        showToast("تم تحديث أوردرات يوم " + selectedDate + " بنجاح");
-        document.getElementById('orderCountModal').classList.remove('active');
-        
-        // تحديث الإحصائيات إذا لزم الأمر
-        if (typeof window._renderReports === "function") window._renderReports();
-    } catch (err) {
-        showToast("فشل الحفظ: " + err.message, true);
+    if (!date || !count || count < 0) {
+        showToast('يرجى إدخال التاريخ وعدد الأوردرات بشكل صحيح', true);
+        return;
     }
-};
-
-// 3. حفظ البيانات في Firebase
-window._saveMonthlyOrders = async function() {
-    const month = document.getElementById('targetMonth').value;
-    if (!month) return showToast("يرجى اختيار الشهر", true);
-
-    const data = {};
-    ALL_BRANCHES.forEach(branch => {
-        const val = document.getElementById(`order_vol_${branch}`).value;
-        data[branch] = val ? parseInt(val) : 0;
-    });
 
     try {
-        // حفظ الوثيقة باستخدام معرف (السنة-الشهر)
-        await setDoc(doc(db, "monthly_orders", month), data);
-        showToast("تم تحديث عداد الأوردرات بنجاح");
-        document.getElementById('orderCountModal').classList.remove('active');
+        const docId = `${date}_${branch}`;
         
-        // إذا كان تقرير التقارير مفتوحاً، قم بتحديثه
-        if (typeof window._renderReports === "function") window._renderReports();
-    } catch (err) {
-        showToast("فشل الحفظ: " + err.message, true);
+        // استخدام setDoc مع db المعرف في المودول
+        await setDoc(doc(db, 'daily_orders', docId), {
+            date: date,
+            branch: branch,
+            count: count,
+            updatedAt: serverTimestamp()
+        });
+        
+        showToast(`تم حفظ ${count} أوردر لفرع ${branch}`);
+        
+        // تلوين الخانة للتأكيد
+        document.getElementById('orderCountInput').style.backgroundColor = "rgba(16, 185, 129, 0.1)";
+        
+        // تحديث التقرير في الجدول بالأسفل فوراً
+        window._generateReport();
+    } catch (e) {
+        showToast('فشل الحفظ: ' + e.message, true);
     }
 };
 </script>
-<!-- مودال إدخال إجمالي الأوردرات للفروع -->
-<!-- مودال إدخال إجمالي الأوردرات للفروع (يومي) -->
-<div class="modal-overlay" id="orderCountModal">
-    <div class="modal-box" style="max-width: 500px;">
-        <div class="modal-header">
-            <h3><i class="fas fa-calculator"></i> إدخال أوردرات الفروع (يومي)</h3>
-            <button class="modal-close" onclick="document.getElementById('orderCountModal').classList.remove('active')"><i class="fas fa-times"></i></button>
-        </div>
-        <div style="margin-bottom: 20px;">
-            <label style="color: var(--primary); font-weight: bold; display: block; margin-bottom: 10px;">اختر التاريخ:</label>
-            <!-- تغيير النوع هنا إلى date -->
-            <input type="date" id="targetDate" onchange="window._loadDailyOrders(this.value)" style="width: 100%;">
-        </div>
-        <div id="branchOrderInputs" style="display: flex; flex-direction: column; gap: 12px; max-height: 400px; overflow-y: auto; padding-left: 10px;">
-            <!-- توليد الفروع تلقائياً -->
-        </div>
-        <div class="modal-actions" style="margin-top: 25px;">
-            <button class="btn btn-neon" onclick="window._saveDailyOrders()"><i class="fas fa-save"></i> حفظ أعداد اليوم</button>
-            <button class="btn btn-cancel" onclick="document.getElementById('orderCountModal').classList.remove('active')">إلغاء</button>
-        </div>
-    </div>
-</div>
-</div>
 </body>
 </html>
