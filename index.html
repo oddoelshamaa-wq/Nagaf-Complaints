@@ -4,10 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>نظام الشكاوى - متصل بالسحابة</title>
+    
     <!-- وضع هذا السطر داخل الـ <head> -->
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&display=swap" rel="stylesheet">
+
     <!-- إضافة مكتبة تصدير الإكسيل مع التنسيقات -->
 <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- مكتبات إضافية لدعم تصدير الصور داخل الإكسيل -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 <script>
 (function(){
 var s=document.createElement('link');
@@ -406,6 +412,7 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
                         <input type="password" id="empPassword" required placeholder="••••••••" autocomplete="new-password">
                         <button type="button" class="pass-toggle" onclick="window._togglePass('empPassword', this)"><i class="fas fa-eye"></i></button>
                     </div>
+                    
                 </div>
                 <div class="input-box">
                     <label>الفرع المخصص</label>
@@ -457,7 +464,7 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
                 <i class="fas fa-user-lock" style="font-size: 35px; color: var(--primary);"></i>
             </div>
             <h3 style="margin-bottom: 5px; font-size: 1.8rem;">Complaints System</h3>
-            <p style="color: #94a3b8; font-size: 14px;">Welcome to Najaf complaints system.</p>
+            <p style="color: #94a3b8; font-size: 14px;">Welcome to Najaf complaints system</p>
         </div>
 
         <div class="input-box">
@@ -531,6 +538,7 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
                         <option value="طلب خطأ">طلب خطأ</option><option value="سوء تعبئة">سوء تعبئة</option>
                         <option value="جودة">جودة</option><option value="سوء خدمة">سوء خدمة</option>
                         <option value="خطأ متلقي">خطأ متلقي</option><option value="خطأ متلقي طلبات">خطأ متلقي طلبات</option>
+                        <option value="مندوب">مندوب</option><option value="جسم غريب">جسم غريب</option>
                     </select>
                 </div></div>
                 <div class="input-box"><label>وقت الطلب</label><div class="field-wrap"><i class="fas fa-clock"></i><input type="time" id="orderTime"></div></div>
@@ -586,6 +594,15 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
         </datalist>
     </div>
 </div>
+<!-- خانة اسم متلقي الشكوى من الكول سنتر - قابلة للتعديل -->
+<div class="input-box">
+    <label>متلقي الشكوى (الكول سنتر)</label>
+    <div class="field-wrap">
+        <i class="fas fa-user-edit"></i>
+        <input type="text" id="callCenterEmployeeName" placeholder="اسم الموظف المستلم...">
+    </div>
+</div>
+
                 <div style="grid-column: span 3;" class="input-box">
                     <label>تفاصيل الشكوى الدقيقة</label>
                     <textarea id="details" rows="3" placeholder="اكتب هنا كل ما يتعلق بالشكوى..."></textarea>
@@ -609,6 +626,9 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
                     <option value="طلب خطأ">طلب خطأ</option><option value="سوء تعبئة">سوء تعبئة</option>
                     <option value="جودة">جودة</option><option value="سوء خدمة">سوء خدمة</option>
                     <option value="خطأ متلقي">خطأ متلقي</option><option value="خطأ متلقي طلبات">خطأ متلقي طلبات</option>
+                      <option value="جسم غريب">جسم غريب</option>
+<!-- السطر الصحيح بعد التعديل -->
+<option value="مندوب">مندوب</option>
                 </select>
             </div>
             <!-- زر التصدير للموظف -->
@@ -651,18 +671,30 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
 
 <!-- ========== شاشة المدير / المشاهد ========== -->
 <div id="manager-section" class="app-container hidden">
-    <div class="session-bar">
-        <div class="user-info">
-            <div class="online-dot"></div>
-            <i class="fas fa-crown" id="mgrIcon" style="color: #fbbf24;"></i>
-            <span id="mgrTitleSpan">المدير العام</span>
-        </div>
-        <div id="mgrCloudStatus" class="cloud-status synced">
-            <div class="cloud-dot"></div>
-            <span>متصل بالسحابة</span>
-        </div>
-        <button class="btn btn-logout" onclick="handleLogout()"><i class="fas fa-power-off"></i> خروج</button>
+   <!-- ========== شريط الجلسة المحدث للمدير ========== -->
+<div class="session-bar">
+    <div class="user-info">
+        <div class="online-dot"></div>
+        <i class="fas fa-crown" id="mgrIcon" style="color: #fbbf24;"></i>
+        <span id="mgrTitleSpan">المدير العام</span>
     </div>
+
+    <!-- إضافة ميزة اختيار اللون للمدير هنا -->
+    <div class="theme-picker-bar">
+        <span class="color-label"><i class="fas fa-palette"></i> لوني المميز</span>
+        <div class="theme-color-btn" id="mgrThemeBtn" style="background:#00f2ff;">
+            <input type="color" id="mgrThemeColorPicker" value="#00f2ff">
+        </div>
+        <span class="theme-color-saving" id="mgrThemeSavingText"><i class="fas fa-spinner fa-spin"></i> جاري الحفظ...</span>
+    </div>
+
+    <div id="mgrCloudStatus" class="cloud-status synced">
+        <div class="cloud-dot"></div>
+        <span>متصل بالسحابة</span>
+    </div>
+    <button class="btn btn-logout" onclick="handleLogout()"><i class="fas fa-power-off"></i> خروج</button>
+</div> 
+
     <div class="stats-bar">
         <div class="stat-card"><div class="stat-num" id="statTotal">0</div><div class="stat-label">إجمالي الشكاوى</div></div>
         <div class="stat-card"><div class="stat-num" id="statToday">0</div><div class="stat-label">شكاوى اليوم</div></div>
@@ -759,73 +791,91 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
         </div>
         
     </div>
-    <!-- قسم التقارير والتحليل - أضف هذا الجزء هنا -->
-    <div id="tab-reports" class="card hidden">
+   <!-- قسم التقارير والتحليل - النسخة النهائية المدمجة -->
+<div id="tab-reports" class="card hidden">
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px;">
         <h3><i class="fas fa-chart-pie"></i> تقرير نسب الشكاوى والأداء</h3>
-        
-       <!-- مدخلات عدد الأوردرات المحدثة -->
-<div class="filter-bar" style="background: rgba(0, 242, 255, 0.05); border: 1px dashed var(--primary);">
-    <span class="f-label">إدخال أوردرات اليوم:</span>
-    <div class="f-item narrow">
-        <i class="fas fa-calendar-day"></i>
-        <input type="date" id="orderEntryDate" onchange="window._loadDailyOrdersForDate()">
+        <button class="btn export-btn" onclick="window._exportReportExcel()" style="background: linear-gradient(45deg, #0284c7, #0369a1); margin:0;">
+            <i class="fas fa-file-excel"></i> تصدير التقرير (جدول + رسم)
+        </button>
     </div>
-    <div class="f-item narrow">
-        <select id="orderBranchSelect" onchange="window._loadDailyOrdersForDate()">
-            <option value="العباسيه">العباسيه</option>
-            <option value="عبده باشا">عبده باشا</option>
-            <option value="نادي السكه">نادي السكه</option>
-            <option value="عباس العقاد">عباس العقاد</option>
-            <option value="يوسف عباس">يوسف عباس</option>
-            <option value="المعهد">المعهد</option>
-        </select>
-    </div>
-    <div class="f-item narrow">
-        <i class="fas fa-shopping-basket"></i>
-        <input type="number" id="orderCountInput" placeholder="عدد الأوردرات">
-    </div>
-    <button class="btn btn-sm btn-neon" onclick="window._saveDailyOrders()" style="width:auto; margin:0;">
-        <i class="fas fa-check"></i> حفظ
-    </button>
-</div>
-        <!-- فلتر عرض التقرير -->
-   <!-- فلتر عرض التقرير المحدث -->
-<div class="filter-bar">
-    <span class="f-label">تحديد أيام:</span>
-    <div class="f-item narrow">
-        <i class="fas fa-calendar-alt"></i>
-        <input type="date" id="repDateFrom" onchange="window._generateReport()" title="من تاريخ">
-    </div>
-    <div class="f-item narrow">
-        <i class="fas fa-arrow-left"></i>
-        <input type="date" id="repDateTo" onchange="window._generateReport()" title="إلى تاريخ">
-    </div>
-    <div class="f-item narrow" style="border-right: 1px solid var(--border); padding-right: 15px;">
-        <i class="fas fa-filter"></i>
-        <input type="month" id="reportMonthFilter" onchange="window._generateReport()">
-    </div>
-    <button class="btn btn-sm btn-cancel" onclick="window._resetReportFilters()">
-        <i class="fas fa-sync-alt"></i> مسح الفلاتر
-    </button>
-</div>
 
-        <div class="table-wrap">
-            <table id="reportTable">
-                <thead>
-                    <tr>
-                        <th>الفرع</th>
-                        <th>إجمالي الشكاوى</th>
-                        <th>تأخير</th>
-                        <th>ناقص/خطأ</th>
-                        <th>جودة/أخرى</th>
-                        <th>إجمالي الأوردرات</th>
-                        <th>نسبة الشكاوى</th>
-                    </tr>
-                </thead>
-                <tbody id="reportTableBody">
-                    <!-- سيتم التوليد برمجياً -->
-                </tbody>
-            </table>
+    <!-- الجزء الخاص بإدخال أوردرات الفروع -->
+    <div class="filter-bar" style="background: rgba(0, 242, 255, 0.05); border: 1px dashed var(--primary); margin-bottom: 15px;">
+        <span class="f-label">إدخال أوردرات اليوم:</span>
+        <div class="f-item narrow">
+            <i class="fas fa-calendar-day"></i>
+            <input type="date" id="orderEntryDate" onchange="window._loadDailyOrdersForDate()">
+        </div>
+        <div class="f-item narrow">
+            <select id="orderBranchSelect" onchange="window._loadDailyOrdersForDate()">
+                <option value="العباسيه">العباسيه</option>
+                <option value="عبده باشا">عبده باشا</option>
+                <option value="نادي السكه">نادي السكه</option>
+                <option value="عباس العقاد">عباس العقاد</option>
+                <option value="يوسف عباس">يوسف عباس</option>
+                <option value="المعهد">المعهد</option>
+            </select>
+        </div>
+        <div class="f-item narrow">
+            <i class="fas fa-shopping-basket"></i>
+            <input type="number" id="orderCountInput" placeholder="عدد الأوردرات">
+        </div>
+        <button class="btn btn-sm btn-neon" onclick="window._saveDailyOrders()" style="width:auto; margin:0;">
+            <i class="fas fa-check"></i> حفظ
+        </button>
+    </div>
+
+    <!-- فلاتر عرض التقرير -->
+    <div class="filter-bar">
+        <span class="f-label">تصفية التقرير:</span>
+        <div class="f-item narrow">
+            <i class="fas fa-calendar-alt"></i>
+            <input type="date" id="repDateFrom" onchange="window._generateReport()" title="من تاريخ">
+        </div>
+        <div class="f-item narrow">
+            <i class="fas fa-arrow-left"></i>
+            <input type="date" id="repDateTo" onchange="window._generateReport()" title="إلى تاريخ">
+        </div>
+        <div class="f-item narrow" style="border-right: 1px solid var(--border); padding-right: 15px;">
+            <i class="fas fa-filter"></i>
+            <input type="month" id="reportMonthFilter" onchange="window._generateReport()">
+        </div>
+        <button class="btn btn-sm btn-cancel" onclick="window._resetReportFilters()">
+            <i class="fas fa-sync-alt"></i> إعادة تعيين
+        </button>
+    </div>
+
+    <!-- أولاً: جدول البيانات -->
+    <div class="table-wrap">
+        <table id="reportTable">
+            <thead>
+                <tr>
+                    <th>الفرع</th>
+                    <th>إجمالي الشكاوى</th>
+                    <th>تأخير</th>
+                    <th>ناقص</th>
+                    <th>طلب خطأ</th>
+                    <th>سوء تعبئة</th>
+                    <th>جودة</th>
+                    <th>سوء خدمة</th>
+                    <th>خطأ متلقي</th>
+                    <th>خطأ متلقي طلبات</th>
+                    <th>مندوب</th>
+                    <th>جسم غريب</th>
+                    <th>إجمالي الأوردرات</th>
+                    <th>نسبة الشكاوى</th>
+                </tr>
+            </thead>
+            <tbody id="reportTableBody"></tbody>
+        </table>
+    </div>
+
+    <!-- ثانياً: الرسم البياني (يظهر بالأسفل دائماً) -->
+    <div class="card" style="margin-top: 25px; background: rgba(0,0,0,0.4); border: 1px solid var(--border); padding: 25px; border-radius: 16px;">
+        <h4 style="text-align: center; margin-bottom: 15px; color: var(--primary);"><i class="fas fa-chart-bar"></i> تحليل بياني لمعدل الشكاوى</h4>
+        <div style="height: 400px; position: relative;">
+            <canvas id="complaintsChart"></canvas>
         </div>
     </div>
 </div>
@@ -1084,25 +1134,29 @@ const auth = getAuth(app);
         sessionInterval = setInterval(update, 1000);
     }
 
-    function applyThemeColor(color) {
-        if (!color) return;
-        const r = parseInt(color.slice(1,3),16);
-        const g = parseInt(color.slice(3,5),16);
-        const b = parseInt(color.slice(5,7),16);
-        document.documentElement.style.setProperty('--emp-accent', color);
-        document.documentElement.style.setProperty('--emp-accent-8', `rgba(${r},${g},${b},0.08)`);
-        document.documentElement.style.setProperty('--emp-accent-15', `rgba(${r},${g},${b},0.15)`);
-        document.documentElement.style.setProperty('--emp-accent-20', `rgba(${r},${g},${b},0.2)`);
-        document.documentElement.style.setProperty('--emp-accent-25', `rgba(${r},${g},${b},0.25)`);
-        document.documentElement.style.setProperty('--emp-accent-30', `rgba(${r},${g},${b},0.3)`);
-        document.documentElement.style.setProperty('--emp-accent-40', `rgba(${r},${g},${b},0.4)`);
-        const btn = document.getElementById('empThemeBtn');
-        if (btn) btn.style.background = color;
-        const picker = document.getElementById('empThemeColorPicker');
-        if (picker) picker.value = color;
-        document.body.classList.add('theme-applied');
-    }
+function applyThemeColor(color) {
+    if (!color) return;
+    
+    // ... الأكواد القديمة لتعيين المتغيرات في CSS ...
+    const r = parseInt(color.slice(1,3), 16);
+    const g = parseInt(color.slice(3,5), 16);
+    const b = parseInt(color.slice(5,7), 16);
+    document.documentElement.style.setProperty('--emp-accent', color);
+    // ... باقي متغيرات الـ rgba ...
 
+    // --- الجزء الجديد لتحديث الشارت حياً ---
+    if (window.myChart) {
+        window.myChart.data.datasets[0].backgroundColor = `rgba(${r}, ${g}, ${b}, 0.5)`;
+        window.myChart.data.datasets[0].borderColor = color;
+        window.myChart.options.scales.x.ticks.color = color;
+        window.myChart.update(); // تطبيق اللون الجديد فوراً
+    }
+    // ------------------------------------
+
+    const btn = document.getElementById('empThemeBtn') || document.getElementById('mgrThemeBtn');
+    if (btn) btn.style.background = color;
+    document.body.classList.add('theme-applied');
+}
     document.getElementById('empThemeColorPicker')?.addEventListener('input', function(e) {
         applyThemeColor(e.target.value);
         document.getElementById('themeSavingText').classList.add('show');
@@ -1152,8 +1206,10 @@ const auth = getAuth(app);
             branchInfo: document.getElementById('branchInfo').value.trim(),
             callCenterInfo: document.getElementById('callCenterInfo').value.trim(),
             details: document.getElementById('details').value.trim(),
-            employeeName: currentUserData?.fullName || currentUserData?.username || 'غير معروف',
-            addedBy: currentUserData?.fullName || currentUserData?.username || 'غير معروف',
+// ابحث عن هذه السطور داخل متغير data وقم بتحديثها:
+employeeName: document.getElementById('callCenterEmployeeName').value.trim(),
+userName: document.getElementById('callCenterEmployeeName').value.trim(),
+addedBy: document.getElementById('callCenterEmployeeName').value.trim(),            addedBy: currentUserData?.fullName || currentUserData?.username || 'غير معروف',
             userId: currentUserDocId || 'unknown',
             userName: currentUserData?.fullName || 'غير معروف',
             updatedAt: serverTimestamp()
@@ -1203,6 +1259,8 @@ const auth = getAuth(app);
         document.getElementById('details').value = c.details || '';
         window.scrollTo({ top: 0, behavior: 'smooth' });
         showToast('تم تحميل بيانات الشكوى للتعديل');
+        // أضف هذا السطر داخل دالة _editComplaint
+document.getElementById('callCenterEmployeeName').value = c.employeeName || c.userName || '';
     };
 
     window._deleteComplaint = async function(id) {
@@ -1402,6 +1460,9 @@ window._saveDailyOrders = async function() {
     }
 };
 
+// أضف متغيراً عاماً في بداية الـ script لتخزين الرسم البياني
+let myChart = null;
+
 window._generateReport = async function() {
     const month = document.getElementById('reportMonthFilter').value;
     const dateFrom = document.getElementById('repDateFrom').value;
@@ -1410,81 +1471,161 @@ window._generateReport = async function() {
     const tbody = document.getElementById('reportTableBody');
     if (!tbody) return;
 
-    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:30px;"><i class="fas fa-spinner fa-spin"></i> جاري تحليل البيانات...</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="14" style="text-align:center; padding:30px;"><i class="fas fa-spinner fa-spin"></i> جاري تحليل البيانات بالتفصيل...</td></tr>';
 
     try {
-        // جلب البيانات
         const ordersSnap = await getDocs(collection(db, 'daily_orders'));
         let branchOrdersMap = {}; 
 
         ordersSnap.forEach(doc => {
             const data = doc.data();
-            // --- تأمين البيانات هنا ---
             if (!data || !data.date || !data.branch) return; 
-
             const orderDate = data.date;
             let isIncluded = false;
-
             if (dateFrom && dateTo) {
                 if (orderDate >= dateFrom && orderDate <= dateTo) isIncluded = true;
             } else if (month && orderDate.startsWith(month)) {
                 isIncluded = true;
             }
-
             if (isIncluded) {
                 branchOrdersMap[data.branch] = (branchOrdersMap[data.branch] || 0) + (data.count || 0);
             }
         });
-        
-        // باقي كود توليد الـ HTML للفروع...
-        // (تأكد من استخدام أسماء الفروع الصحيحة)
 
-const branches = ["العباسيه", "عبده باشا", "نادي السكه", "عباس العقاد", "يوسف عباس", "المعهد"];
-        
+        const branches = ["العباسيه", "عبده باشا", "نادي السكه", "عباس العقاد", "يوسف عباس", "المعهد"];
         let reportHtml = '';
+        
+        // مصفوفات لتخزين بيانات الرسم البياني
+        let chartLabels = [];
+        let chartData = [];
+
+        let grandTotal = {
+            complaints: 0, delay: 0, missing: 0, wrong: 0, packing: 0, quality: 0, 
+            service: 0, rError: 0, tError: 0, driver: 0, foreign: 0, orders: 0
+        };
+
         branches.forEach(br => {
             const brComplaints = allComplaints.filter(c => {
                 const cDate = tsToDateStr(c.date);
                 if (c.branch !== br || !cDate) return false;
-
-                if (dateFrom && dateTo) {
-                    return (cDate >= dateFrom && cDate <= dateTo);
-                } else if (month) {
-                    return cDate.startsWith(month);
-                }
+                if (dateFrom && dateTo) return (cDate >= dateFrom && cDate <= dateTo);
+                else if (month) return cDate.startsWith(month);
                 return true;
             });
             
             const totalComplaints = brComplaints.length;
-            const delayCount = brComplaints.filter(c => c.complaintType === 'تأخير').length;
-            const errorCount = brComplaints.filter(c => ['ناقص', 'طلب خطأ'].includes(c.complaintType)).length;
-            const qualityCount = totalComplaints - (delayCount + errorCount);
             
+            // إضافة البيانات لمصفوفة الرسم البياني
+            chartLabels.push(br);
+            chartData.push(totalComplaints);
+
+            // ... (بقية حسابات الأنواع كما هي في كودك الأصلي)
+            const c_تأخير = brComplaints.filter(c => c.complaintType === 'تأخير').length;
+            const c_ناقص = brComplaints.filter(c => c.complaintType === 'ناقص').length;
+            const c_طلب_خطأ = brComplaints.filter(c => c.complaintType === 'طلب خطأ').length;
+            const c_سوء_تعبئة = brComplaints.filter(c => c.complaintType === 'سوء تعبئة').length;
+            const c_جودة = brComplaints.filter(c => c.complaintType === 'جودة').length;
+            const c_سوء_خدمة = brComplaints.filter(c => c.complaintType === 'سوء خدمة').length;
+            const c_خطأ_متلقي = brComplaints.filter(c => c.complaintType === 'خطأ متلقي').length;
+            const c_خطأ_متلقي_طلبات = brComplaints.filter(c => c.complaintType === 'خطأ متلقي طلبات').length;
+            const c_مندوب = brComplaints.filter(c => c.complaintType === 'مندوب').length;
+            const c_جسم_غريب = brComplaints.filter(c => c.complaintType === 'جسم غريب').length;
+
             const totalOrders = branchOrdersMap[br] || 0;
             const percentage = totalOrders > 0 ? ((totalComplaints / totalOrders) * 100).toFixed(2) : "0.00";
             const statusColor = percentage > 3 ? '#ef4444' : '#10b981';
 
-            reportHtml += `
-                <tr>
-                    <td style="font-weight:bold; color:var(--primary)">${br}</td>
-                    <td style="font-size:16px; font-weight:bold;">${totalComplaints}</td>
-                    <td>${delayCount}</td>
-                    <td>${errorCount}</td>
-                    <td>${qualityCount}</td>
-                    <td style="color:#94a3b8">${totalOrders.toLocaleString()}</td>
-                    <td style="color:${statusColor}; font-weight:900; font-size:16px;">${percentage}%</td>
-                </tr>
-            `;
+            grandTotal.complaints += totalComplaints;
+            grandTotal.orders += totalOrders;
+            // (تحديث بقية الـ grandTotal هنا...)
+
+            reportHtml += `<tr>
+                <td style="font-weight:bold; color:var(--primary)">${br}</td>
+                <td style="font-size:15px; font-weight:bold; background: rgba(0,242,255,0.05);">${totalComplaints}</td>
+                <td>${c_تأخير}</td><td>${c_ناقص}</td><td>${c_طلب_خطأ}</td><td>${c_سوء_تعبئة}</td>
+                <td>${c_جودة}</td><td>${c_سوء_خدمة}</td><td>${c_خطأ_متلقي}</td><td>${c_خطأ_متلقي_طلبات}</td>
+                <td>${c_مندوب}</td><td>${c_جسم_غريب}</td>
+                <td style="color:#94a3b8">${totalOrders.toLocaleString()}</td>
+                <td style="color:${statusColor}; font-weight:900;">${percentage}%</td>
+            </tr>`;
         });
 
-        tbody.innerHTML = reportHtml || '<tr><td colspan="7">لا توجد بيانات للفترة المختارة</td></tr>';
+        // إضافة صف الإجمالي العام في الجدول
+        const grandPercentage = grandTotal.orders > 0 ? ((grandTotal.complaints / grandTotal.orders) * 100).toFixed(2) : "0.00";
+        reportHtml += `<tr style="background: rgba(0, 242, 255, 0.15); border-top: 2px solid var(--primary); font-weight: 900;">
+            <td>الإجمالي العام</td><td>${grandTotal.complaints}</td><td colspan="10"></td>
+            <td>${grandTotal.orders.toLocaleString()}</td><td>${grandPercentage}%</td>
+        </tr>`;
+
+        tbody.innerHTML = reportHtml;
+
+        // --- تشغيل الرسم البياني ---
+        updateComplaintsChart(chartLabels, chartData);
 
     } catch (e) {
         console.error("Report Error:", e);
-        tbody.innerHTML = '<tr><td colspan="7" style="color:var(--danger); font-weight:bold; padding:20px;">حدث خطأ تقني: ' + e.message + '</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="14" style="color:var(--danger);">خطأ: ' + e.message + '</td></tr>';
     }
 };
 
+// دالة مخصصة لإنشاء أو تحديث الرسم البياني
+function updateComplaintsChart(labels, data) {
+    const ctx = document.getElementById('complaintsChart').getContext('2d');
+    
+    if (window.myChart) {
+        window.myChart.destroy();
+    }
+
+    // جلب اللون الحالي المطبق على الصفحة (الذي اخترته من أداة الألوان)
+    const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--emp-accent').trim() || '#00f2ff';
+    
+    // دالة لتحويل الـ HEX إلى RGBA لإضافة شفافية للأعمدة
+    const hexToRgba = (hex, alpha) => {
+        const r = parseInt(hex.slice(1, 3), 16);
+        const g = parseInt(hex.slice(3, 5), 16);
+        const b = parseInt(hex.slice(5, 7), 16);
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    };
+
+    window.myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'عدد الشكاوى لكل فرع',
+                data: data,
+                backgroundColor: hexToRgba(primaryColor, 0.5), // لون العمود بوضوح 50%
+                borderColor: primaryColor, // حدود العمود باللون الصريح
+                borderWidth: 2,
+                borderRadius: 8,
+                hoverBackgroundColor: primaryColor
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                    ticks: { color: '#94a3b8', font: { family: 'Cairo' } }
+                },
+                x: {
+                    grid: { display: false },
+                    ticks: { 
+                        color: primaryColor, // جعل أسماء الفروع تأخذ نفس اللون المختار
+                        font: { family: 'Cairo', weight: 'bold' } 
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    labels: { color: '#fff', font: { family: 'Cairo', size: 14 } }
+                }
+            }
+        }
+    });
+}
     function renderEmployeesTable() {
         const search = document.getElementById('empSearchInput')?.value.trim().toLowerCase();
         const roleFilter = document.getElementById('empRoleFilter')?.value;
@@ -2043,6 +2184,122 @@ window._saveDailyOrders = async function() {
         showToast('فشل الحفظ: ' + e.message, true);
     }
 };
+window._exportReportExcel = async function() {
+    const table = document.getElementById('reportTable');
+    const rows = Array.from(table.querySelectorAll('tr'));
+    
+    if (rows.length <= 1) {
+        showToast('لا توجد بيانات لتصديرها', true);
+        return;
+    }
+
+    showToast('جاري معالجة الرسم البياني... انتظر قليلاً');
+
+    try {
+        // 1. الحصول على الشارت الأصلي من الصفحة
+        const originalCanvas = document.getElementById('complaintsChart');
+        
+        // 2. إنشاء كانفاس جديد (نسخة طبق الأصل) بخلفية بيضاء صريحة
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = originalCanvas.width;
+        tempCanvas.height = originalCanvas.height;
+        const tempCtx = tempCanvas.getContext('2d');
+
+        // صبغ الخلفية بالأبيض (حل مشكلة الـ X الأحمر في الإكسيل)
+        tempCtx.fillStyle = '#FFFFFF';
+        tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+
+        // رسم الشارت فوق الخلفية البيضاء
+        tempCtx.drawImage(originalCanvas, 0, 0);
+
+        // 3. تحويل الرسم لصورة وتنظيف الكود (تنظيف الـ Header)
+        const fullImageData = tempCanvas.toDataURL('image/png', 1.0);
+        // إزالة "data:image/png;base64," لأن الإكسيل يحتاج البيانات الخام فقط
+        const cleanBase64 = fullImageData.split(',')[1];
+
+        // 4. بناء ملف الإكسيل
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('تحليل الأداء', {
+            views: [{ rightToLeft: true, showGridLines: false }]
+        });
+
+        // إضافة بيانات الجدول
+        rows.forEach((row, rowIndex) => {
+            const rowData = Array.from(row.querySelectorAll('th, td')).map(cell => cell.innerText);
+            const excelRow = worksheet.addRow(rowData);
+            excelRow.height = 25;
+
+            excelRow.eachCell((cell) => {
+                cell.alignment = { horizontal: 'center', vertical: 'middle' };
+                if (rowIndex === 0) {
+                    cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1E40AF' } };
+                    cell.font = { color: { argb: 'FFFFFFFF' }, bold: true };
+                } else {
+                    cell.border = { bottom: { style: 'thin', color: { argb: 'FFDDDDDD' } } };
+                }
+            });
+        });
+
+        worksheet.columns.forEach(c => c.width = 18);
+
+        // 5. إضافة الصورة للإكسيل (باستخدام الكود النظيف)
+        const imageId = workbook.addImage({
+            base64: cleanBase64,
+            extension: 'png',
+        });
+
+        // تحديد مكان الصورة (تحت الجدول بصفين)
+        worksheet.addImage(imageId, {
+            tl: { col: 1, row: rows.length + 2 },
+            ext: { width: 800, height: 400 }
+        });
+
+        // 6. إنتاج الملف للتحميل
+        const buffer = await workbook.xlsx.writeBuffer();
+        const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        
+        // تحميل الملف
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `تقرير_نجف_النهائي.xlsx`;
+        link.click();
+        
+        showToast('تم تصدير التقرير بنجاح');
+
+    } catch (error) {
+        console.error("Export Error:", error);
+        showToast('فشل التصدير: ' + error.message, true);
+    }
+};
+// مستمع لتغيير اللون في شاشة المدير
+document.getElementById('mgrThemeColorPicker')?.addEventListener('input', function(e) {
+    const selectedColor = e.target.value;
+    applyThemeColor(selectedColor);
+    
+    const savingText = document.getElementById('mgrThemeSavingText');
+    if (savingText) savingText.classList.add('show');
+    
+    if (themeSaveTimeout) clearTimeout(themeSaveTimeout);
+    
+    themeSaveTimeout = setTimeout(async () => {
+        // إذا كان المستخدم ليس "admin" الافتراضي (أي أنه مدير مسجل في قاعدة البيانات)
+        if (currentUserDocId && currentUserDocId !== 'default_admin') {
+            try { 
+                await updateDoc(doc(db, 'employees', currentUserDocId), { themeColor: selectedColor }); 
+                showToast('تم حفظ اللون المفضل للمدير');
+            } catch(err) {
+                console.error("Error saving mgr color:", err);
+            }
+        } else {
+            showToast('تم تطبيق اللون (مدير عام)');
+        }
+        if (savingText) savingText.classList.remove('show');
+    }, 1000);
+});
+
+// تأكد من تحديث دالة onAuthStateChanged لتقوم بتطبيق اللون للمدير عند الدخول
+// ابحث عن شرط (sData.role === 'manager' || sData.role === 'viewer') وضف بداخله:
+// if (sData.themeColor) applyThemeColor(sData.themeColor);
 </script>
 </body>
 </html>
