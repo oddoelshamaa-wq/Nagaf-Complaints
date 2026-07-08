@@ -1494,11 +1494,10 @@ window._generateReport = async function() {
 
         const branches = ["العباسيه", "عبده باشا", "نادي السكه", "عباس العقاد", "يوسف عباس", "المعهد"];
         let reportHtml = '';
-        
-        // مصفوفات لتخزين بيانات الرسم البياني
         let chartLabels = [];
         let chartData = [];
 
+        // تعريف كائن الإجمالي العام وتصفيره
         let grandTotal = {
             complaints: 0, delay: 0, missing: 0, wrong: 0, packing: 0, quality: 0, 
             service: 0, rError: 0, tError: 0, driver: 0, foreign: 0, orders: 0
@@ -1514,12 +1513,10 @@ window._generateReport = async function() {
             });
             
             const totalComplaints = brComplaints.length;
-            
-            // إضافة البيانات لمصفوفة الرسم البياني
             chartLabels.push(br);
             chartData.push(totalComplaints);
 
-            // ... (بقية حسابات الأنواع كما هي في كودك الأصلي)
+            // حساب الأرقام لكل فرع
             const c_تأخير = brComplaints.filter(c => c.complaintType === 'تأخير').length;
             const c_ناقص = brComplaints.filter(c => c.complaintType === 'ناقص').length;
             const c_طلب_خطأ = brComplaints.filter(c => c.complaintType === 'طلب خطأ').length;
@@ -1535,9 +1532,19 @@ window._generateReport = async function() {
             const percentage = totalOrders > 0 ? ((totalComplaints / totalOrders) * 100).toFixed(2) : "0.00";
             const statusColor = percentage > 3 ? '#ef4444' : '#10b981';
 
+            // إضافة أرقام الفرع الحالي إلى الإجمالي العام
             grandTotal.complaints += totalComplaints;
+            grandTotal.delay += c_تأخير;
+            grandTotal.missing += c_ناقص;
+            grandTotal.wrong += c_طلب_خطأ;
+            grandTotal.packing += c_سوء_تعبئة;
+            grandTotal.quality += c_جودة;
+            grandTotal.service += c_سوء_خدمة;
+            grandTotal.rError += c_خطأ_متلقي;
+            grandTotal.tError += c_خطأ_متلقي_طلبات;
+            grandTotal.driver += c_مندوب;
+            grandTotal.foreign += c_جسم_غريب;
             grandTotal.orders += totalOrders;
-            // (تحديث بقية الـ grandTotal هنا...)
 
             reportHtml += `<tr>
                 <td style="font-weight:bold; color:var(--primary)">${br}</td>
@@ -1550,16 +1557,28 @@ window._generateReport = async function() {
             </tr>`;
         });
 
-        // إضافة صف الإجمالي العام في الجدول
+        // حساب النسبة المئوية الإجمالية
         const grandPercentage = grandTotal.orders > 0 ? ((grandTotal.complaints / grandTotal.orders) * 100).toFixed(2) : "0.00";
+        
+        // بناء سطر الإجمالي العام مع عرض كافة المجاميع
         reportHtml += `<tr style="background: rgba(0, 242, 255, 0.15); border-top: 2px solid var(--primary); font-weight: 900;">
-            <td>الإجمالي العام</td><td>${grandTotal.complaints}</td><td colspan="10"></td>
-            <td>${grandTotal.orders.toLocaleString()}</td><td>${grandPercentage}%</td>
+            <td style="color: #fff;">الإجمالي العام</td>
+            <td style="color: var(--primary);">${grandTotal.complaints}</td>
+            <td>${grandTotal.delay}</td>
+            <td>${grandTotal.missing}</td>
+            <td>${grandTotal.wrong}</td>
+            <td>${grandTotal.packing}</td>
+            <td>${grandTotal.quality}</td>
+            <td>${grandTotal.service}</td>
+            <td>${grandTotal.rError}</td>
+            <td>${grandTotal.tError}</td>
+            <td>${grandTotal.driver}</td>
+            <td>${grandTotal.foreign}</td>
+            <td style="color: #fff;">${grandTotal.orders.toLocaleString()}</td>
+            <td style="color: var(--primary);">${grandPercentage}%</td>
         </tr>`;
 
         tbody.innerHTML = reportHtml;
-
-        // --- تشغيل الرسم البياني ---
         updateComplaintsChart(chartLabels, chartData);
 
     } catch (e) {
