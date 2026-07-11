@@ -1471,7 +1471,7 @@ window._generateReport = async function() {
     const tbody = document.getElementById('reportTableBody');
     if (!tbody) return;
 
-    tbody.innerHTML = '<tr><td colspan="14" style="text-align:center; padding:30px;"><i class="fas fa-spinner fa-spin"></i> جاري تحليل البيانات بالتفصيل...</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="14" style="text-align:center; padding:30px;"><i class="fas fa-spinner fa-spin"></i> جاري تحليل البيانات...</td></tr>';
 
     try {
         const ordersSnap = await getDocs(collection(db, 'daily_orders'));
@@ -1492,18 +1492,19 @@ window._generateReport = async function() {
             }
         });
 
-        const branches = ["العباسيه", "عبده باشا", "نادي السكه", "عباس العقاد", "يوسف عباس", "المعهد"];
+        // قائمة الفروع كاملة بما فيها مركز الاتصالات
+        const branches = ["العباسيه", "عبده باشا", "نادي السكه", "عباس العقاد", "يوسف عباس", "المعهد", "مركز الاتصالات"];
         let reportHtml = '';
         let chartLabels = [];
         let chartData = [];
 
-        // تعريف كائن الإجمالي العام وتصفيره
         let grandTotal = {
             complaints: 0, delay: 0, missing: 0, wrong: 0, packing: 0, quality: 0, 
             service: 0, rError: 0, tError: 0, driver: 0, foreign: 0, orders: 0
         };
 
-        branches.forEach(br => {
+const excludedFromStats = ["خطأ متلقي", "خطأ متلقي طلبات", "سوء خدمة"];
+  branches.forEach(br => {
             const brComplaints = allComplaints.filter(c => {
                 const cDate = tsToDateStr(c.date);
                 if (c.branch !== br || !cDate) return false;
@@ -1512,55 +1513,75 @@ window._generateReport = async function() {
                 return true;
             });
             
-            const totalComplaints = brComplaints.length;
-            chartLabels.push(br);
-            chartData.push(totalComplaints);
+            const getCount = (typeName) => brComplaints.filter(c => (c.complaintType || "").trim() === typeName).length;
 
-            // حساب الأرقام لكل فرع
-            const c_تأخير = brComplaints.filter(c => c.complaintType === 'تأخير').length;
-            const c_ناقص = brComplaints.filter(c => c.complaintType === 'ناقص').length;
-            const c_طلب_خطأ = brComplaints.filter(c => c.complaintType === 'طلب خطأ').length;
-            const c_سوء_تعبئة = brComplaints.filter(c => c.complaintType === 'سوء تعبئة').length;
-            const c_جودة = brComplaints.filter(c => c.complaintType === 'جودة').length;
-            const c_سوء_خدمة = brComplaints.filter(c => c.complaintType === 'سوء خدمة').length;
-            const c_خطأ_متلقي = brComplaints.filter(c => c.complaintType === 'خطأ متلقي').length;
-            const c_خطأ_متلقي_طلبات = brComplaints.filter(c => c.complaintType === 'خطأ متلقي طلبات').length;
-            const c_مندوب = brComplaints.filter(c => c.complaintType === 'مندوب').length;
-            const c_جسم_غريب = brComplaints.filter(c => c.complaintType === 'جسم غريب').length;
+            const c_تأخير = getCount('تأخير');
+            const c_ناقص = getCount('ناقص');
+            const c_طلب_خطأ = getCount('طلب خطأ');
+            const c_سوء_تعبئة = getCount('سوء تعبئة');
+            const c_جودة = getCount('جودة');
+            const c_سوء_خدمة = getCount('سوء خدمة');
+            const c_خطأ_متلقي = getCount('خطأ متلقي');
+            const c_خطأ_متلقي_طلبات = getCount('خطأ متلقي طلبات');
+            const c_مندوب = getCount('مندوب');
+            const c_جسم_غريب = getCount('جسم غريب');
+
+            // --- المنطق الجديد للحساب الذكي ---
+            let totalComplaintsForStats = 0;
+
+            if (br === "مركز الاتصالات") {
+                // لمركز الاتصالات: نحسب فقط أخطاء الكول سنتر في الإجمالي الخاص بهم
+                totalComplaintsForStats = c_خطأ_متلقي + c_خطأ_متلقي_طلبات;
+            } else {
+                // للفروع العادية: نستبعد أخطاء الكول سنتر من الإجمالي لعدم ظلم الفرع
+                const excludedFromStats = ["خطأ متلقي", "خطأ متلقي طلبات", "سوء خدمة"];
+                totalComplaintsForStats = brComplaints.filter(c => {
+                    const type = (c.complaintType || "").trim();
+                    return !excludedFromStats.includes(type);
+                }).length;
+            }
+            
+            chartLabels.push(br);
+            chartData.push(totalComplaintsForStats);
 
             const totalOrders = branchOrdersMap[br] || 0;
-            const percentage = totalOrders > 0 ? ((totalComplaints / totalOrders) * 100).toFixed(2) : "0.00";
+            const percentage = totalOrders > 0 ? ((totalComplaintsForStats / totalOrders) * 100).toFixed(2) : "0.00";
             const statusColor = percentage > 3 ? '#ef4444' : '#10b981';
 
-            // إضافة أرقام الفرع الحالي إلى الإجمالي العام
-            grandTotal.complaints += totalComplaints;
-            grandTotal.delay += c_تأخير;
-            grandTotal.missing += c_ناقص;
-            grandTotal.wrong += c_طلب_خطأ;
-            grandTotal.packing += c_سوء_تعبئة;
-            grandTotal.quality += c_جودة;
-            grandTotal.service += c_سوء_خدمة;
-            grandTotal.rError += c_خطأ_متلقي;
-            grandTotal.tError += c_خطأ_متلقي_طلبات;
-            grandTotal.driver += c_مندوب;
-            grandTotal.foreign += c_جسم_غريب;
-            grandTotal.orders += totalOrders;
+            // تحديث الإجمالي العام
+         // --- التعديل: الجمع في الإجمالي العام للفروع فقط (استثناء مركز الاتصالات) ---
+            if (br !== "مركز الاتصالات") {
+                grandTotal.complaints += totalComplaintsForStats;
+                grandTotal.delay += c_تأخير;
+                grandTotal.missing += c_ناقص;
+                grandTotal.wrong += c_طلب_خطأ;
+                grandTotal.packing += c_سوء_تعبئة;
+                grandTotal.quality += c_جودة;
+                grandTotal.service += c_سوء_خدمة;
+                grandTotal.rError += c_خطأ_متلقي;
+                grandTotal.tError += c_خطأ_متلقي_طلبات;
+                grandTotal.driver += c_مندوب;
+                grandTotal.foreign += c_جسم_غريب;
+                grandTotal.orders += totalOrders;
+            }
+            // تمييز صف مركز الاتصالات بلون مختلف قليلاً
+            const isCC = br === "مركز الاتصالات";
 
-            reportHtml += `<tr>
+            reportHtml += `<tr style="${isCC ? 'background: rgba(0, 242, 255, 0.05);' : ''}">
                 <td style="font-weight:bold; color:var(--primary)">${br}</td>
-                <td style="font-size:15px; font-weight:bold; background: rgba(0,242,255,0.05);">${totalComplaints}</td>
+                <td style="font-size:15px; font-weight:bold; background: rgba(0,242,255,0.08); color: ${isCC ? 'var(--primary)' : ''}">${totalComplaintsForStats}</td>
                 <td>${c_تأخير}</td><td>${c_ناقص}</td><td>${c_طلب_خطأ}</td><td>${c_سوء_تعبئة}</td>
-                <td>${c_جودة}</td><td>${c_سوء_خدمة}</td><td>${c_خطأ_متلقي}</td><td>${c_خطأ_متلقي_طلبات}</td>
+                <td>${c_جودة}</td>
+                <td style="color: #94a3b8; opacity: 0.6;">${c_سوء_خدمة}</td> 
+                <td style="color: ${isCC ? 'var(--primary)' : '#94a3b8'}; font-weight: ${isCC ? 'bold' : 'normal'};">${c_خطأ_متلقي}</td> 
+                <td style="color: ${isCC ? 'var(--primary)' : '#94a3b8'}; font-weight: ${isCC ? 'bold' : 'normal'};">${c_خطأ_متلقي_طلبات}</td>
                 <td>${c_مندوب}</td><td>${c_جسم_غريب}</td>
-                <td style="color:#94a3b8">${totalOrders.toLocaleString()}</td>
-                <td style="color:${statusColor}; font-weight:900;">${percentage}%</td>
+                <td style="color:#94a3b8">${isCC ? '---' : totalOrders.toLocaleString()}</td>
+                <td style="color:${isCC ? '#94a3b8' : statusColor}; font-weight:900;">${isCC ? '---' : percentage + '%'}</td>
             </tr>`;
         });
-
-        // حساب النسبة المئوية الإجمالية
         const grandPercentage = grandTotal.orders > 0 ? ((grandTotal.complaints / grandTotal.orders) * 100).toFixed(2) : "0.00";
         
-        // بناء سطر الإجمالي العام مع عرض كافة المجاميع
         reportHtml += `<tr style="background: rgba(0, 242, 255, 0.15); border-top: 2px solid var(--primary); font-weight: 900;">
             <td style="color: #fff;">الإجمالي العام</td>
             <td style="color: var(--primary);">${grandTotal.complaints}</td>
@@ -1569,8 +1590,8 @@ window._generateReport = async function() {
             <td>${grandTotal.wrong}</td>
             <td>${grandTotal.packing}</td>
             <td>${grandTotal.quality}</td>
-            <td>${grandTotal.service}</td>
-            <td>${grandTotal.rError}</td>
+            <td style="color: #94a3b8;">${grandTotal.service}</td>
+            <td style="color: #94a3b8;">${grandTotal.rError}</td>
             <td>${grandTotal.tError}</td>
             <td>${grandTotal.driver}</td>
             <td>${grandTotal.foreign}</td>
@@ -1586,7 +1607,6 @@ window._generateReport = async function() {
         tbody.innerHTML = '<tr><td colspan="14" style="color:var(--danger);">خطأ: ' + e.message + '</td></tr>';
     }
 };
-
 // دالة مخصصة لإنشاء أو تحديث الرسم البياني
 function updateComplaintsChart(labels, data) {
     const ctx = document.getElementById('complaintsChart').getContext('2d');
