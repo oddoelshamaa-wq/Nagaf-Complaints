@@ -411,7 +411,7 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
     <label>الفرع المختص</label>
     <div class="field-wrap">
         <i class="fas fa-map-marked-alt"></i>
-        <input type="text" id="branch" list="mainBranchOptions" placeholder="ابحث عن الفرع..." required>
+<input type="text" id="empBranch" list="mainBranchOptions" placeholder="ابحث عن الفرع..." required>
         <datalist id="mainBranchOptions">
             <option value="العباسيه">
             <option value="عبده باشا">
@@ -1661,60 +1661,62 @@ const branches = ["العباسيه", "عبده باشا", "نادي السكه"
         if (emp) window._openEmpModal(emp);
     };
 
-    window._saveEmployee = async function(e) {
-        e.preventDefault();
-        const editId = document.getElementById('empEditId').value;
-        const username = document.getElementById('empUsername').value.trim();
-        const fullName = document.getElementById('empFullName').value.trim();
-        let password = document.getElementById('empPassword').value.trim();
-        const role = document.getElementById('empRole').value;
-        const active = document.getElementById('empActive').checked;
-        const notes = document.getElementById('empNotes').value.trim();
+  window._saveEmployee = async function(e) {
+    e.preventDefault();
+    
+    // جلب القيم من الفورم
+    const editId = document.getElementById('empEditId').value;
+    const username = document.getElementById('empUsername').value.trim();
+    const fullName = document.getElementById('empFullName').value.trim();
+    const branch = document.getElementById('empBranch').value; // التأكد من استخدام الـ ID الجديد empBranch
+    let password = document.getElementById('empPassword').value.trim();
+    const role = document.getElementById('empRole').value;
+    const active = document.getElementById('empActive').checked;
+    const notes = document.getElementById('empNotes').value.trim();
 
-        if (!editId && !password) {
-            showToast('كلمة المرور مطلوبة للموظف الجديد', true);
-            return;
-        }
+    // التحقق من وجود كلمة مرور للموظف الجديد
+    if (!editId && !password) {
+        showToast('كلمة المرور مطلوبة للموظف الجديد', true);
+        return;
+    }
 
-        const data = { username, fullName,  role, active, notes, updatedAt: serverTimestamp() };
-        if (password) data.password = password;
-
-        try {
-            if (editId) {
-                await updateDoc(doc(db, 'employees', editId), data);
-                showToast('تم تحديث بيانات الموظف');
-            } else {
-                data.createdAt = serverTimestamp();
-                data.themeColor = '#00f2ff';
-                await addDoc(collection(db, 'employees'), data);
-                showToast('تم إضافة الموظف بنجاح');
-            }
-            window._closeEmpModal();
-        } catch (err) {
-            showToast('فشل الحفظ: ' + err.message, true);
-        }
+    // تجهيز البيانات للحفظ
+    const data = { 
+        username: username, 
+        fullName: fullName, 
+        branch: branch, // الفرع المختص
+        role: role, 
+        active: active, 
+        notes: notes, 
+        updatedAt: serverTimestamp() 
     };
 
-    window._deleteEmployee = async function(id) {
-        if (!confirm('هل أنت متأكد من حذف هذا الموظف نهائياً؟')) return;
-        try {
-            await deleteDoc(doc(db, 'employees', id));
-            showToast('تم حذف الموظف');
-        } catch (err) {
-            showToast('فشل الحذف: ' + err.message, true);
-        }
-    };
+    // إضافة كلمة المرور للبيانات فقط إذا تم كتابتها (في حالة التعديل يمكن تركها فارغة)
+    if (password) {
+        data.password = password;
+    }
 
-    window._togglePass = function(inputId, btn) {
-        const inp = document.getElementById(inputId);
-        if (inp.type === 'password') {
-            inp.type = 'text';
-            btn.innerHTML = '<i class="fas fa-eye-slash"></i>';
+    try {
+        if (editId) {
+            // حالة التحديث (Update)
+            await updateDoc(doc(db, 'employees', editId), data);
+            showToast('تم تحديث بيانات الموظف بنجاح');
         } else {
-            inp.type = 'password';
-            btn.innerHTML = '<i class="fas fa-eye"></i>';
+            // حالة إضافة موظف جديد (Add)
+            data.createdAt = serverTimestamp();
+            data.themeColor = '#00f2ff'; // لون افتراضي للموظف الجديد
+            await addDoc(collection(db, 'employees'), data);
+            showToast('تم إضافة الموظف بنجاح إلى النظام');
         }
-    };
+        
+        // إغلاق النافذة المنبثقة (Modal) بعد النجاح
+        window._closeEmpModal();
+        
+    } catch (err) {
+        console.error("Error saving employee:", err);
+        showToast('فشل في عملية الحفظ: ' + err.message, true);
+    }
+};
 
    // دالة فتح وإغلاق قائمة التصدير للموظف (دي اللي كانت ناقصة)
 window._toggleEmpExport = function(e) {
