@@ -375,6 +375,16 @@
     input[type="date"]::-webkit-calendar-picker-indicator:hover {
         filter: invert(55%) sepia(82%) saturate(5000%) hue-rotate(310deg) brightness(110%) contrast(110%);
     }
+    /* ألوان أزرار ردود المدير الجديدة */
+.btn-q-kamil { background: #10b981 !important; color: white !important; }      /* أخضر */
+.btn-q-naqis { background: #ef4444 !important; color: white !important; }      /* أحمر */
+.btn-q-istirja { background: #0ea5e9 !important; color: white !important; }    /* أزرق */
+.btn-q-badil { background: #8b5cf6 !important; color: white !important; }      /* بنفسجي */
+
+.badge-q-kamil { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+.badge-q-naqis { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+.badge-q-istirja { background: rgba(14, 165, 233, 0.2); color: #0ea5e9; }
+.badge-q-badil { background: rgba(139, 92, 246, 0.2); color: #8b5cf6; }
         </style>
     </head>
     <body>
@@ -876,6 +886,10 @@
             <div style="text-align: center; margin-bottom: 25px;">
                 <h3 style="background: linear-gradient(to left, #fbbf24, #d97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">إبلاغ عن شكوى جديدة الآن</h3>
                 <p style="color: #94a3b8; font-size: 13px;">هذا القسم مخصص للتنبيهات السريعة التي تتطلب رداً فورياً من الإدارة</p>
+                <div style="display: inline-flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.05); padding: 8px 15px; border-radius: 12px; border: 1px solid var(--border); margin-top: 10px;">
+        <label style="font-size: 13px; color: #94a3b8;">مراجعة يوم آخر:</label>
+        <input type="date" id="qPageHistoryFilter" onchange="window._changeQuickAlertsDate(this.value)" style="width: auto; padding: 5px 10px; height: 35px;">
+    
             </div>
 
             <!-- منطقة الإرسال -->
@@ -2358,14 +2372,23 @@
 
     // الاستماع اللحظي للبلاغات
     // الاستماع اللحظي للبلاغات
-    let quickAlertsUnsub = null;
+    // 1. وظيفة تغيير التاريخ للمراجعة
+window._changeQuickAlertsDate = function(selectedDate) {
+    if (!selectedDate) return;
+    startQuickAlertsListener(selectedDate);
+};
 
-    function startQuickAlertsListener() {
-        if (typeof quickAlertsUnsub === 'function') quickAlertsUnsub();
-        
-        const today = getCurrentDate();
-        // جلب بلاغات اليوم لكل الفروع ولكل الموظفين
-        const q = query(collection(db, 'quick_alerts'), where('dateStr', '==', today));
+// 2. تحديث المستمع اللحظي ليدعم الأزرار الأربعة وفلتر التاريخ
+let quickAlertsUnsub = null;
+
+function startQuickAlertsListener(targetDate = null) {
+    if (typeof quickAlertsUnsub === 'function') quickAlertsUnsub();
+    
+    // إذا لم يتم تحديد تاريخ، نستخدم تاريخ اليوم تلقائياً
+    const dateToFetch = targetDate || getCurrentDate();
+    document.getElementById('qPageHistoryFilter').value = dateToFetch;
+
+    const q = query(collection(db, 'quick_alerts'), where('dateStr', '==', dateToFetch));
 
     quickAlertsUnsub = onSnapshot(q, (snap) => {
         const tbody = document.getElementById('qPageTableBody');
@@ -2375,17 +2398,21 @@
         docs.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
 
         if (docs.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" class="empty-state">لا توجد بلاغات مسجلة اليوم</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6" class="empty-state">لا توجد بلاغات مسجلة لهذا اليوم</td></tr>';
             return;
         }
 
         tbody.innerHTML = docs.map(d => {
             const time = d.createdAt?.toDate ? d.createdAt.toDate().toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'}) : 'الآن';
-            let color = d.status?.includes('كامل') ? '#10b981' : (d.status?.includes('ناقص') ? '#ef4444' : '#fbbf24');
+            
+            // تحديد كلاس اللون بناءً على الحالة
+            let statusClass = 'badge-q-kamil';
+            if (d.status?.includes('ناقص')) statusClass = 'badge-q-naqis';
+            if (d.status?.includes('استرجاع')) statusClass = 'badge-q-istirja';
+            if (d.status?.includes('البديل')) statusClass = 'badge-q-badil';
 
-            // --- منطق الصلاحيات الجديد ---
             const isManager = (currentUserData.role === 'manager');
-            const isOwner = (d.senderId === currentUserDocId); // هل الموظف الحالي هو من أرسل البلاغ؟
+            const isOwner = (d.senderId === currentUserDocId);
 
             return `
                 <tr>
@@ -2393,26 +2420,28 @@
                     <td><b style="color:var(--primary)">${d.branch}</b></td>
                     <td>${d.phone}</td>
                     <td>${d.sender}</td>
-                    <td><span class="badge" style="background:${color}22; color:${color};">${d.status}</span></td>
+                    <td><span class="badge ${statusClass}">${d.status}</span></td>
                     <td>
-                        <div style="display:flex; gap:5px; justify-content:center;">
+                        <div style="display:flex; gap:5px; justify-content:center; flex-wrap: wrap;">
                             ${isManager ? `
-                                <button class="btn btn-sm" style="background:#10b981; color:#fff;" onclick="window._updateQuickStatus('${d.id}', 'كامل ✅')" title="اعتماد ككامل">كامل</button>
-                                <button class="btn btn-sm" style="background:#ef4444; color:#fff;" onclick="window._updateQuickStatus('${d.id}', 'ناقص ❌')" title="اعتماد كناقص">ناقص</button>
+                                <button class="btn btn-sm btn-q-kamil" onclick="window._updateQuickStatus('${d.id}', 'كامل ✅')" title="كامل">كامل</button>
+                                <button class="btn btn-sm btn-q-naqis" onclick="window._updateQuickStatus('${d.id}', 'ناقص ❌')" title="ناقص">ناقص</button>
+                                <button class="btn btn-sm btn-q-istirja" onclick="window._updateQuickStatus('${d.id}', 'استرجاع 🔄')" title="استرجاع">استرجاع</button>
+                                <button class="btn btn-sm btn-q-badil" onclick="window._updateQuickStatus('${d.id}', 'ارسال البديل 🚚')" title="ارسال البديل">البديل</button>
                             ` : ''}
                             
                             ${(isManager || isOwner) ? `
-                                <button class="btn btn-sm btn-del" onclick="window._deleteQuickAlert('${d.id}')" title="حذف البلاغ">
+                                <button class="btn btn-sm btn-del" onclick="window._deleteQuickAlert('${d.id}')" title="حذف">
                                     <i class="fas fa-trash"></i>
                                 </button>
-                            ` : '<i class="fas fa-lock" title="لا تملك صلاحية الحذف"></i>'}
+                            ` : '<i class="fas fa-lock"></i>'}
                         </div>
                     </td>
                 </tr>
             `;
         }).join('');
     });
-    }
+}
     // دالة حذف البلاغ السريع
     window._deleteQuickAlert = async function(id) {
         if (!confirm('هل أنت متأكد من حذف هذا البلاغ نهائياً؟')) return;
@@ -2632,6 +2661,7 @@ window._quickCheckBlock = function(phone) {
             showToast('تم إزالة العميل من القائمة السوداء');
         } catch (e) { showToast('فشل في الحذف', true); }
     };
+    
     </script>
     </body>
     </html>
