@@ -2963,18 +2963,22 @@ const time = d.createdAt?.toDate ? d.createdAt.toDate().toLocaleTimeString('ar-E
         }
     };
     // وظيفة البحث داخل جدول البلاغات السريعة
+// وظيفة البحث داخل جدول البلاغات السريعة
 window._filterQuickTableByPhone = function(searchValue) {
     const tbody = document.getElementById('qPageTableBody');
+    if (!tbody) return;
+    
     const rows = tbody.getElementsByTagName('tr');
     const search = searchValue.trim();
 
     for (let i = 0; i < rows.length; i++) {
-        // رقم الهاتف موجود في العمود الثالث (Index 2)
-        const phoneCell = rows[i].getElementsByTagName('td')[2];
+        // تم تغيير الرقم من [2] إلى [3] لأن عمود الهاتف هو الرابع الآن
+        const phoneCell = rows[i].getElementsByTagName('td')[3]; 
+        
         if (phoneCell) {
             const phoneText = phoneCell.textContent || phoneCell.innerText;
-            // إذا كان الرقم يحتوي على نص البحث، أظهر الصف، وإلا أخفيه
-            if (phoneText.includes(search)) {
+            // التحقق مما إذا كان النص فارغاً أو يحتوي على رقم البحث
+            if (search === "" || phoneText.includes(search)) {
                 rows[i].style.display = "";
             } else {
                 rows[i].style.display = "none";
