@@ -398,6 +398,11 @@
         input[type="date"]::-webkit-calendar-picker-indicator:hover {
             filter: invert(55%) sepia(82%) saturate(5000%) hue-rotate(310deg) brightness(110%) contrast(110%);
         }
+        #empTable td:nth-child(9) { /* عمود وقت الشكوى */
+    font-weight: 700;
+    color: var(--primary);
+    direction: ltr; /* لضمان ظهور م/ص بجانب الرقم بشكل صحيح */
+}
             </style>
         </head>
         <body>
@@ -639,7 +644,11 @@
                 </form>
             </div>
             <div class="card">
-                <h3><i class="fas fa-archive"></i> سجل شكاوايا</h3>
+                <!-- ابحث عن هذا السطر في قسم الموظف وحدثه -->
+<h3>
+    <i class="fas fa-archive"></i> سجل شكاوايا 
+    <span id="empComplaintsCount" style="background: var(--emp-accent-20); color: var(--emp-accent); padding: 2px 12px; border-radius: 8px; font-size: 1.1rem; margin-right: 10px; border: 1px solid var(--emp-accent-40);">0</span>
+</h3>
                 <div class="filter-bar">
                     <span class="f-label">تصفية:</span>
                     <div class="f-item narrow"><i class="fas fa-calendar-alt"></i><input type="month" id="empMonthFilter" onchange="refreshEmployeeView()" style="width:100%;"></div>
@@ -1172,7 +1181,12 @@
             const d = String(now.getDate()).padStart(2, '0');
             return `${y}-${m}-${d}`; // التنسيق المطلوب من المتصفحات هو YYYY-MM-DD
         }
-
+function getCurrentTimeFormatted() {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    return `${hours}:${minutes}`;
+}
             function tsToDateStr(val) {
                 if (!val) return '';
                 if (typeof val === 'string') return val;
@@ -1534,7 +1548,10 @@
 
                 return true;
             });
-
+const countBadge = document.getElementById('empComplaintsCount');
+    if (countBadge) {
+        countBadge.textContent = filtered.length;
+    }
             const tbody = document.getElementById('empTableBody');
             if (!tbody) return;
 
@@ -1552,8 +1569,8 @@
                     <td>${c.phone || ''}</td>
                     <td>${c.complaintType || ''}</td>
                     <td>${tsToDateStr(c.date)}</td>
-                    <td>${c.orderTime || ''}</td>
-                    <td>${c.complaintTime || ''}</td>
+                    <td>${format12Hour(c.orderTime)}</td>
+<td>${format12Hour(c.complaintTime)}</td>
                     <td>${c.location || ''}</td>
                     <td>${c.employeeName || c.addedBy || c.userName || ''}</td>
                     <td>${c.branchUser || ''}</td>
@@ -2464,19 +2481,21 @@ const cQuery = query(collection(db, 'complaints'), orderBy('createdAt', 'desc'))
                 };
 
                 // 2. إعداد نسخة ليتم إضافتها في سجل الشكاوى الرئيسي تلقائياً
-                const mainComplaintData = {
-                    date: getCurrentDate(), // تاريخ اليوم
-                    branch: branch,         // الفرع المختار
-                    phone: phone,          // الرقم المكتوب
-                    complaintType: 'تأخير', // تصنيف افتراضي (يمكنك تغييره)
-                    customerName: '', 
-                    details: '',
-                    userId: currentUserDocId,
-                    userName: currentUserData.fullName || 'موظف',
-                employeeName: currentUserData.fullName || currentUserData.username || 'موظف',
-                    createdAt: serverTimestamp(),
-                    status: 'تحت المراجعة'
-                };
+              // داخل دالة _sendQuickAlertFromPage ابحث عن متغير mainComplaintData وأضف:
+const mainComplaintData = {
+    date: getCurrentDate(),
+    branch: branch,
+    phone: phone,
+    complaintType: 'تأخير',
+    complaintTime: getCurrentTimeFormatted(), // <--- هذا السطر الجديد لإضافة الوقت في سجل الموظف
+    customerName: '', 
+    details: '',
+    userId: currentUserDocId,
+    userName: currentUserData.fullName || 'موظف',
+    employeeName: currentUserData.fullName || 'موظف',
+    createdAt: serverTimestamp(),
+    status: 'تحت المراجعة'
+};
 
                 // 3. التنفيذ: الحفظ في المكانين في نفس اللحظة
                 await Promise.all([
@@ -2583,8 +2602,8 @@ window._updateQuickStatus = async function(id, status) {
 
         // التعديل هنا أضفنا (index)
         tbody.innerHTML = docs.map((d, index) => {
-            const time = d.createdAt?.toDate ? d.createdAt.toDate().toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'}) : 'الآن';
-            
+// ابحث عن سطر const time وقم بتغييره لهذا:
+const time = d.createdAt?.toDate ? d.createdAt.toDate().toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit', hour12: true}) : 'الآن';            
             let color = '#fbbf24'; 
             if (d.status?.includes('كامل')) color = '#10b981';
             if (d.status?.includes('ناقص')) color = '#ef4444';
@@ -2963,6 +2982,20 @@ window._filterQuickTableByPhone = function(searchValue) {
         }
     }
 };
+// دالة لجلب الوقت الحالي بتنسيق 24 ساعة ليتناسب مع input type="time"
+// دالة لتحويل الوقت من 24 ساعة إلى 12 ساعة (صباحاً/مساءً)
+function format12Hour(timeStr) {
+    if (!timeStr) return '';
+    let [hours, minutes] = timeStr.split(':');
+    hours = parseInt(hours);
+    const ampm = hours >= 12 ? 'PM' : 'Am';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // الساعة 0 تصبح 12
+    return `${hours}:${minutes} ${ampm}`;
+}
+
+// تحديث وقت الشكوى تلقائياً عند تحميل الصفحة أو تبديل الحساب
+
         </script>
         </body>
         </html>
