@@ -1713,11 +1713,9 @@ window._generateReport = async function() {
             };
 
             // --- التعديل هنا: استثناء مركز الاتصالات من الجمع في الإجمالي العام ---
-            if (br !== "مركز الاتصالات") {
-                Object.keys(grandTotals).forEach(key => {
-                    grandTotals[key] += stats[key === 'complaints' ? 'total' : key];
-                });
-            }
+Object.keys(grandTotals).forEach(key => {
+    grandTotals[key] += stats[key === 'complaints' ? 'total' : key];
+});
 
             const percentage = stats.orders > 0 ? ((stats.total / stats.orders) * 100).toFixed(2) : "0.00";
             const statusColor = percentage > 3 ? '#ef4444' : '#00f2ff';
@@ -1726,8 +1724,8 @@ window._generateReport = async function() {
             const rowStyle = br === "مركز الاتصالات" ? "background: rgba(255,255,255,0.03); border-top: 1px dashed #666;" : "";
 
             reportHtml += `
-                <tr style="${rowStyle}">
-                    <td style="font-weight:bold; color:${br === "مركز الاتصالات" ? '#94a3b8' : 'var(--primary)'}">${br} ${br === "مركز الاتصالات" ? '<small>()</small>' : ''}</td>
+    <tr>
+        <td style="font-weight:bold; color:var(--primary)">${br}</td>
                     <td style="font-size:15px; font-weight:bold;">${stats.total}</td>
                     <td>${stats.delay}</td>
                     <td>${stats.missing}</td>
@@ -2833,4 +2831,4 @@ window._quickCheckBlock = function(phone) {
 };
     </script>
     </body>
-    </html>
+    </html>    
