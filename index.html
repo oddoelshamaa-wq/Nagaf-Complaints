@@ -830,6 +830,7 @@
     <!-- فلاتر التقرير -->
     <div class="filter-bar">
         <span class="f-label">تصفية التقرير:</span>
+        <div class="f-item narrow"><i class="fas fa-chart-bar"></i><select id="reportViewMode" onchange="window._generateReport()"><option value="period">إجمالي الفترة</option><option value="daily">تفصيلي حسب اليوم</option></select></div>
         <div class="f-item narrow"><i class="fas fa-calendar-alt"></i><input type="month" id="reportMonthFilter" onchange="window._generateReport()"></div>
         <div class="f-item narrow"><i class="fas fa-arrow-right"></i><input type="date" id="repDateFrom" onchange="window._generateReport()"></div>
         <div class="f-item narrow"><i class="fas fa-arrow-left"></i><input type="date" id="repDateTo" onchange="window._generateReport()"></div>
@@ -841,6 +842,7 @@
         <table id="reportTable">
             <thead>
                 <tr>
+                    <th id="reportDateHeader" class="hidden">التاريخ</th>
                     <th>الفرع</th>
                     <th>إجمالي الشكاوى</th>
                     <th>تأخير</th>
@@ -1668,6 +1670,8 @@ window._generateReport = async function() {
     const month = document.getElementById('reportMonthFilter').value;
     const dateFrom = document.getElementById('repDateFrom').value;
     const dateTo = document.getElementById('repDateTo').value;
+    const dailyMode = document.getElementById('reportViewMode').value === 'daily';
+    document.getElementById('reportDateHeader').classList.toggle('hidden', !dailyMode);
     
     const tbody = document.getElementById('reportTableBody');
     const tfoot = document.getElementById('reportTableFoot');
@@ -1678,6 +1682,7 @@ window._generateReport = async function() {
     try {
         const ordersSnap = await getDocs(collection(db, 'daily_orders'));
         let branchOrdersMap = {}; 
+        let dailyOrdersMap = {};
 
         ordersSnap.forEach(doc => {
             const data = doc.data();
@@ -1695,6 +1700,10 @@ window._generateReport = async function() {
 
             if (isIncluded) {
                 branchOrdersMap[data.branch] = (branchOrdersMap[data.branch] || 0) + (data.count || 0);
+                if (orderDateFrom === orderDateTo) {
+                    const dayKey = `${orderDateFrom}_${data.branch}`;
+                    dailyOrdersMap[dayKey] = (dailyOrdersMap[dayKey] || 0) + (data.count || 0);
+                }
             }
         });
 
@@ -1708,11 +1717,34 @@ window._generateReport = async function() {
         let reportHtml = '';
         let chartLabels = [];
         let chartData = [];
+        let reportDates = [];
 
-        branches.forEach(br => {
+        if (dailyMode) {
+            const startDate = dateFrom && dateTo ? dateFrom : `${month}-01`;
+            const monthLastDay = new Date(Number(month.substring(0, 4)), Number(month.substring(5, 7)), 0).getDate();
+            const endDate = dateFrom && dateTo ? dateTo : `${month}-${monthLastDay.toString().padStart(2, '0')}`;
+            if (startDate && endDate && startDate <= endDate) {
+                const [startYear, startMonth, startDay] = startDate.split('-').map(Number);
+                const [endYear, endMonth, endDay] = endDate.split('-').map(Number);
+                const cursor = new Date(Date.UTC(startYear, startMonth - 1, startDay));
+                const lastDay = Date.UTC(endYear, endMonth - 1, endDay);
+                while (cursor.getTime() <= lastDay) {
+                    reportDates.push(cursor.toISOString().substring(0, 10));
+                    cursor.setUTCDate(cursor.getUTCDate() + 1);
+                }
+            }
+        }
+
+        const reportRows = dailyMode
+            ? reportDates.flatMap(date => branches.map(br => ({ br, date })))
+            : branches.map(br => ({ br, date: '' }));
+        const dailyComplaintTotals = {};
+
+        reportRows.forEach(({ br, date }) => {
             const brComplaints = allComplaints.filter(c => {
                 const cDate = tsToDateStr(c.date);
                 if (c.branch !== br || !cDate) return false;
+                if (dailyMode) return cDate === date;
                 if (dateFrom && dateTo) return (cDate >= dateFrom && cDate <= dateTo);
                 else if (month) return cDate.startsWith(month);
                 return true;
@@ -1730,7 +1762,7 @@ window._generateReport = async function() {
                 takerError: brComplaints.filter(c => c.complaintType === 'خطأ متلقي طلبات').length,
                 delivery: brComplaints.filter(c => c.complaintType === 'مندوب').length,
                 foreign: brComplaints.filter(c => c.complaintType === 'جسم غريب').length,
-                orders: branchOrdersMap[br] || 0
+                orders: dailyMode ? (dailyOrdersMap[`${date}_${br}`] || 0) : (branchOrdersMap[br] || 0)
             };
 
             // --- التعديل هنا: استثناء مركز الاتصالات من الجمع في الإجمالي العام ---
@@ -1740,12 +1772,14 @@ Object.keys(grandTotals).forEach(key => {
 
             const percentage = stats.orders > 0 ? ((stats.total / stats.orders) * 100).toFixed(2) : "0.00";
             const statusColor = percentage > 3 ? '#ef4444' : '#00f2ff';
+            if (dailyMode) dailyComplaintTotals[date] = (dailyComplaintTotals[date] || 0) + stats.total;
 
             // تمييز سطر مركز الاتصالات بلون مختلف قليلاً ليعرف المستخدم أنه منفصل
             const rowStyle = br === "مركز الاتصالات" ? "background: rgba(255,255,255,0.03); border-top: 1px dashed #666;" : "";
 
             reportHtml += `
     <tr>
+        ${dailyMode ? `<td>${date}</td>` : ''}
         <td style="font-weight:bold; color:var(--primary)">${br}</td>
                     <td style="font-size:15px; font-weight:bold;">${stats.total}</td>
                     <td>${stats.delay}</td>
@@ -1763,9 +1797,17 @@ Object.keys(grandTotals).forEach(key => {
                 </tr>
             `;
 
-            chartLabels.push(br);
-            chartData.push(stats.total);
+            if (!dailyMode) {
+                chartLabels.push(br);
+                chartData.push(stats.total);
+            }
         });
+
+        if (dailyMode) {
+            grandTotals.orders = Object.values(branchOrdersMap).reduce((total, count) => total + count, 0);
+            chartLabels = reportDates;
+            chartData = reportDates.map(date => dailyComplaintTotals[date] || 0);
+        }
 
         tbody.innerHTML = reportHtml;
 
@@ -1789,7 +1831,7 @@ Object.keys(grandTotals).forEach(key => {
             </tr>
         `;
 
-        updateChart(chartLabels, chartData);
+        updateChart(chartLabels, chartData, dailyMode ? 'عدد الشكاوى لكل يوم' : 'عدد الشكاوى لكل فرع');
 
     } catch (e) {
         console.error("Report Error:", e);
@@ -1798,7 +1840,7 @@ Object.keys(grandTotals).forEach(key => {
 };
 
 // دالة تحديث الرسم البياني
-function updateChart(labels, data) {
+function updateChart(labels, data, seriesLabel = 'عدد الشكاوى لكل فرع') {
     const ctx = document.getElementById('complaintsChart').getContext('2d');
     if (window.myChart) window.myChart.destroy();
     
@@ -1807,7 +1849,7 @@ function updateChart(labels, data) {
         data: {
             labels: labels,
             datasets: [{
-                label: 'عدد الشكاوى لكل فرع',
+                label: seriesLabel,
                 data: data,
                 backgroundColor: 'rgba(0, 242, 255, 0.6)',
                 borderColor: '#00f2ff',
