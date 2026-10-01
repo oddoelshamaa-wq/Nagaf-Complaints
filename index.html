@@ -1677,12 +1677,14 @@ window._generateReport = async function() {
     const tfoot = document.getElementById('reportTableFoot');
     if (!tbody) return;
 
-    tbody.innerHTML = '<tr><td colspan="14" style="text-align:center; padding:30px;"><i class="fas fa-spinner fa-spin"></i> جاري تحليل البيانات...</td></tr>';
+    tbody.innerHTML = `<tr><td colspan="${dailyMode ? 15 : 14}" style="text-align:center; padding:30px;"><i class="fas fa-spinner fa-spin"></i> جاري تحليل البيانات...</td></tr>`;
 
     try {
         const ordersSnap = await getDocs(collection(db, 'daily_orders'));
         let branchOrdersMap = {}; 
         let dailyOrdersMap = {};
+        let periodOrdersMap = {};
+        let singleDayOrdersMap = {};
 
         ordersSnap.forEach(doc => {
             const data = doc.data();
@@ -1699,12 +1701,21 @@ window._generateReport = async function() {
             }
 
             if (isIncluded) {
-                branchOrdersMap[data.branch] = (branchOrdersMap[data.branch] || 0) + (data.count || 0);
                 if (orderDateFrom === orderDateTo) {
                     const dayKey = `${orderDateFrom}_${data.branch}`;
                     dailyOrdersMap[dayKey] = (dailyOrdersMap[dayKey] || 0) + (data.count || 0);
+                    singleDayOrdersMap[data.branch] = (singleDayOrdersMap[data.branch] || 0) + (data.count || 0);
+                } else {
+                    periodOrdersMap[data.branch] = (periodOrdersMap[data.branch] || 0) + (data.count || 0);
                 }
             }
+        });
+
+        Object.keys(singleDayOrdersMap).forEach(branch => {
+            branchOrdersMap[branch] = periodOrdersMap[branch] || singleDayOrdersMap[branch];
+        });
+        Object.keys(periodOrdersMap).forEach(branch => {
+            branchOrdersMap[branch] = periodOrdersMap[branch];
         });
 
         const branches = ["العباسيه", "عبده باشا", "نادي السكه", "عباس العقاد", "يوسف عباس", "المعهد", "مركز الاتصالات"];
@@ -1814,6 +1825,7 @@ Object.keys(grandTotals).forEach(key => {
         const grandPercentage = grandTotals.orders > 0 ? ((grandTotals.complaints / grandTotals.orders) * 100).toFixed(2) : "0.00";
         tfoot.innerHTML = `
             <tr style="background: rgba(0, 242, 255, 0.1); border-top: 2px solid var(--primary);">
+                ${dailyMode ? '<td></td>' : ''}
                 <td style="color:var(--primary)">الإجمالي العام </td>
                 <td>${grandTotals.complaints}</td>
                 <td>${grandTotals.delay}</td>
@@ -1835,7 +1847,7 @@ Object.keys(grandTotals).forEach(key => {
 
     } catch (e) {
         console.error("Report Error:", e);
-        tbody.innerHTML = '<tr><td colspan="14" style="color:var(--danger);">حدث خطأ في استخراج البيانات</td></tr>';
+        tbody.innerHTML = `<tr><td colspan="${dailyMode ? 15 : 14}" style="color:var(--danger);">حدث خطأ في استخراج البيانات</td></tr>`;
     }
 };
 
