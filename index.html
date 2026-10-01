@@ -2828,6 +2828,12 @@ window._quickCheckBlock = function(phone) {
     };
     window._exportReportExcel = async function() {
     const table = document.getElementById('reportTable');
+    await window._generateReport();
+    const dailyMode = document.getElementById('reportViewMode').value === 'daily';
+    const dateFrom = document.getElementById('repDateFrom').value;
+    const dateTo = document.getElementById('repDateTo').value;
+    const month = document.getElementById('reportMonthFilter').value;
+    const reportPeriod = dateFrom && dateTo ? `${dateFrom}_${dateTo}` : (month || getCurrentDate());
     const rows = Array.from(table.querySelectorAll('tr'));
     
     if (rows.length <= 1) {
@@ -2867,7 +2873,9 @@ window._quickCheckBlock = function(phone) {
 
         // إضافة بيانات الجدول
         rows.forEach((row, rowIndex) => {
-            const rowData = Array.from(row.querySelectorAll('th, td')).map(cell => cell.innerText);
+            const rowData = Array.from(row.querySelectorAll('th, td'))
+                .filter(cell => !cell.classList.contains('hidden'))
+                .map(cell => cell.innerText);
             const excelRow = worksheet.addRow(rowData);
             excelRow.height = 25;
 
@@ -2903,7 +2911,7 @@ window._quickCheckBlock = function(phone) {
         // تحميل الملف
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
-        link.download = `تقرير_نجف_النهائي.xlsx`;
+        link.download = `تقرير_نجف_${dailyMode ? 'يومي' : 'إجمالي_الفترة'}_${reportPeriod}.xlsx`;
         link.click();
         
         showToast('تم تصدير التقرير بنجاح');
