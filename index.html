@@ -801,8 +801,17 @@
     
     <!-- مدخلات عدد الأوردرات -->
     <div class="filter-bar" style="background: rgba(0, 242, 255, 0.05); border: 1px dashed var(--primary);">
-        <span class="f-label">إدخال أوردرات اليوم:</span>
-        <div class="f-item narrow"><i class="fas fa-calendar-day"></i><input type="date" id="orderEntryDate" onchange="window._loadDailyOrdersForDate()"></div>
+        <span class="f-label">إدخال إجمالي الأوردرات:</span>
+        <div class="f-item narrow">
+            <i class="fas fa-calendar-day"></i>
+            <select id="orderEntryMode" onchange="window._toggleOrderEntryMode()">
+                <option value="single">يوم واحد</option>
+                <option value="range">من تاريخ إلى تاريخ</option>
+            </select>
+        </div>
+        <div class="f-item narrow" id="orderSingleDateWrap"><i class="fas fa-calendar-day"></i><input type="date" id="orderEntryDate" onchange="window._loadDailyOrdersForDate()" title="التاريخ"></div>
+        <div class="f-item narrow hidden" id="orderDateFromWrap"><i class="fas fa-arrow-right"></i><input type="date" id="orderEntryDateFrom" onchange="window._loadDailyOrdersForDate()" title="من تاريخ"></div>
+        <div class="f-item narrow hidden" id="orderDateToWrap"><i class="fas fa-arrow-left"></i><input type="date" id="orderEntryDateTo" onchange="window._loadDailyOrdersForDate()" title="إلى تاريخ"></div>
         <div class="f-item narrow">
             <select id="orderBranchSelect" onchange="window._loadDailyOrdersForDate()">
                 <option value="العباسيه">العباسيه</option>
@@ -814,7 +823,7 @@
                 <option value="مركز الاتصالات">مركز الاتصالات</option>
             </select>
         </div>
-        <div class="f-item narrow"><i class="fas fa-shopping-basket"></i><input type="number" id="orderCountInput" placeholder="عدد الأوردرات"></div>
+        <div class="f-item narrow"><i class="fas fa-shopping-basket"></i><input type="number" id="orderCountInput" min="0" placeholder="الإجمالي"></div>
         <button class="btn btn-sm btn-neon" onclick="window._saveDailyOrders()" style="width:auto; margin:0;"><i class="fas fa-check"></i> حفظ</button>
     </div>
 
@@ -1608,11 +1617,21 @@ document.getElementById('emp-name-display').textContent = empData.fullName
         const now = new Date();
         document.getElementById('reportMonthFilter').value = now.toISOString().substring(0, 7);
         document.getElementById('orderEntryDate').value = now.toISOString().substring(0, 10);
+        document.getElementById('orderEntryDateFrom').value = now.toISOString().substring(0, 10);
+        document.getElementById('orderEntryDateTo').value = now.toISOString().substring(0, 10);
         
         // تشغيل الجلب فوراً لليوم الحالي
         window._loadDailyOrdersForDate(); 
         window._generateReport();
     }
+    };
+
+    window._toggleOrderEntryMode = function() {
+        const isRange = document.getElementById('orderEntryMode').value === 'range';
+        document.getElementById('orderSingleDateWrap').classList.toggle('hidden', isRange);
+        document.getElementById('orderDateFromWrap').classList.toggle('hidden', !isRange);
+        document.getElementById('orderDateToWrap').classList.toggle('hidden', !isRange);
+        window._loadDailyOrdersForDate();
     };
 
     // 2. وظيفة حفظ الأوردرات اليومية
@@ -1664,12 +1683,14 @@ window._generateReport = async function() {
             const data = doc.data();
             if (!data || !data.date || !data.branch) return; 
 
-            const orderDate = data.date;
+            const orderDate = data.date || data.dateFrom;
+            const orderDateFrom = data.dateFrom || orderDate;
+            const orderDateTo = data.dateTo || orderDate;
             let isIncluded = false;
             if (dateFrom && dateTo) {
-                if (orderDate >= dateFrom && orderDate <= dateTo) isIncluded = true;
+                isIncluded = orderDateFrom <= dateTo && orderDateTo >= dateFrom;
             } else if (month && orderDate.startsWith(month)) {
-                isIncluded = true;
+                isIncluded = orderDateFrom.substring(0, 7) <= month && orderDateTo.substring(0, 7) >= month;
             }
 
             if (isIncluded) {
@@ -2306,15 +2327,18 @@ document.getElementById('emp-name-display').textContent = sData.fullName;       
     // وظيفة لجلب عدد الأوردرات المسجل مسبقاً عند تغيير التاريخ أو الفرع
     // 1. وظيفة الجلب التلقائي (بمجرد تغيير التاريخ أو الفرع)
     window._loadDailyOrdersForDate = async function() {
+        const mode = document.getElementById('orderEntryMode').value;
         const date = document.getElementById('orderEntryDate').value;
+        const dateFrom = document.getElementById('orderEntryDateFrom').value;
+        const dateTo = document.getElementById('orderEntryDateTo').value;
         const branch = document.getElementById('orderBranchSelect').value;
         const countInput = document.getElementById('orderCountInput');
 
-        if (!date || !branch) return;
+        if ((!date && mode === 'single') || (mode === 'range' && (!dateFrom || !dateTo)) || !branch) return;
 
         try {
             // بناء المعرف (نفس المعرف المستخدم في الحفظ)
-            const docId = `${date}_${branch}`;
+            const docId = mode === 'range' ? `${dateFrom}_${dateTo}_${branch}` : `${date}_${branch}`;
             
             // جلب المستند مباشرة باستخدام الدوال المستوردة في أعلى الملف
             const docRef = doc(db, 'daily_orders', docId);
@@ -2334,21 +2358,27 @@ document.getElementById('emp-name-display').textContent = sData.fullName;       
 
     // 2. وظيفة الحفظ المحدثة
     window._saveDailyOrders = async function() {
+        const mode = document.getElementById('orderEntryMode').value;
         const date = document.getElementById('orderEntryDate').value;
+        const dateFrom = document.getElementById('orderEntryDateFrom').value;
+        const dateTo = document.getElementById('orderEntryDateTo').value;
         const branch = document.getElementById('orderBranchSelect').value;
         const count = parseInt(document.getElementById('orderCountInput').value);
 
-        if (!date || !count || count < 0) {
-            showToast('يرجى إدخال التاريخ وعدد الأوردرات بشكل صحيح', true);
+        const validDates = mode === 'range' ? dateFrom && dateTo && dateFrom <= dateTo : date;
+        if (!validDates || !Number.isFinite(count) || count < 0) {
+            showToast('يرجى إدخال التواريخ والإجمالي بشكل صحيح', true);
             return;
         }
 
         try {
-            const docId = `${date}_${branch}`;
+            const docId = mode === 'range' ? `${dateFrom}_${dateTo}_${branch}` : `${date}_${branch}`;
             
             // استخدام setDoc مع db المعرف في المودول
             await setDoc(doc(db, 'daily_orders', docId), {
-                date: date,
+                date: mode === 'range' ? dateFrom : date,
+                dateFrom: mode === 'range' ? dateFrom : date,
+                dateTo: mode === 'range' ? dateTo : date,
                 branch: branch,
                 count: count,
                 updatedAt: serverTimestamp()
