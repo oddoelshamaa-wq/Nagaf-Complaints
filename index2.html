@@ -184,6 +184,19 @@
                     max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
                 }
                 td.details-cell { max-width: 280px; white-space: normal; line-height: 1.6; text-align: right; padding-right: 16px; }
+                #sharedComplaintResults td {
+                    max-width: none; overflow: visible; text-overflow: clip; white-space: normal;
+                    vertical-align: top; line-height: 1.7; min-width: 110px;
+                }
+                #sharedComplaintResults td:nth-child(12) {
+                    min-width: 350px; max-width: 520px; text-align: right;
+                    overflow-wrap: anywhere; white-space: pre-wrap;
+                }
+                #sharedComplaintResults td:nth-child(13),
+                #sharedComplaintResults td:nth-child(14) {
+                    min-width: 240px; max-width: 360px; text-align: right;
+                    overflow-wrap: anywhere;
+                }
                 tr:hover td { background: rgba(255,255,255,0.03); }
                 .badge { padding: 4px 12px; border-radius: 8px; font-weight: 700; font-size: 12px; display: inline-block; }
                 .badge-active { background: rgba(16,185,129,0.15); color: #10b981; }
@@ -286,6 +299,14 @@
                     border-color: rgba(0,242,255,0.4); color: var(--primary);
                 }
                 .mgr-tab .tab-count { background: rgba(0,242,255,0.2); color: var(--primary); padding: 2px 8px; border-radius: 6px; font-size: 11px; }
+                .overdue-reminder {
+                    margin: 0 0 20px; padding: 16px 20px; border: 1px solid rgba(251,191,36,0.45);
+                    border-radius: 14px; background: rgba(251,191,36,0.1); color: #fde68a;
+                }
+                .overdue-reminder h4 { display: flex; align-items: center; gap: 9px; margin-bottom: 8px; color: #fbbf24; }
+                .overdue-reminder-count { margin-right: auto; padding: 2px 9px; border-radius: 20px; background: rgba(251,191,36,0.18); }
+                .overdue-reminder ul { display: grid; gap: 5px; margin: 8px 0 0; padding-right: 24px; }
+                .overdue-reminder li { line-height: 1.6; }
                 .pass-toggle {
                     position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
                     background: none; border: none; color: var(--primary); cursor: pointer;
@@ -332,6 +353,54 @@
                 .theme-applied body::before { background: radial-gradient(circle at 20% 30%, var(--emp-accent-8), transparent 40%), radial-gradient(circle at 80% 70%, var(--emp-accent2-8), transparent 40%); }
                 .theme-applied .theme-color-btn { border-color: var(--emp-accent-40); }
                 .theme-applied .theme-color-btn:hover { box-shadow: 0 0 18px var(--emp-accent-40); }
+                .employee-shortcuts { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 0 0 12px; }
+                .employee-shortcut { background: var(--shortcut-color); color: var(--shortcut-text-color, #fff); margin: 0; }
+                .employee-theme-panel {
+                    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+                    gap: 12px; padding: 14px; margin: 0 0 18px;
+                    background: rgba(15,23,42,0.85); border: 1px solid var(--border); border-radius: 14px;
+                }
+                .employee-theme-control { display: none; align-items: center; justify-content: space-between; gap: 12px; }
+                body.employee-session .employee-theme-control { display: flex; }
+                .employee-theme-control label { color: #cbd5e1; font-size: 12px; font-weight: 700; }
+                .employee-theme-control input[type="color"] {
+                    width: 40px; height: 34px; padding: 3px; border: 1px solid var(--border);
+                    border-radius: 9px; cursor: pointer; background: transparent;
+                }
+                .employee-theme-toggle { background: rgba(255,255,255,0.06); color: #cbd5e1; border: 1px solid var(--border); margin: 0; }
+                .theme-settings-saving { display: none; color: var(--warning); font-size: 11px; font-weight: 700; }
+                .theme-settings-saving.show { display: inline; }
+                .customizable-page { --page-accent: #fbbf24; --page-accent-rgb: 251,191,36; }
+                .customizable-page .session-bar { background: rgba(var(--page-accent-rgb),0.1) !important; border-color: var(--page-accent) !important; }
+                .customizable-page .session-bar .user-info { color: var(--page-accent) !important; }
+                .customizable-page .card { border-color: var(--page-accent) !important; }
+                .customizable-page h3 { color: var(--page-accent) !important; background: none !important; -webkit-text-fill-color: var(--page-accent) !important; filter: none !important; }
+                .customizable-page .input-box label,
+                .customizable-page .field-wrap i,
+                .customizable-page th { color: var(--page-accent) !important; }
+                .customizable-page th { border-bottom-color: rgba(var(--page-accent-rgb),0.3) !important; }
+                .customizable-page input:focus,
+                .customizable-page select:focus { border-color: var(--page-accent) !important; box-shadow: 0 0 20px rgba(var(--page-accent-rgb),0.2) !important; }
+                .customizable-page .btn:not(.btn-logout):not(.btn-cancel) { background: var(--page-accent) !important; color: var(--page-accent-text, #fff) !important; }
+                .customizable-page .btn-neon { background: var(--page-accent) !important; color: var(--page-accent-text, #fff) !important; }
+                .customizable-page .page-color-picker { display: none; align-items: center; gap: 8px; color: var(--page-accent); font-size: 12px; font-weight: 700; }
+                body.employee-session .customizable-page .page-color-picker { display: flex; }
+                .customizable-page .page-color-picker input[type="color"] {
+                    width: 34px; height: 32px; padding: 2px; border: 1px solid rgba(255,255,255,0.3);
+                    border-radius: 8px; cursor: pointer; background: transparent;
+                }
+                #blacklist-page #blockResultArea { border-color: var(--page-accent) !important; background: rgba(var(--page-accent-rgb),0.2) !important; }
+                #blacklist-page #blockResultArea i { color: var(--page-accent) !important; }
+                #blacklist-page .table-wrap thead tr { background: rgba(var(--page-accent-rgb),0.1) !important; }
+                #blockModal .modal-box { border-color: var(--page-accent, var(--danger)) !important; }
+                #blockModal .modal-header h3 { color: var(--page-accent, var(--danger)) !important; -webkit-text-fill-color: var(--page-accent, var(--danger)) !important; }
+                #blockModal .input-box label,
+                #blockModal .field-wrap i { color: var(--page-accent, var(--danger)) !important; }
+                #blockModal .btn { background: var(--page-accent, var(--danger)) !important; color: var(--page-accent-text, #fff) !important; }
+                @media (max-width: 700px) {
+                    .employee-theme-panel { grid-template-columns: 1fr; }
+                    .employee-shortcuts > .btn { flex: 1 1 auto; }
+                }
 
                 .emp-color-cell { display: flex; align-items: center; justify-content: center; gap: 6px; }
                 .emp-color-dot { width: 22px; height: 22px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); }
@@ -402,6 +471,9 @@
     font-weight: 700;
     color: var(--primary);
     direction: ltr; /* لضمان ظهور م/ص بجانب الرقم بشكل صحيح */
+}:root {
+    /* ... الألوان الموجودة ... */
+    --call-color: #f472b6; /* لون وردي للمكالمات */
 }
             </style>
         </head>
@@ -426,6 +498,13 @@
                         <div class="input-box">
                             <label>الاسم الكامل</label>
                             <div class="field-wrap"><i class="fas fa-id-card"></i><input type="text" id="empFullName" required placeholder="مثال: أحمد محمد علي"></div>
+                        </div>
+                        <div class="input-box full-width">
+                            <label>أرقام الاتصال</label>
+                            <div id="empPhoneInputs" style="display:grid; gap:8px;"></div>
+                            <button type="button" class="btn btn-sm" onclick="window._addEmployeePhoneInput()" style="margin-top:8px; background:var(--emp-accent-15); color:var(--emp-accent);">
+                                <i class="fas fa-plus"></i> إضافة رقم آخر
+                            </button>
                         </div>
                         <div class="input-box">
                             <label>كلمة المرور</label>
@@ -539,12 +618,35 @@
             </div>
             
             <!-- أضف هذا الزر في شريط الموظف وشريط المدير -->
-        <button class="btn btn-sm" onclick="window._showQuickAlertsPage()" style="background: var(--warning); color: #000; font-weight: 900; margin-right: 10px;">
+        <div class="employee-shortcuts">
+        <button class="btn btn-sm employee-shortcut" id="empQuickAlertsShortcut" onclick="window._showQuickAlertsPage()" style="--shortcut-color:#fbbf24; --shortcut-text-color:#000;">
             <i class="fas fa-bolt"></i> البلاغات السريعة
         </button>
-        <button class="btn btn-sm" onclick="window._showBlacklistPage()" style="background: var(--danger); color: #fff; font-weight: 900; margin-right: 10px;">
+        <button class="btn btn-sm employee-shortcut" id="empSharedQuickAlertsShortcut" onclick="window._showSharedQuickAlertsPage()" style="--shortcut-color:#0ea5e9;">
+            <i class="fas fa-people-arrows-left-right"></i> متابعة بلاغات الزملاء
+        </button>
+        <button class="btn btn-sm employee-shortcut" id="empBlacklistShortcut" onclick="window._showBlacklistPage()" style="--shortcut-color:#ef4444;">
             <i class="fas fa-user-lock"></i> القائمة السوداء
         </button>
+        <button type="button" class="btn btn-sm employee-theme-toggle employee-theme-control" onclick="window._toggleEmployeeThemePanel()">
+            <i class="fas fa-palette"></i> تخصيص الألوان
+        </button>
+        </div>
+        <div id="employeeThemePanel" class="employee-theme-panel hidden">
+            <div class="employee-theme-control">
+                <label for="shortcutQuickAlertsColor">زر البلاغات السريعة</label>
+                <input type="color" id="shortcutQuickAlertsColor" data-theme-group="shortcutColors" data-theme-key="quickAlerts" value="#fbbf24">
+            </div>
+            <div class="employee-theme-control">
+                <label for="shortcutSharedAlertsColor">زر متابعة بلاغات الزملاء</label>
+                <input type="color" id="shortcutSharedAlertsColor" data-theme-group="shortcutColors" data-theme-key="sharedQuickAlerts" value="#0ea5e9">
+            </div>
+            <div class="employee-theme-control">
+                <label for="shortcutBlacklistColor">زر القائمة السوداء</label>
+                <input type="color" id="shortcutBlacklistColor" data-theme-group="shortcutColors" data-theme-key="blacklist" value="#ef4444">
+            </div>
+            <span class="theme-settings-saving"><i class="fas fa-spinner fa-spin"></i> جاري حفظ الألوان...</span>
+        </div>
             <div class="card" style="margin-bottom: 25px;">
                 <h3><i class="fas fa-plus-square"></i> تحرير شكوى جديدة</h3>
                 <form id="complaintForm">
@@ -733,6 +835,11 @@
                 <div class="stat-card"><div class="stat-num" id="statUsers">0</div><div class="stat-label">موظفين نشطين</div></div>
                 <div class="stat-card"><div class="stat-num" id="statEmployees">0</div><div class="stat-label">إجمالي الموظفين</div></div>
             </div>
+            <section id="overdueComplaintReminder" class="overdue-reminder hidden" role="alert" aria-live="polite">
+                <h4><i class="fas fa-bell"></i> شكاوى متأخرة بدون رد <span id="overdueComplaintCount" class="overdue-reminder-count"></span></h4>
+                <div>مرّ أكثر من 24 ساعة على بلاغ من «إبلاغ عن شكوى جديدة الآن» دون رد من الإدارة:</div>
+                <ul id="overdueComplaintList"></ul>
+            </section>
             <div class="mgr-tabs">
                 <div class="mgr-tab active" onclick="window._switchTab('complaints', this)">
                     <i class="fas fa-list-alt"></i> سجل الشكاوى <span class="tab-count" id="tabCountComplaints">0</span>
@@ -798,7 +905,7 @@
                 
                 <div class="filter-bar" style="margin-bottom:16px;">
                     <span class="f-label">بحث:</span>
-                    <div class="f-item"><i class="fas fa-search"></i><input type="text" id="empSearchInput" oninput="renderEmployeesTable()" placeholder="بحث بالاسم أو اسم المستخدم..." style="width:100%;"></div>
+                    <div class="f-item"><i class="fas fa-search"></i><input type="text" id="empSearchInput" oninput="renderEmployeesTable()" placeholder="بحث بالاسم أو اسم المستخدم أو رقم الهاتف..." style="width:100%;"></div>
                     <div class="f-item narrow"><i class="fas fa-filter"></i>
                         <select id="empRoleFilter" onchange="renderEmployeesTable()" style="width:100%;">
                             <option value="">كل الأدوار</option><option value="employee">موظف</option><option value="viewer">مشاهد</option><option value="manager">مدير</option>
@@ -813,7 +920,7 @@
                 <div class="table-wrap emp-table-wrap">
                     <table id="employeesTable">
                         <thead><tr>
-                            <th>#</th><th>اسم المستخدم</th><th>الاسم الكامل</th><th>الدور</th>
+                            <th>#</th><th>اسم المستخدم</th><th>الاسم الكامل</th><th>أرقام الاتصال</th><th>الدور</th>
                             <th>الفرع</th><th>اللون</th><th>الحالة</th><th>تاريخ الإنشاء</th><th>ملاحظات</th>
                             <th>تعديل</th><th>حذف</th>
                         </tr></thead>
@@ -890,13 +997,18 @@
         </div>
     <!-- شاشة البلاغات السريعة المستقلة -->
     <!-- شاشة البلاغات السريعة المستقلة -->
-    <div id="quick-alerts-page" class="app-container hidden">
+    <div id="quick-alerts-page" class="app-container hidden customizable-page">
         
         <div class="session-bar" style="background: rgba(251, 191, 36, 0.1); border-color: var(--warning);">
             <div class="user-info" style="color: var(--warning);">
                 <i class="fas fa-bolt"></i>
                 <span>نظام البلاغات السريعة اللحظي</span>
             </div>
+            <label class="page-color-picker">
+                لون الصفحة
+                <input type="color" data-theme-group="pageColors" data-theme-key="quickAlerts" value="#fbbf24" aria-label="تغيير لون صفحة البلاغات السريعة">
+                <span class="theme-settings-saving"><i class="fas fa-spinner fa-spin"></i></span>
+            </label>
             <button class="btn btn-logout" onclick="window._backToMain()" style="border-color: #94a3b8; color: #94a3b8;">
                 <i class="fas fa-arrow-right"></i> العودة للرئيسية
             </button>
@@ -912,6 +1024,9 @@
                     <label style="font-size: 13px; color: #94a3b8;">مراجعة يوم آخر:</label>
                     <input type="date" id="qPageDateFilter" onchange="window._changeQuickAlertsDate(this.value)" style="width: auto; padding: 5px 10px; height: 35px; border-radius: 8px;">
                 </div>
+                <button class="btn btn-sm" onclick="window._showSharedQuickAlertsPage()" style="background:#0ea5e9; color:#fff; margin-top:12px;">
+                <i class="fas fa-clipboard-list"></i> متابعة بلاغات الزملاء
+                </button>
             </div>
                <div style="display: inline-flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.05); padding: 8px 20px; border-radius: 12px; border: 1px solid var(--warning);">
         <i class="fas fa-search" style="color: var(--warning);"></i>
@@ -930,28 +1045,53 @@
                             <input type="text" id="qPagePhone" placeholder="01xxxxxxxxx">
                         </div>
                     </div>
-                <div class="input-box">
-            <label>الفرع الموجه له البلاغ</label>
-            <div class="field-wrap">
-                <i class="fas fa-store"></i>
-                <!-- تم تغيير الـ select إلى input مع list للبحث -->
-                <input type="text" id="qPageBranch" list="qPageBranchOptions" placeholder="اكتب اسم الفرع للبحث...">
-                <datalist id="qPageBranchOptions">
-                    <option value="العباسيه">
-                    <option value="عبده باشا">
-                    <option value="نادي السكه">
-                    <option value="عباس العقاد">
-                    <option value="يوسف عباس">
-                    <option value="المعهد">
-                    <option value="مركز الاتصالات">
-                </datalist>
-            </div>
-        </div>
-                    <div style="display: flex; align-items: flex-end;">
-                        <button class="btn btn-neon" onclick="window._sendQuickAlertFromPage()" style="background: var(--warning); color: #000; height: 45px; margin: 0; min-width: 150px;">
-                            <i class="fas fa-paper-plane"></i> أبلغ الشكوى
-                        </button>
-                    </div>
+               <div class="input-box">
+    <label>الفرع الموجه له البلاغ</label>
+    <div class="field-wrap">
+        <i class="fas fa-store"></i>
+        <!-- أضفنا onchange ليقوم بإظهار أو إخفاء مربع التفاصيل -->
+        <input type="text" id="qPageBranch" list="qPageBranchOptions" placeholder="اكتب اسم الفرع للبحث..." onchange="window._toggleDetailsField(this.value)" oninput="window._toggleDetailsField(this.value)">
+        <datalist id="qPageBranchOptions">
+            <option value="العباسيه">
+            <option value="عبده باشا">
+            <option value="نادي السكه">
+            <option value="عباس العقاد">
+            <option value="يوسف عباس">
+            <option value="المعهد">
+            <option value="مركز الاتصالات">
+        </datalist>
+    </div>
+</div>
+
+<div class="input-box hidden" id="qPageRelatedBranchBox">
+    <label>الفرع المختص</label>
+    <div class="field-wrap">
+        <i class="fas fa-store"></i>
+        <select id="qPageRelatedBranch">
+            <option value="" disabled selected>اختر الفرع المختص...</option>
+            <option value="العباسيه">العباسيه</option>
+            <option value="عبده باشا">عبده باشا</option>
+            <option value="نادي السكه">نادي السكه</option>
+            <option value="عباس العقاد">عباس العقاد</option>
+            <option value="يوسف عباس">يوسف عباس</option>
+            <option value="المعهد">المعهد</option>
+        </select>
+    </div>
+</div>
+
+<div class="input-box hidden" id="qPageDetailsBox">
+    <label>تفصيل الشكوه</label>
+    <div class="field-wrap">
+        <i class="fas fa-comment-dots"></i>
+        <input type="text" id="qPageDetails" placeholder="اكتب تفاصيل الشكوى هنا...">
+    </div>
+</div>
+
+<div style="display: flex; align-items: flex-end;">
+    <button class="btn btn-neon" onclick="window._sendQuickAlertFromPage()" style="background: var(--warning); color: #000; height: 45px; margin: 0; min-width: 150px;">
+        <i class="fas fa-paper-plane"></i> أبلغ الشكوى
+    </button>
+</div>
                 </div>
 
                 <!-- جدول المتابعة اللحظي -->
@@ -964,6 +1104,7 @@
                                 <th>الوقت</th>
                                 <th>الفرع</th>
                                 <th>رقم الهاتف</th>
+                                <th>تفصيل الشكوه</th>
                                 <th>الموظف</th>
                                 <th>الحالة / رد الإدارة</th>
                                 <th>مدير الفرع (المستلم)</th> 
@@ -978,56 +1119,89 @@
                 </div>
             </div>
         </div>
-        <!-- ========== مودال إضافة عميل للمحظورين ========== -->
-        <div class="modal-overlay" id="blockModal">
-            <div class="modal-box" style="border-color: var(--danger); max-width: 500px;">
-                <div class="modal-header">
-                    <h3 style="color: var(--danger); background: none; -webkit-text-fill-color: var(--danger); margin: 0;">
-                        <i class="fas fa-user-slash"></i> إضافة عميل للقائمة السوداء
-                    </h3>
-                    <button class="modal-close" onclick="window._closeBlockModal()"><i class="fas fa-times"></i></button>
+        <div id="shared-quick-alerts-page" class="app-container hidden customizable-page">
+            <div class="session-bar" style="background: rgba(14,165,233,0.1); border-color: #0ea5e9;">
+                <div class="user-info" style="color: #38bdf8;">
+                    <i class="fas fa-people-arrows-left-right"></i>
+                    <span>متابعة بلاغات الموظفين - كل الفروع</span>
                 </div>
-                <form onsubmit="window._saveBlock(event)">
-                    <div class="modal-grid" style="grid-template-columns: 1fr;">
-                        <div class="input-box">
-                            <label>اسم العميل</label>
-                            <div class="field-wrap"><i class="fas fa-user"></i><input type="text" id="blockCustomerName" required placeholder="الاسم ثلاثي..."></div>
-                        </div>
-                        <div class="input-box">
-                            <label>رقم الهاتف</label>
-                            <div class="field-wrap"><i class="fas fa-phone"></i><input type="text" id="blockCustomerPhone" required placeholder="01xxxxxxxxx"></div>
-                        </div>
-                        <div class="input-box">
-                            <label>سبب البلوك بالتفصيل</label>
-                            <textarea id="blockReason" rows="3" required placeholder="اكتب هنا ليه العميل ده واخد بلوك..." style="width: 100%; border-radius: 12px; padding: 10px;"></textarea>
-                        </div>
+                <label class="page-color-picker">
+                    لون الصفحة
+                    <input type="color" data-theme-group="pageColors" data-theme-key="sharedQuickAlerts" value="#0ea5e9" aria-label="تغيير لون صفحة متابعة بلاغات الزملاء">
+                    <span class="theme-settings-saving"><i class="fas fa-spinner fa-spin"></i></span>
+                </label>
+                <button class="btn btn-logout" onclick="window._backFromSharedQuickAlerts()" style="border-color:#94a3b8; color:#94a3b8;">
+                    <i class="fas fa-arrow-right"></i> العودة
+                </button>
+            </div>
+            <div class="card" style="border:1px solid #0ea5e9;">
+                <h3><i class="fas fa-clipboard-list"></i> متابعة ما تم على بلاغات الزملاء</h3>
+                <p style="color:#94a3b8; text-align:center; margin-bottom:18px;">
+                    ابحث برقم هاتف العميل لعرض كل شكاواه وتفاصيل ما تم عليها من جميع الفروع.
+                </p>
+                <div class="filter-bar">
+                    <div class="f-item" style="max-width:520px;">
+                        <i class="fas fa-phone"></i>
+                        <input type="search" id="sharedComplaintPhoneSearch" inputmode="numeric" autocomplete="off"
+                            placeholder="اكتب رقم هاتف العميل للبحث..." oninput="window._searchSharedComplaintsByPhone(this.value)">
                     </div>
-                    <div class="modal-actions" style="margin-top: 20px;">
-                        <button type="submit" class="btn" style="background: var(--danger); color: white; width: 100%;">
-                            <i class="fas fa-ban"></i> تأكيد الحظر الآن
-                        </button>
-                    </div>
-                </form>
+                    <button type="button" class="btn btn-sm" onclick="window._searchSharedComplaintsByPhone(document.getElementById('sharedComplaintPhoneSearch').value)" style="background:#0ea5e9; color:#fff; margin:0;">
+                        <i class="fas fa-search"></i> بحث
+                    </button>
+                    <button type="button" class="btn btn-sm btn-cancel" onclick="window._clearSharedComplaintSearch()" style="margin:0;">
+                        <i class="fas fa-times"></i> مسح
+                    </button>
+                </div>
+                <div id="sharedComplaintSearchMessage" class="empty-state">ابدأ البحث برقم الهاتف لعرض شكاوى العميل.</div>
+                <div id="sharedComplaintResultsSummary" class="hidden" style="color:#94a3b8; margin:0 0 10px;"></div>
+                <div id="sharedComplaintResults" class="table-wrap hidden">
+                    <table style="min-width:2200px;">
+                        <thead>
+                            <tr>
+                                <th>التاريخ</th>
+                                <th>الفرع</th>
+                                <th>رقم الأوردر</th>
+                                <th>اسم العميل</th>
+                                <th>رقم الهاتف</th>
+                                <th>نوع الشكوى</th>
+                                <th>وقت الطلب</th>
+                                <th>وقت الشكوى</th>
+                                <th>مكان التسليم</th>
+                                <th>متلقي الشكوى بالفرع</th>
+                                <th>متلقي الشكوى بالكول سنتر</th>
+                                <th>تفاصيل الشكوى</th>
+                                <th>إفادة الفرع</th>
+                                <th>إفادة الكول سنتر</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sharedQuickAlertsBody">
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-        <!-- ========== مودال إضافة عميل للمحظورين ========== -->
+            <!-- ========== مودال إضافة عميل للمحظورين ========== -->
         <div class="modal-overlay" id="blockModal">
             <div class="modal-box" style="border-color: var(--danger); max-width: 500px;">
                 <div class="modal-header">
-                    <h3 style="color: var(--danger); background: none; -webkit-text-fill-color: var(--danger); margin: 0;">
+                    <h3 id="blockModalTitle" style="color: var(--danger); background: none; -webkit-text-fill-color: var(--danger); margin: 0;">
                         <i class="fas fa-user-slash"></i> إضافة عميل للقائمة السوداء
                     </h3>
                     <button class="modal-close" onclick="window._closeBlockModal()"><i class="fas fa-times"></i></button>
                 </div>
                 <form onsubmit="window._saveBlock(event)">
+                    <input type="hidden" id="blockEditId" value="">
                     <div class="modal-grid" style="grid-template-columns: 1fr;">
                         <div class="input-box">
                             <label>اسم العميل</label>
                             <div class="field-wrap"><i class="fas fa-user"></i><input type="text" id="blockCustomerName" required placeholder="الاسم ثلاثي..."></div>
                         </div>
                         <div class="input-box">
-                            <label>رقم الهاتف</label>
-                            <div class="field-wrap"><i class="fas fa-phone"></i><input type="text" id="blockCustomerPhone" required placeholder="01xxxxxxxxx"></div>
+                            <label>أرقام الهاتف</label>
+                            <div id="blockPhoneInputs" style="display:grid; gap:8px;"></div>
+                            <button type="button" class="btn btn-sm" onclick="window._addBlockPhoneInput()" style="margin-top:8px; background:rgba(239,68,68,0.1); color:var(--danger);">
+                                <i class="fas fa-plus"></i> إضافة رقم آخر
+                            </button>
                         </div>
                         <div class="input-box">
                             <label>سبب البلوك بالتفصيل</label>
@@ -1043,13 +1217,18 @@
             </div>
         </div>
         <!-- شاشة القائمة السوداء المستقلة -->
-        <div id="blacklist-page" class="app-container hidden">
+        <div id="blacklist-page" class="app-container hidden customizable-page">
             <!-- شريط علوي -->
             <div class="session-bar" style="background: rgba(239, 68, 68, 0.1); border-color: var(--danger);">
                 <div class="user-info" style="color: var(--danger);">
                     <i class="fas fa-user-shield"></i>
                     <span>نظام القائمة السوداء - التحذير المركزي</span>
                 </div>
+                <label class="page-color-picker">
+                    لون الصفحة
+                    <input type="color" data-theme-group="pageColors" data-theme-key="blacklist" value="#ef4444" aria-label="تغيير لون صفحة القائمة السوداء">
+                    <span class="theme-settings-saving"><i class="fas fa-spinner fa-spin"></i></span>
+                </label>
                 <button class="btn btn-logout" onclick="window._backFromBlacklist()" style="border-color: #94a3b8; color: #94a3b8;">
                     <i class="fas fa-arrow-right"></i> العودة للرئيسية
                 </button>
@@ -1160,6 +1339,20 @@
             let localCache = JSON.parse(localStorage.getItem('db_complaints_cache') || '[]');
             let localEmpCache = JSON.parse(localStorage.getItem('db_employees_cache') || '[]');
             let themeSaveTimeout = null;
+            let themeSettingsSaveTimeout = null;
+
+            const DEFAULT_THEME_SETTINGS = {
+                shortcutColors: {
+                    quickAlerts: '#fbbf24',
+                    sharedQuickAlerts: '#0ea5e9',
+                    blacklist: '#ef4444'
+                },
+                pageColors: {
+                    quickAlerts: '#fbbf24',
+                    sharedQuickAlerts: '#0ea5e9',
+                    blacklist: '#ef4444'
+                }
+            };
 
             const LOCATION_SUGGESTIONS = ['منزل', 'مكان عمل', 'Talabat'];
             const DEFAULT_MANAGERS = [
@@ -1305,15 +1498,19 @@ function getCurrentTimeFormatted() {
 
                 // توجيه المستخدم حسب الرتبة
                 if (empData.role === 'manager' || empData.role === 'viewer') {
+                    document.body.classList.remove('employee-session');
+                    applyEmployeeThemeSettings();
                     document.getElementById('manager-section').classList.remove('hidden');
                     applyViewerRestrictions();
                     loadManagerData();
                 } else {
+                    document.body.classList.add('employee-session');
                     document.getElementById('employee-section').classList.remove('hidden');
                     // عرض اسم المستخدم (محمد) في شريط الحالة
     // التعديل: إظهار الاسم الكامل بدلاً من اسم المستخدم
     document.getElementById('emp-name-display').textContent = empData.fullName
                     if (empData.themeColor) applyThemeColor(empData.themeColor);
+                    applyEmployeeThemeSettings(empData.themeSettings);
                     refreshEmployeeView();
                 }
                 startSessionTimer();
@@ -1327,6 +1524,8 @@ function getCurrentTimeFormatted() {
             window.handleLogin = handleLogin;
 
             function handleLogout() {
+                if (themeSettingsSaveTimeout) clearTimeout(themeSettingsSaveTimeout);
+                themeSettingsSaveTimeout = null;
                 if (unsubSnapshot) unsubSnapshot();
                 if (unsubEmpSnapshot) unsubEmpSnapshot();
                 unsubSnapshot = null;
@@ -1335,16 +1534,28 @@ function getCurrentTimeFormatted() {
                 currentUserDocId = null;
                 currentUserData = null;
                 allComplaints = [];
+                allQuickAlerts = [];
                 allEmployees = [];
+                if (overdueQuickAlertsUnsub) overdueQuickAlertsUnsub();
+                overdueQuickAlertsUnsub = null;
+                if (overdueReminderInterval) clearInterval(overdueReminderInterval);
+                overdueReminderInterval = null;
 
                 sessionStorage.removeItem('active_session');
                 document.getElementById('manager-section').classList.add('hidden');
                 document.getElementById('employee-section').classList.add('hidden');
+                document.getElementById('quick-alerts-page').classList.add('hidden');
+                document.getElementById('shared-quick-alerts-page').classList.add('hidden');
+                document.getElementById('blacklist-page').classList.add('hidden');
                 document.getElementById('login-section').classList.remove('hidden');
                 document.getElementById('username').value = '';
                 document.getElementById('password').value = '';
                 document.getElementById('error-msg').classList.add('hidden');
                 document.body.classList.remove('theme-applied');
+                document.body.classList.remove('employee-session');
+                document.getElementById('employeeThemePanel')?.classList.add('hidden');
+                document.querySelectorAll('.theme-settings-saving').forEach(status => status.classList.remove('show'));
+                applyEmployeeThemeSettings();
             }
             window.handleLogout = handleLogout;
 
@@ -1376,12 +1587,113 @@ function getCurrentTimeFormatted() {
                 document.documentElement.style.setProperty('--emp-accent-25', `rgba(${r},${g},${b},0.25)`);
                 document.documentElement.style.setProperty('--emp-accent-30', `rgba(${r},${g},${b},0.3)`);
                 document.documentElement.style.setProperty('--emp-accent-40', `rgba(${r},${g},${b},0.4)`);
+                document.documentElement.style.setProperty('--call-color', color);
                 const btn = document.getElementById('empThemeBtn');
                 if (btn) btn.style.background = color;
                 const picker = document.getElementById('empThemeColorPicker');
                 if (picker) picker.value = color;
                 document.body.classList.add('theme-applied');
             }
+
+            function normalizeThemeSettings(rawSettings) {
+                const settings = {
+                    shortcutColors: { ...DEFAULT_THEME_SETTINGS.shortcutColors },
+                    pageColors: { ...DEFAULT_THEME_SETTINGS.pageColors }
+                };
+                ['shortcutColors', 'pageColors'].forEach(group => {
+                    const source = rawSettings?.[group];
+                    Object.keys(settings[group]).forEach(key => {
+                        const color = source?.[key];
+                        if (typeof color === 'string' && /^#[0-9a-fA-F]{6}$/.test(color)) {
+                            settings[group][key] = color.toLowerCase();
+                        }
+                    });
+                });
+                return settings;
+            }
+
+            function getThemeTextColor(color) {
+                const rgb = color.slice(1).match(/.{2}/g).map(channel => parseInt(channel, 16) / 255);
+                const luminance = rgb
+                    .map(value => value <= 0.03928 ? value / 12.92 : Math.pow((value + 0.055) / 1.055, 2.4))
+                    .reduce((total, value, index) => total + value * [0.2126, 0.7152, 0.0722][index], 0);
+                return luminance > 0.45 ? '#111827' : '#ffffff';
+            }
+
+            function applyEmployeeThemeSettings(rawSettings) {
+                const settings = normalizeThemeSettings(rawSettings);
+                const shortcutElements = {
+                    quickAlerts: document.getElementById('empQuickAlertsShortcut'),
+                    sharedQuickAlerts: document.getElementById('empSharedQuickAlertsShortcut'),
+                    blacklist: document.getElementById('empBlacklistShortcut')
+                };
+                Object.entries(shortcutElements).forEach(([key, button]) => {
+                    if (!button) return;
+                    const color = settings.shortcutColors[key];
+                    button.style.setProperty('--shortcut-color', color);
+                    button.style.setProperty('--shortcut-text-color', getThemeTextColor(color));
+                });
+
+                const pageElements = {
+                    quickAlerts: document.getElementById('quick-alerts-page'),
+                    sharedQuickAlerts: document.getElementById('shared-quick-alerts-page'),
+                    blacklist: document.getElementById('blacklist-page')
+                };
+                Object.entries(pageElements).forEach(([key, page]) => {
+                    if (!page) return;
+                    const color = settings.pageColors[key];
+                    const rgb = color.slice(1).match(/.{2}/g).map(channel => parseInt(channel, 16)).join(',');
+                    page.style.setProperty('--page-accent', color);
+                    page.style.setProperty('--page-accent-rgb', rgb);
+                    page.style.setProperty('--page-accent-text', getThemeTextColor(color));
+                });
+
+                document.querySelectorAll('[data-theme-group][data-theme-key]').forEach(input => {
+                    const color = settings[input.dataset.themeGroup]?.[input.dataset.themeKey];
+                    if (color) input.value = color;
+                });
+                if (currentUserData?.role === 'employee') currentUserData.themeSettings = settings;
+            }
+
+            window._toggleEmployeeThemePanel = function() {
+                document.getElementById('employeeThemePanel')?.classList.toggle('hidden');
+            };
+
+            document.querySelectorAll('[data-theme-group][data-theme-key]').forEach(input => {
+                input.addEventListener('input', function() {
+                    if (currentUserData?.role !== 'employee' || !currentUserDocId) {
+                        showToast('تخصيص الألوان متاح للموظف المسجل فقط', true);
+                        return;
+                    }
+                    const group = this.dataset.themeGroup;
+                    const key = this.dataset.themeKey;
+                    if (!DEFAULT_THEME_SETTINGS[group]?.[key] || !/^#[0-9a-fA-F]{6}$/.test(this.value)) return;
+
+                    const settings = normalizeThemeSettings(currentUserData.themeSettings);
+                    settings[group][key] = this.value.toLowerCase();
+                    currentUserData.themeSettings = settings;
+                    applyEmployeeThemeSettings(settings);
+                    const employeeDocId = currentUserDocId;
+                    document.querySelectorAll('.theme-settings-saving').forEach(status => status.classList.add('show'));
+                    if (themeSettingsSaveTimeout) clearTimeout(themeSettingsSaveTimeout);
+                    themeSettingsSaveTimeout = setTimeout(async () => {
+                        try {
+                            await updateDoc(doc(db, 'employees', employeeDocId), { themeSettings: settings });
+                            if (currentUserDocId !== employeeDocId) return;
+                            const sessionData = JSON.parse(sessionStorage.getItem('active_session') || '{}');
+                            sessionData.themeSettings = settings;
+                            sessionStorage.setItem('active_session', JSON.stringify(sessionData));
+                            showToast('تم حفظ الألوان بنجاح');
+                        } catch (error) {
+                            console.error('Theme Settings Save Error:', error);
+                            showToast('فشل حفظ الألوان في السحابة', true);
+                        } finally {
+                            document.querySelectorAll('.theme-settings-saving').forEach(status => status.classList.remove('show'));
+                            themeSettingsSaveTimeout = null;
+                        }
+                    }, 700);
+                });
+            });
 
         document.getElementById('empThemeColorPicker')?.addEventListener('input', function(e) {
         const newColor = e.target.value;
@@ -1585,6 +1897,8 @@ const countBadge = document.getElementById('empComplaintsCount');
             window.refreshEmployeeView = refreshEmployeeView;
 
             function loadManagerData() {
+                startOverdueQuickAlertsListener();
+                renderOverdueComplaintReminder();
                 const month = document.getElementById('mgrMonthFilter')?.value;
                 const dateFrom = document.getElementById('mgrDateFrom')?.value;
                 const dateTo = document.getElementById('mgrDateTo')?.value;
@@ -1629,7 +1943,7 @@ const countBadge = document.getElementById('empComplaintsCount');
                 tbody.innerHTML = filtered.map(c => {
                     let row = `
                         <td>${tsToDateStr(c.date)}</td>
-                        <td>${c.branch || ''}</td>
+                        <td>${c.routedThrough || c.branch || ''}</td>
                         <td>${c.orderNo || ''}</td>
                         <td>${c.customerName || ''}</td>
                         <td>${c.phone || ''}</td>
@@ -1651,6 +1965,70 @@ const countBadge = document.getElementById('empComplaintsCount');
                 }).join('');
             }
             window.loadManagerData = loadManagerData;
+
+            function renderOverdueComplaintReminder() {
+                const reminder = document.getElementById('overdueComplaintReminder');
+                const list = document.getElementById('overdueComplaintList');
+                const count = document.getElementById('overdueComplaintCount');
+                if (!reminder || !list || !count) return;
+
+                const now = Date.now();
+                const overdue = allQuickAlerts
+                    .map(alert => {
+                        const createdAt = alert.createdAt;
+                        const createdAtMs = typeof createdAt?.toDate === 'function'
+                            ? createdAt.toDate().getTime()
+                            : (typeof createdAt?.seconds === 'number'
+                                ? createdAt.seconds * 1000
+                                : (createdAt instanceof Date ? createdAt.getTime() : NaN));
+                        const status = String(alert.status || '');
+                        const hasResponse = Boolean(String(alert.responderName || '').trim())
+                            || ['كامل', 'هيتم ارساله', 'استرجاع', 'البديل', 'تم إرسال المكالمة']
+                                .some(responseStatus => status.includes(responseStatus));
+                        return { alert, createdAtMs, hasResponse };
+                    })
+                    .filter(item => !item.hasResponse
+                        && Number.isFinite(item.createdAtMs)
+                        && now - item.createdAtMs >= 24 * 60 * 60 * 1000)
+                    .sort((a, b) => a.createdAtMs - b.createdAtMs);
+
+                list.replaceChildren();
+                if (!overdue.length || (currentUserData?.role !== 'manager' && currentUserData?.role !== 'viewer')) {
+                    reminder.classList.add('hidden');
+                    return;
+                }
+
+                count.textContent = overdue.length;
+                overdue.slice(0, 8).forEach(({ alert, createdAtMs }) => {
+                    const hoursLate = Math.floor((now - createdAtMs) / (60 * 60 * 1000));
+                    const item = document.createElement('li');
+                    const branch = alert.branch || 'فرع غير محدد';
+                    const employee = alert.sender || 'غير معروف';
+                    item.textContent = `رقم ${alert.phone || 'غير مسجل'} — ${branch} — الموظف: ${employee} — منذ ${hoursLate} ساعة`;
+                    list.appendChild(item);
+                });
+                if (overdue.length > 8) {
+                    const more = document.createElement('li');
+                    more.textContent = `و ${overdue.length - 8} شكاوى أخرى`;
+                    list.appendChild(more);
+                }
+                reminder.classList.remove('hidden');
+            }
+
+            function startOverdueQuickAlertsListener() {
+                if (overdueQuickAlertsUnsub
+                    || (currentUserData?.role !== 'manager' && currentUserData?.role !== 'viewer')) return;
+
+                overdueQuickAlertsUnsub = onSnapshot(collection(db, 'quick_alerts'), (snap) => {
+                    allQuickAlerts = snap.docs.map(item => ({ id: item.id, ...item.data() }));
+                    renderOverdueComplaintReminder();
+                }, (error) => {
+                    console.error('Quick alerts reminder listener error:', error);
+                    showToast('تعذر تحميل بلاغات التنبيه: ' + error.message, true);
+                });
+                if (overdueReminderInterval) clearInterval(overdueReminderInterval);
+                overdueReminderInterval = setInterval(renderOverdueComplaintReminder, 60 * 1000);
+            }
 
         // 1. وظيفة التبديل بين الأقسام
         window._switchTab = function(tab, el) {
@@ -1875,13 +2253,132 @@ const countBadge = document.getElementById('empComplaintsCount');
             }
         });
     }
+            function normalizeEmployeePhone(phone) {
+                return String(phone || '')
+                    .replace(/[٠-٩]/g, digit => String(digit.charCodeAt(0) - 1632))
+                    .replace(/[۰-۹]/g, digit => String(digit.charCodeAt(0) - 1776))
+                    .replace(/\D/g, '');
+            }
+
+            function getEmployeePhoneNumbers(employee) {
+                const savedPhones = Array.isArray(employee.phoneNumbers)
+                    ? employee.phoneNumbers
+                    : (Array.isArray(employee.phones) ? employee.phones : [employee.phone || '']);
+                return savedPhones
+                    .flatMap(phone => String(phone || '').split(/[,\u060C;؛\n\r-]+/))
+                    .map(phone => phone.trim())
+                    .filter(Boolean);
+            }
+
+            function renderEmployeePhoneInputs(phoneNumbers) {
+                const container = document.getElementById('empPhoneInputs');
+                container.innerHTML = '';
+                (phoneNumbers.length ? phoneNumbers : ['']).forEach(phone => {
+                    const row = document.createElement('div');
+                    row.style.cssText = 'display:flex; gap:8px; align-items:center;';
+                    const field = document.createElement('div');
+                    field.className = 'field-wrap';
+                    field.style.flex = '1';
+                    const icon = document.createElement('i');
+                    icon.className = 'fas fa-phone';
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.className = 'emp-phone-number';
+                    input.value = phone;
+                    input.placeholder = 'رقم الهاتف';
+                    input.style.direction = 'ltr';
+                    input.style.textAlign = 'right';
+                    const removeButton = document.createElement('button');
+                    removeButton.type = 'button';
+                    removeButton.className = 'btn btn-sm btn-del';
+                    removeButton.setAttribute('aria-label', 'حذف رقم الهاتف');
+                    removeButton.innerHTML = '<i class="fas fa-times"></i>';
+                    removeButton.addEventListener('click', () => {
+                        if (container.children.length === 1) input.value = '';
+                        else row.remove();
+                    });
+                    field.append(icon, input);
+                    row.append(field, removeButton);
+                    container.appendChild(row);
+                });
+            }
+
+            function getBlacklistPhoneNumbers(record) {
+                const savedPhones = Array.isArray(record.phoneNumbers)
+                    ? record.phoneNumbers
+                    : (Array.isArray(record.phones) ? record.phones : String(record.phone || '').split(/[\,\u060C;؛\n\r-]+/));
+                return savedPhones
+                    .flatMap(phone => String(phone || '').split(/[\,\u060C;؛\n\r-]+/))
+                    .map(phone => phone.trim())
+                    .filter(Boolean);
+            }
+
+            function renderBlockPhoneInputs(phoneNumbers, allowPhoneRemoval = true) {
+                const container = document.getElementById('blockPhoneInputs');
+                if (!container) return;
+                container.innerHTML = '';
+                (phoneNumbers.length ? phoneNumbers : ['']).forEach(phone => {
+                    const row = document.createElement('div');
+                    row.style.cssText = 'display:flex; gap:8px; align-items:center;';
+                    const field = document.createElement('div');
+                    field.className = 'field-wrap';
+                    field.style.flex = '1';
+                    const icon = document.createElement('i');
+                    icon.className = 'fas fa-phone';
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.className = 'block-phone-number';
+                    input.value = phone;
+                    input.placeholder = '01xxxxxxxxx';
+                    input.style.direction = 'ltr';
+                    input.style.textAlign = 'right';
+                    if (allowPhoneRemoval) {
+                        const removeButton = document.createElement('button');
+                        removeButton.type = 'button';
+                        removeButton.className = 'btn btn-sm btn-del';
+                        removeButton.setAttribute('aria-label', 'حذف رقم الهاتف');
+                        removeButton.innerHTML = '<i class="fas fa-times"></i>';
+                        removeButton.addEventListener('click', () => {
+                            if (container.children.length === 1) input.value = '';
+                            else row.remove();
+                        });
+                        row.appendChild(removeButton);
+                    }
+                    field.append(icon, input);
+                    row.prepend(field);
+                    container.appendChild(row);
+                });
+            }
+
+            window._addEmployeePhoneInput = function() {
+                const phones = [...document.querySelectorAll('#empPhoneInputs .emp-phone-number')].map(input => input.value);
+                phones.push('');
+                renderEmployeePhoneInputs(phones);
+                const inputs = document.querySelectorAll('#empPhoneInputs .emp-phone-number');
+                inputs[inputs.length - 1]?.focus();
+            };
+
+            window._addBlockPhoneInput = function() {
+                const phones = [...document.querySelectorAll('#blockPhoneInputs .block-phone-number')].map(input => input.value);
+                phones.push('');
+                const isEditingAsEmployee = currentUserData?.role === 'employee'
+                    && document.getElementById('blockEditId').value;
+                renderBlockPhoneInputs(phones, !isEditingAsEmployee);
+                const inputs = document.querySelectorAll('#blockPhoneInputs .block-phone-number');
+                inputs[inputs.length - 1]?.focus();
+            };
+
             function renderEmployeesTable() {
                 const search = document.getElementById('empSearchInput')?.value.trim().toLowerCase();
+                const normalizedPhoneSearch = normalizeEmployeePhone(search);
                 const roleFilter = document.getElementById('empRoleFilter')?.value;
                 const statusFilter = document.getElementById('empStatusFilter')?.value;
 
                 let filtered = allEmployees.filter(e => {
-                    if (search && !e.fullName?.toLowerCase().includes(search) && !e.username?.toLowerCase().includes(search)) return false;
+                    const employeePhones = getEmployeePhoneNumbers(e);
+                    const matchesText = e.fullName?.toLowerCase().includes(search) || e.username?.toLowerCase().includes(search);
+                    const matchesPhone = normalizedPhoneSearch && employeePhones.some(phone => normalizeEmployeePhone(phone).includes(normalizedPhoneSearch));
+                    if (search && !matchesText && !matchesPhone) return false;
                     if (roleFilter && e.role !== roleFilter) return false;
                     if (statusFilter === 'active' && !e.active) return false;
                     if (statusFilter === 'inactive' && e.active) return false;
@@ -1890,7 +2387,7 @@ const countBadge = document.getElementById('empComplaintsCount');
 
                 const tbody = document.getElementById('employeesTableBody');
                 if (filtered.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="11" class="empty-state"><i class="fas fa-users-slash"></i>لا يوجد موظفين مطابقين</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="12" class="empty-state"><i class="fas fa-users-slash"></i>لا يوجد موظفين مطابقين</td></tr>';
                     return;
                 }
 
@@ -1908,6 +2405,7 @@ const countBadge = document.getElementById('empComplaintsCount');
                         <td>${i + 1}</td>
                         <td>${e.username || ''}</td>
                         <td>${e.fullName || ''}</td>
+                        <td>${getEmployeePhoneNumbers(e).join(' - ')}</td>
                         <td>${roleBadge}</td>
                         <td>${e.branch || 'كل الفروع'}</td>
                         <td>${colorDot}</td>
@@ -1924,6 +2422,7 @@ const countBadge = document.getElementById('empComplaintsCount');
             window._openEmpModal = function(data) {
                 document.getElementById('empModal').classList.add('active');
                 document.getElementById('empForm').reset();
+                renderEmployeePhoneInputs(['']);
                 document.getElementById('empEditId').value = '';
                 document.getElementById('empActive').checked = true;
                 document.getElementById('empModalTitle').innerHTML = '<i class="fas fa-user-plus"></i> إضافة موظف جديد';
@@ -1932,6 +2431,7 @@ const countBadge = document.getElementById('empComplaintsCount');
                     document.getElementById('empEditId').value = data.id;
                     document.getElementById('empUsername').value = data.username || '';
                     document.getElementById('empFullName').value = data.fullName || '';
+                    renderEmployeePhoneInputs(getEmployeePhoneNumbers(data));
                     document.getElementById('empPassword').value = '';
                     document.getElementById('empPassword').required = false;
                     document.getElementById('empBranch').value = data.branch || 'كل الفروع';
@@ -1956,6 +2456,10 @@ const countBadge = document.getElementById('empComplaintsCount');
                 const editId = document.getElementById('empEditId').value;
                 const username = document.getElementById('empUsername').value.trim();
                 const fullName = document.getElementById('empFullName').value.trim();
+                const phoneNumbers = [...document.querySelectorAll('#empPhoneInputs .emp-phone-number')]
+                    .flatMap(input => input.value.split(/[,\u060C;؛\n\r-]+/))
+                    .map(phone => phone.trim())
+                    .filter((phone, index, phones) => phone && phones.findIndex(existing => normalizeEmployeePhone(existing) === normalizeEmployeePhone(phone)) === index);
                 let password = document.getElementById('empPassword').value.trim();
                 const branch = document.getElementById('empBranch').value;
                 const role = document.getElementById('empRole').value;
@@ -1967,7 +2471,7 @@ const countBadge = document.getElementById('empComplaintsCount');
                     return;
                 }
 
-                const data = { username, fullName, branch, role, active, notes, updatedAt: serverTimestamp() };
+                const data = { username, fullName, phoneNumbers, branch, role, active, notes, updatedAt: serverTimestamp() };
                 if (password) data.password = password;
 
                 try {
@@ -2150,6 +2654,11 @@ const cQuery = query(collection(db, 'complaints'), orderBy('createdAt', 'desc'))
                     } else if (currentUserData?.role === 'employee') {
                         refreshEmployeeView();
                     }
+                    const sharedPhoneSearch = document.getElementById('sharedComplaintPhoneSearch')?.value || '';
+                    if (!document.getElementById('shared-quick-alerts-page').classList.contains('hidden')
+                        && normalizeEmployeePhone(sharedPhoneSearch).length >= 3) {
+                        renderSharedEmployeeComplaints(sharedPhoneSearch);
+                    }
                 }, (err) => {
                     console.error('Snap error:', err);
                     document.getElementById('mgrCloudStatus')?.classList.replace('synced', 'offline');
@@ -2160,7 +2669,6 @@ const cQuery = query(collection(db, 'complaints'), orderBy('createdAt', 'desc'))
                         else if (currentUserData?.role === 'employee') refreshEmployeeView();
                     }
                 });
-
                 const eQuery = query(collection(db, 'employees'), orderBy('createdAt', 'desc'));
                 unsubEmpSnapshot = onSnapshot(eQuery, (snap) => {
                     allEmployees = snap.docs.map(d => ({ id: d.id, ...d.data() }));
@@ -2208,10 +2716,13 @@ const cQuery = query(collection(db, 'complaints'), orderBy('createdAt', 'desc'))
             currentUserDocId = sData.id || null;
 
             if (sData.role === 'manager' || sData.role === 'viewer') {
+                document.body.classList.remove('employee-session');
+                applyEmployeeThemeSettings();
                 document.getElementById('login-section').classList.add('hidden');
                 document.getElementById('manager-section').classList.remove('hidden');
                 applyViewerRestrictions();
             } else {
+                document.body.classList.add('employee-session');
                 document.getElementById('login-section').classList.add('hidden');
                 document.getElementById('employee-section').classList.remove('hidden');
                 document.getElementById('emp-name-display').textContent = sData.fullName;
@@ -2220,6 +2731,7 @@ const cQuery = query(collection(db, 'complaints'), orderBy('createdAt', 'desc'))
                 if (sData.themeColor) {
                     applyThemeColor(sData.themeColor);
                 }
+                applyEmployeeThemeSettings(sData.themeSettings);
             }   
             startSessionTimer();
         } else {
@@ -2442,7 +2954,8 @@ const cQuery = query(collection(db, 'complaints'), orderBy('createdAt', 'desc'))
 
         // الانتقال للشاشة
         window._showQuickAlertsPage = function() {
-            document.getElementById('employee-section').classList.add('hidden');
+        document.getElementById('shared-quick-alerts-page').classList.add('hidden');
+        document.getElementById('employee-section').classList.add('hidden');
             document.getElementById('manager-section').classList.add('hidden');
             document.getElementById('quick-alerts-page').classList.remove('hidden');
             startQuickAlertsListener(); // تشغيل الاستماع اللحظي
@@ -2458,21 +2971,63 @@ const cQuery = query(collection(db, 'complaints'), orderBy('createdAt', 'desc'))
             }
         };
 
+        window._showSharedQuickAlertsPage = function() {
+            if (!['employee', 'manager', 'viewer'].includes(currentUserData?.role)) {
+                showToast('ليس لديك صلاحية متابعة البلاغات', true);
+                return;
+            }
+            document.getElementById('employee-section').classList.add('hidden');
+            document.getElementById('manager-section').classList.add('hidden');
+            document.getElementById('quick-alerts-page').classList.add('hidden');
+            document.getElementById('blacklist-page').classList.add('hidden');
+            document.getElementById('shared-quick-alerts-page').classList.remove('hidden');
+            document.getElementById('sharedComplaintPhoneSearch').value = '';
+            renderSharedEmployeeComplaints('');
+        };
+
+        window._backFromSharedQuickAlerts = function() {
+            document.getElementById('shared-quick-alerts-page').classList.add('hidden');
+            if (currentUserData?.role === 'manager' || currentUserData?.role === 'viewer') {
+                document.getElementById('manager-section').classList.remove('hidden');
+            } else {
+                document.getElementById('employee-section').classList.remove('hidden');
+            }
+        };
+
+        window._searchSharedComplaintsByPhone = function(phone) {
+            renderSharedEmployeeComplaints(phone);
+        };
+
+        window._clearSharedComplaintSearch = function() {
+            document.getElementById('sharedComplaintPhoneSearch').value = '';
+            renderSharedEmployeeComplaints('');
+        };
+
         // إرسال البلاغ
         // إرسال البلاغ السريع من صفحة الموظف
         window._sendQuickAlertFromPage = async function() {
             const phoneInput = document.getElementById('qPagePhone');
             const branchInput = document.getElementById('qPageBranch');
             const phone = phoneInput.value.trim();
-            const branch = branchInput.value;
-            
+            const selectedBranch = branchInput.value.trim();
+            const relatedBranchInput = document.getElementById('qPageRelatedBranch');
+            const detailsInput = document.getElementById('qPageDetails');
+            const details = detailsInput.value.trim();
+            const usesCallCenter = selectedBranch === 'مركز الاتصالات';
+            const branch = usesCallCenter ? relatedBranchInput.value : selectedBranch;
             if (!phone) { showToast('يرجى كتابة رقم الهاتف', true); return; }
+            if (!selectedBranch) { showToast('يرجى اختيار الفرع الموجه له البلاغ', true); return; }
+            if (usesCallCenter && !branch) { showToast('يرجى اختيار الفرع المختص', true); return; }
+            if (usesCallCenter && !details) { showToast('يرجى كتابة تفصيل الشكوى', true); return; }
 
             try {
                 // 1. إعداد بيانات البلاغ السريع
                 const alertData = {
                     phone: phone,
                     branch: branch,
+                    routedThrough: usesCallCenter ? selectedBranch : '',
+                    details: details,
+
                 sender: currentUserData.fullName || currentUserData.username || 'موظف', 
                     senderId: currentUserDocId, 
                     status: 'قيد الانتظار ⏳',
@@ -2485,11 +3040,12 @@ const cQuery = query(collection(db, 'complaints'), orderBy('createdAt', 'desc'))
 const mainComplaintData = {
     date: getCurrentDate(),
     branch: branch,
+    routedThrough: selectedBranch,
     phone: phone,
     complaintType: 'تأخير',
     complaintTime: getCurrentTimeFormatted(), // <--- هذا السطر الجديد لإضافة الوقت في سجل الموظف
     customerName: '', 
-    details: '',
+    details: details, // <--- أضفنا هذا السطر ليتم كتابة التفصيل في سجل الموظف الرئيسي
     userId: currentUserDocId,
     userName: currentUserData.fullName || 'موظف',
     employeeName: currentUserData.fullName || 'موظف',
@@ -2505,8 +3061,12 @@ const mainComplaintData = {
 
                 // مسح الخانة بعد الإرسال
                 phoneInput.value = '';
+                branchInput.value = '';
+                relatedBranchInput.value = '';
+                relatedBranchInput.selectedIndex = 0;
+                window._toggleDetailsField('');
                 showToast('تم إرسال البلاغ وتسجيله في سجلك الرئيسي بنجاح ✅');
-
+                detailsInput.value = '';
             } catch (e) {
                 console.error("Error:", e);
                 showToast('حدث خطأ أثناء الإرسال المزدوج: ' + e.message, true);
@@ -2596,7 +3156,7 @@ window._updateQuickStatus = async function(id, status) {
         docs.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
 
         if (docs.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="8" class="empty-state">لا توجد بلاغات مسجلة لهذا التاريخ</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="9" class="empty-state">لا توجد بلاغات مسجلة لهذا التاريخ</td></tr>';
             return;
         }
 
@@ -2609,18 +3169,23 @@ const time = d.createdAt?.toDate ? d.createdAt.toDate().toLocaleTimeString('ar-E
             if (d.status?.includes('ناقص')) color = '#ef4444';
             if (d.status?.includes('استرجاع')) color = '#0ea5e9';
             if (d.status?.includes('البديل')) color = '#a855f7';
+            if (d.status?.includes('مكالمة')) {
+                color = getComputedStyle(document.documentElement).getPropertyValue('--call-color').trim();
+            }
 
             const isManager = (currentUserData.role === 'manager');
             const isOwner = (d.senderId === currentUserDocId);
+ const callIcon = d.callLink ? `<a href="${d.callLink}" target="_blank" title="اسمع المكالمة" style="color:white; background:var(--call-color); padding:2px 8px; border-radius:5px; margin-left:5px; text-decoration:none;"><i class="fas fa-play-circle fa-beat"></i> اسمع</a>` : '';
 
             return `
                 <tr>
                     <td style="font-weight:bold; color:#94a3b8;">${index + 1}</td> <!-- عمود الرقم -->
                     <td>${time}</td>
-                    <td><b style="color:var(--primary)">${d.branch}</b></td>
-                    <td>${d.phone}</td>
+                    <td><b style="color:var(--primary)">${d.branch}</b>${d.routedThrough ? `<br><small>${d.routedThrough}</small>` : ''}</td>
+                                       <td>${d.phone}</td>
+                    <td style="white-space: normal; max-width: 250px; text-align: right;">${d.details || ''}</td>
                     <td>${d.sender}</td>
-                    <td><span class="badge" style="background:${color}22; color:${color};">${d.status}</span></td>
+                    <td><span class="badge" style="background:${color}22; color:${color};">${callIcon} ${d.status}</span></td>
                     <td>
                         ${isManager ? 
                             `<input type="text" id="mgrName_${d.id}" value="${d.responderName || ''}" 
@@ -2628,7 +3193,6 @@ const time = d.createdAt?.toDate ? d.createdAt.toDate().toLocaleTimeString('ar-E
                                 style="width:120px; padding:5px; font-size:12px; height:30px; border-radius:8px;">` : 
                             `<span style="color:#94a3b8; font-weight:bold;">${d.responderName || '---'}</span>`
                         }
-                    </td>
                     <td>
                         <div style="display:flex; gap:5px; justify-content:center; flex-wrap: wrap;">
                             ${isManager ? `
@@ -2636,19 +3200,83 @@ const time = d.createdAt?.toDate ? d.createdAt.toDate().toLocaleTimeString('ar-E
                                 <button class="btn btn-sm" style="background:#ef4444; color:#fff;" onclick="window._updateQuickStatus('${d.id}', 'هيتم ارساله  ❌')" title="هيتم ارساله">هيتم ارساله</button>
                                 <button class="btn btn-sm" style="background:#0ea5e9; color:#fff;" onclick="window._updateQuickStatus('${d.id}', 'استرجاع 🔄')" title="استرجاع">استرجاع</button>
                                 <button class="btn btn-sm" style="background:#a855f7; color:#fff;" onclick="window._updateQuickStatus('${d.id}', 'البديل 🔃')" title="البديل">البديل</button>
-                            ` : ''}
+                              <button class="btn btn-sm" style="background:var(--call-color); color:#fff;" onclick="window._sendCallAction('${d.id}')" title="إرسال رابط المكالمة"><i class="fas fa-upload"></i> المكالمة</button>
+        ` : `
+            <button class="btn btn-sm" style="background:var(--call-color); color:#fff; font-size:10px;" onclick="window._updateQuickStatus('${d.id}', 'مطلوب مكالمة 📞')">طلب مكالمة</button>
+        `}
                             
-                            ${(isManager || isOwner) ? `
-                                <button class="btn btn-sm btn-del" style="padding: 5px 10px;" onclick="window._deleteQuickAlert('${d.id}')">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            ` : ''}
+                       ${(isManager || isOwner) ? `
+                            <button class="btn btn-sm btn-del" onclick="window._deleteQuickAlert('${d.id}')"><i class="fas fa-trash"></i></button>
+                        ` : ''}
                         </div>
                     </td>
                 </tr>
             `;
         }).join('');
     });
+}
+
+function renderSharedEmployeeComplaints(phoneSearch) {
+     const tbody = document.getElementById('sharedQuickAlertsBody');
+     const results = document.getElementById('sharedComplaintResults');
+     const message = document.getElementById('sharedComplaintSearchMessage');
+     const summary = document.getElementById('sharedComplaintResultsSummary');
+     if (!tbody || !results || !message || !summary) return;
+
+     const normalizedSearch = normalizeEmployeePhone(phoneSearch);
+     if (normalizedSearch.length < 3) {
+         results.classList.add('hidden');
+         summary.classList.add('hidden');
+         message.classList.remove('hidden');
+         message.textContent = normalizedSearch
+             ? 'أدخل 3 أرقام على الأقل للبحث عن شكاوى العميل.'
+             : 'ابدأ البحث برقم الهاتف لعرض شكاوى العميل.';
+         tbody.replaceChildren();
+         return;
+     }
+
+     const docs = allComplaints
+         .filter(complaint => normalizeEmployeePhone(complaint.phone).includes(normalizedSearch))
+         .sort((a, b) => {
+             const aCreatedAt = a.createdAt?.seconds || 0;
+             const bCreatedAt = b.createdAt?.seconds || 0;
+             return bCreatedAt - aCreatedAt;
+         });
+
+     tbody.replaceChildren();
+     if (!docs.length) {
+         results.classList.add('hidden');
+         summary.classList.add('hidden');
+         message.classList.remove('hidden');
+         message.textContent = 'لا توجد شكاوى مطابقة لرقم الهاتف.';
+         return;
+     }
+
+     message.classList.add('hidden');
+     results.classList.remove('hidden');
+     summary.textContent = `تم العثور على ${docs.length} شكوى مرتبطة برقم الهاتف ${phoneSearch}.`;
+     summary.classList.remove('hidden');
+     docs.forEach(complaint => {
+         const row = tbody.insertRow();
+         [
+             tsToDateStr(complaint.date) || '—',
+             complaint.routedThrough || complaint.branch || '—',
+             complaint.orderNo || '—',
+             complaint.customerName || '—',
+             complaint.phone || '—',
+             complaint.complaintType || '—',
+             format12Hour(complaint.orderTime) || '—',
+             format12Hour(complaint.complaintTime) || '—',
+             complaint.location || '—',
+             complaint.branchUser || '—',
+             complaint.employeeName || complaint.addedBy || complaint.userName || 'غير معروف',
+             complaint.details || '—',
+             complaint.branchInfo || '—',
+             complaint.callCenterInfo || '—'
+         ].forEach(value => {
+             row.insertCell().textContent = value;
+         });
+     });
 }
 
     // الدالة المسؤولة عن تغيير التاريخ عند اختيار يوم آخر من الفلتر
@@ -2674,40 +3302,132 @@ const time = d.createdAt?.toDate ? d.createdAt.toDate().toLocaleTimeString('ar-E
                 window._sendQuickAlertFromPage(); // استدعاء وظيفة الإرسال
             }
         });
+        function canEditBlacklistRecord(record) {
+            if (currentUserData?.role === 'manager') return true;
+            if (currentUserData?.role !== 'employee' || !record) return false;
+            if (record.blockedById) return record.blockedById === currentUserDocId;
+            return Boolean(currentUserData.username && record.blockedBy === currentUserData.username);
+        }
+
         // وظائف فتح وإغلاق مودال البلوك
-        window._openBlockModal = function() {
-            document.getElementById('blockModal').classList.add('active');
+        window._openBlockModal = function(record = null) {
+            if (record && !canEditBlacklistRecord(record)) {
+                showToast('يمكنك تعديل البلوك الذي أضفته أنت فقط', true);
+                return;
+            }
+            const role = currentUserData?.role;
+            const modal = document.getElementById('blockModal');
+            const blacklistPage = document.getElementById('blacklist-page');
+            const pageAccent = getComputedStyle(blacklistPage).getPropertyValue('--page-accent').trim();
+            modal.style.setProperty('--page-accent', pageAccent);
+            modal.style.setProperty('--page-accent-text', getThemeTextColor(pageAccent));
+            const title = document.getElementById('blockModalTitle');
+            const editId = document.getElementById('blockEditId');
+
+            if (record) {
+                title.innerHTML = '<i class="fas fa-user-edit"></i> تعديل عميل بالقائمة السوداء';
+                editId.value = record.id || '';
+                document.getElementById('blockCustomerName').value = record.customerName || '';
+                document.getElementById('blockReason').value = record.reason || '';
+                renderBlockPhoneInputs(getBlacklistPhoneNumbers(record), role === 'manager');
+            } else {
+                title.innerHTML = '<i class="fas fa-user-slash"></i> إضافة عميل للقائمة السوداء';
+                editId.value = '';
+                document.getElementById('blockCustomerName').value = '';
+                document.getElementById('blockReason').value = '';
+                renderBlockPhoneInputs(['']);
+            }
+
+            modal.classList.add('active');
         };
 
         window._closeBlockModal = function() {
-            document.getElementById('blockModal').classList.remove('active');
+            const modal = document.getElementById('blockModal');
+            modal.classList.remove('active');
+            modal.style.removeProperty('--page-accent');
+            modal.style.removeProperty('--page-accent-text');
+            document.getElementById('blockEditId').value = '';
+            document.getElementById('blockCustomerName').value = '';
+            document.getElementById('blockReason').value = '';
+            renderBlockPhoneInputs(['']);
         };
 
         // وظيفة حفظ البلوك المعدلة
         window._saveBlock = async function(e) {
             e.preventDefault();
             const name = document.getElementById('blockCustomerName').value.trim();
-            const phone = document.getElementById('blockCustomerPhone').value.trim();
             const reason = document.getElementById('blockReason').value.trim();
+            const phones = [...document.querySelectorAll('#blockPhoneInputs .block-phone-number')]
+                .map(input => input.value.trim())
+                .map(phone => phone.replace(/[\s\u200B-]/g, ''))
+                .filter(Boolean);
 
             try {
-                await addDoc(collection(db, 'blacklist'), {
-                    customerName: name,
-                    phone: phone,
-                    reason: reason,
-                    blockedBy: currentUserData.username || 'موظف',
-                    createdAt: serverTimestamp(),
-                    dateStr: getCurrentDate()
-                });
+                const editId = document.getElementById('blockEditId').value;
+                if (editId) {
+                    const existingRecord = (window.__blacklistDocs || []).find(item => item.id === editId);
+                    if (!existingRecord) {
+                        showToast('تعذر العثور على العميل في القائمة السوداء', true);
+                        return;
+                    }
+                    if (!canEditBlacklistRecord(existingRecord)) {
+                        showToast('يمكنك تعديل البلوك الذي أضفته أنت فقط', true);
+                        return;
+                    }
+                    const existingPhones = getBlacklistPhoneNumbers(existingRecord);
+                    const normalizedPhones = [...new Set(
+                        currentUserData.role === 'employee' ? [...existingPhones, ...phones] : phones
+                    )];
+                    if (!normalizedPhones.length) {
+                        showToast('يرجى إضافة رقم هاتف واحد على الأقل', true);
+                        return;
+                    }
+                    const payload = {
+                        customerName: name,
+                        phone: normalizedPhones.join(', '),
+                        phoneNumbers: normalizedPhones,
+                        reason: reason,
+                        updatedAt: serverTimestamp(),
+                        updatedBy: currentUserData.username || 'موظف'
+                    };
+                    await updateDoc(doc(db, 'blacklist', editId), payload);
+                    showToast('تم تعديل العميل في القائمة السوداء ✅');
+                } else {
+                    if (!phones.length) {
+                        showToast('يرجى إضافة رقم هاتف واحد على الأقل', true);
+                        return;
+                    }
+                    const normalizedPhones = [...new Set(phones)];
+                    const payload = {
+                        customerName: name,
+                        phone: normalizedPhones.join(', '),
+                        phoneNumbers: normalizedPhones,
+                        reason: reason,
+                        blockedBy: currentUserData.username || 'موظف',
+                        blockedById: currentUserDocId,
+                        updatedAt: serverTimestamp(),
+                        dateStr: getCurrentDate()
+                    };
+                    await addDoc(collection(db, 'blacklist'), { ...payload, createdAt: serverTimestamp() });
+                    showToast('تم إضافة العميل للقائمة السوداء بنجاح ✅');
+                }
 
-                showToast('تم إضافة العميل للقائمة السوداء بنجاح ✅');
                 window._closeBlockModal();
-                document.getElementById('blockCustomerName').value = '';
-                document.getElementById('blockCustomerPhone').value = '';
-                document.getElementById('blockReason').value = '';
             } catch (err) {
                 showToast('خطأ أثناء الحفظ: ' + err.message, true);
             }
+        };
+
+        window._editBlacklist = function(id) {
+            const docs = window.__blacklistDocs || [];
+            const target = docs.find(item => item.id === id);
+            if (!target) return;
+            if (!canEditBlacklistRecord(target)) {
+                showToast('يمكنك تعديل البلوك الذي أضفته أنت فقط', true);
+                return;
+            }
+
+            window._openBlockModal(target);
         };
 
         // وظيفة الفحص السريع (تعمل بمجرد الكتابة)
@@ -2750,6 +3470,7 @@ const time = d.createdAt?.toDate ? d.createdAt.toDate().toLocaleTimeString('ar-E
             document.getElementById('employee-section').classList.add('hidden');
             document.getElementById('manager-section').classList.add('hidden');
             document.getElementById('quick-alerts-page').classList.add('hidden');
+            document.getElementById('shared-quick-alerts-page').classList.add('hidden');
             document.getElementById('blacklist-page').classList.remove('hidden');
             listenToBlacklist(); // تشغيل جلب البيانات
         };
@@ -2769,28 +3490,37 @@ const time = d.createdAt?.toDate ? d.createdAt.toDate().toLocaleTimeString('ar-E
             const q = query(collection(db, 'blacklist'), orderBy('createdAt', 'desc'));
             onSnapshot(q, (snap) => {
                 const docs = snap.docs.map(d => ({id: d.id, ...d.data()}));
+                window.__blacklistDocs = docs;
                 const tbody = document.getElementById('fullBlacklistBody');
                 if (!tbody) return;
 
-                if (docs.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">القائمة السوداء فارغة</td></tr>';
-                    return;
-                }
+                            if (docs.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="9" class="empty-state">لا توجد بلاغات مسجلة لهذا التاريخ</td></tr>';
+            return;
+        }
 
-                tbody.innerHTML = docs.map(d => `
-                    <tr>
-                        <td>${d.dateStr || ''}</td>
-                        <td style="color:var(--danger); font-weight:bold;">${d.customerName}</td>
-                        <td>${d.phone}</td>
-    <td style="white-space:normal; text-align:center;">${d.reason}</td>
-                        <td>${d.blockedBy}</td>
-                        <td>
-                            ${(currentUserData.role === 'manager') ? 
-                                `<button class="btn btn-sm btn-del" onclick="window._deleteFromBlacklist('${d.id}')">إزالة</button>` 
-                                : '<i class="fas fa-lock" title="للمدير فقط"></i>'}
-                        </td>
-                    </tr>
-                `).join('');
+                tbody.innerHTML = docs.map(d => {
+                    const phones = getBlacklistPhoneNumbers(d).join('<br>');
+                    return `
+                        <tr data-id="${d.id}">
+                            <td>${d.dateStr || ''}</td>
+                            <td style="color:var(--danger); font-weight:bold;">${d.customerName}</td>
+                            <td>${phones || d.phone || ''}</td>
+                            <td style="white-space:normal; text-align:center;">${d.reason}</td>
+                            <td>${d.blockedBy}</td>
+                            <td>
+                                ${(currentUserData.role === 'manager' || currentUserData.role === 'employee') ? 
+                                    `<div style="display:flex; gap:8px; justify-content:center;">
+                                        ${currentUserData.role === 'manager' || canEditBlacklistRecord(d) ? `
+                                        <button class="btn btn-sm" onclick="window._editBlacklist('${d.id}')" style="background:rgba(96,165,250,0.12); color:#7dd3fc;">تعديل</button>
+                                        ` : ''}
+                                        ${currentUserData.role === 'manager' ? `<button class="btn btn-sm btn-del" onclick="window._deleteFromBlacklist('${d.id}')">إزالة</button>` : ''}
+                                    </div>` 
+                                    : '<i class="fas fa-lock" title="للمدير فقط"></i>'}
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
             });
         }
 
@@ -2798,41 +3528,43 @@ const time = d.createdAt?.toDate ? d.createdAt.toDate().toLocaleTimeString('ar-E
     window._quickCheckBlock = function(phone) {
         const resultArea = document.getElementById('blockResultArea');
         const resultDetail = document.getElementById('blockResultDetail');
-        const searchTerm = phone.trim();
+        const searchTerm = String(phone || '').trim();
+        const normalizedSearch = normalizeEmployeePhone(searchTerm);
 
-        // 1. إذا كانت الخانة فارغة أو الرقم قصير جداً اخفِ منطقة النتائج
-        if (searchTerm.length < 3) {
+        if (!normalizedSearch || normalizedSearch.length < 3) {
             resultArea.classList.add('hidden');
             return;
         }
 
-        // البحث داخل صفوف الجدول
         const rows = document.querySelectorAll('#fullBlacklistBody tr');
         let foundMatch = null;
 
         rows.forEach(row => {
-            const rowPhoneCell = row.cells[2]; 
-            if (rowPhoneCell) {
-                const rowPhone = rowPhoneCell.innerText.trim();
-                if (rowPhone === searchTerm) { // بحث عن تطابق تام
-                    foundMatch = {
-                        name: row.cells[1].innerText,
-                        reason: row.cells[3].innerText,
-                        by: row.cells[4].innerText
-                    };
-                }
+            const rowPhoneCell = row.cells[2];
+            if (!rowPhoneCell) return;
+
+            const numbers = String(rowPhoneCell.innerText)
+                .split(/[،,؛;\n\r]/)
+                .map(value => normalizeEmployeePhone(value))
+                .filter(Boolean);
+
+            const isMatch = numbers.some(value => value.includes(normalizedSearch) || normalizedSearch.includes(value));
+            if (isMatch) {
+                foundMatch = {
+                    name: row.cells[1]?.innerText || '',
+                    reason: row.cells[3]?.innerText || '',
+                    by: row.cells[4]?.innerText || ''
+                };
             }
         });
 
-        // 2. إظهار منطقة النتائج وتغيير شكلها بناءً على النتيجة
         resultArea.classList.remove('hidden');
 
         if (foundMatch) {
-            // حالة الحظر (أحمر)
             resultArea.style.background = "rgba(239, 68, 68, 0.2)";
             resultArea.style.borderColor = "var(--danger)";
-            resultArea.style.animation = "pulseRed 2s infinite"; // تفعيل الأنميشن التنبيهي
-            
+            resultArea.style.animation = "pulseRed 2s infinite";
+
             resultDetail.innerHTML = `
                 <div style="display:flex; align-items:center; gap:15px;">
                     <i class="fas fa-user-slash" style="font-size:30px; color:var(--danger)"></i>
@@ -2845,30 +3577,28 @@ const time = d.createdAt?.toDate ? d.createdAt.toDate().toLocaleTimeString('ar-E
                 </div>
             `;
         } else {
-            // حالة السلامة (أخضر) - تظهر فقط عندما يكون الرقم مكتملاً (مثلاً 11 رقم)
-            if (searchTerm.length >= 11) {
-                resultArea.style.background = "rgba(16, 185, 129, 0.15)";
-                resultArea.style.borderColor = "var(--success)";
-                resultArea.style.animation = "none"; // إيقاف أنميشن التنبيه
-                
-                resultDetail.innerHTML = `
-                    <div style="display:flex; align-items:center; gap:15px;">
-                        <i class="fas fa-check-circle" style="font-size:30px; color:var(--success)"></i>
-                        <div>
-                            <h4 style="color:var(--success); margin:0;">الرقم سليم ✅</h4>
-                            <span style="color:#fff;">هذا العميل غير مسجل في القائمة السوداء، يمكنك التعامل معه.</span>
-                        </div>
+            resultArea.style.background = "rgba(16, 185, 129, 0.15)";
+            resultArea.style.borderColor = "var(--success)";
+            resultArea.style.animation = "none";
+
+            resultDetail.innerHTML = `
+                <div style="display:flex; align-items:center; gap:15px;">
+                    <i class="fas fa-check-circle" style="font-size:30px; color:var(--success)"></i>
+                    <div>
+                        <h4 style="color:var(--success); margin:0;">الرقم سليم ✅</h4>
+                        <span style="color:#fff;">هذا العميل غير مسجل في القائمة السوداء، يمكنك التعامل معه.</span>
                     </div>
-                `;
-            } else {
-                // لو الرقم لسه مكملش 11 حرف وهو مش موجود، اخفي المنطقة عشان متبقاش مزعجة أثناء الكتابة
-                resultArea.classList.add('hidden');
-            }
+                </div>
+            `;
         }
     };
 
         // 5. دالة حذف الحظر (للمدير)
         window._deleteFromBlacklist = async function(id) {
+            if (currentUserData?.role !== 'manager') {
+                showToast('إزالة العملاء من القائمة السوداء متاحة للمدير فقط', true);
+                return;
+            }
             if (!confirm('هل تريد إلغاء الحظر عن هذا العميل؟')) return;
             try {
                 await deleteDoc(doc(db, 'blacklist', id));
@@ -2972,12 +3702,11 @@ window._filterQuickTableByPhone = function(searchValue) {
     const search = searchValue.trim();
 
     for (let i = 0; i < rows.length; i++) {
-        // تم تغيير الرقم من [2] إلى [3] لأن عمود الهاتف هو الرابع الآن
-        const phoneCell = rows[i].getElementsByTagName('td')[3]; 
+        // عمود الهاتف أصبح هو الخامس (index 4) بسبب إضافة عمود التفاصيل ومتصدر الجدول
+        const phoneCell = rows[i].getElementsByTagName('td')[4]; 
         
         if (phoneCell) {
             const phoneText = phoneCell.textContent || phoneCell.innerText;
-            // التحقق مما إذا كان النص فارغاً أو يحتوي على رقم البحث
             if (search === "" || phoneText.includes(search)) {
                 rows[i].style.display = "";
             } else {
@@ -2997,7 +3726,36 @@ function format12Hour(timeStr) {
     hours = hours ? hours : 12; // الساعة 0 تصبح 12
     return `${hours}:${minutes} ${ampm}`;
 }
+// دالة المدير لإرفاق رابط المكالمة
+window._sendCallAction = async function(id) {
+    const link = prompt("يرجى لصق رابط تسجيل المكالمة هنا (Drive, Telegram, etc..):");
+    if (link === null) return; // إلغاء
 
+    try {
+        await updateDoc(doc(db, 'quick_alerts', id), { 
+            status: 'تم إرسال المكالمة 🎧',
+            callLink: link
+        });
+        showToast('تم إرفاق المكالمة بنجاح ✅');
+    } catch (e) {
+        showToast('خطأ في التحديث', true);
+    }
+};
+// دالة إظهار وإخفاء مربع تفصيل الشكوى بناءً على الفرع المختار
+window._toggleDetailsField = function(branchValue) {
+    const detailsBox = document.getElementById('qPageDetailsBox');
+    const relatedBranchBox = document.getElementById('qPageRelatedBranchBox');
+    const showCallCenterFields = branchValue.trim() === 'مركز الاتصالات';
+    if (showCallCenterFields) {
+        detailsBox.classList.remove('hidden');
+        relatedBranchBox.classList.remove('hidden');
+    } else {
+        detailsBox.classList.add('hidden');
+        relatedBranchBox.classList.add('hidden');
+        document.getElementById('qPageRelatedBranch').value = '';
+        document.getElementById('qPageDetails').value = '';
+    }
+};
 // تحديث وقت الشكوى تلقائياً عند تحميل الصفحة أو تبديل الحساب
 
         </script>
