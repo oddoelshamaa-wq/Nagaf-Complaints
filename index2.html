@@ -299,14 +299,6 @@
                     border-color: rgba(0,242,255,0.4); color: var(--primary);
                 }
                 .mgr-tab .tab-count { background: rgba(0,242,255,0.2); color: var(--primary); padding: 2px 8px; border-radius: 6px; font-size: 11px; }
-                .overdue-reminder {
-                    margin: 0 0 20px; padding: 16px 20px; border: 1px solid rgba(251,191,36,0.45);
-                    border-radius: 14px; background: rgba(251,191,36,0.1); color: #fde68a;
-                }
-                .overdue-reminder h4 { display: flex; align-items: center; gap: 9px; margin-bottom: 8px; color: #fbbf24; }
-                .overdue-reminder-count { margin-right: auto; padding: 2px 9px; border-radius: 20px; background: rgba(251,191,36,0.18); }
-                .overdue-reminder ul { display: grid; gap: 5px; margin: 8px 0 0; padding-right: 24px; }
-                .overdue-reminder li { line-height: 1.6; }
                 .pass-toggle {
                     position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
                     background: none; border: none; color: var(--primary); cursor: pointer;
@@ -815,6 +807,13 @@
                     <i class="fas fa-crown" id="mgrIcon" style="color: #fbbf24;"></i>
                     <span id="mgrTitleSpan">المدير العام</span>
                 </div>
+                <div class="theme-picker-bar">
+                    <span class="color-label"><i class="fas fa-palette"></i> لوني</span>
+                    <div class="theme-color-btn" id="mgrThemeBtn" style="background:#00f2ff;">
+                        <input type="color" id="mgrThemeColorPicker" value="#00f2ff" aria-label="تغيير لون المدير">
+                    </div>
+                    <span class="theme-color-saving" id="mgrThemeSavingText"><i class="fas fa-spinner fa-spin"></i> جاري الحفظ...</span>
+                </div>
                 <div id="mgrCloudStatus" class="cloud-status synced">
                     <div class="cloud-dot"></div>
                     <span>متصل بالسحابة</span>
@@ -835,11 +834,6 @@
                 <div class="stat-card"><div class="stat-num" id="statUsers">0</div><div class="stat-label">موظفين نشطين</div></div>
                 <div class="stat-card"><div class="stat-num" id="statEmployees">0</div><div class="stat-label">إجمالي الموظفين</div></div>
             </div>
-            <section id="overdueComplaintReminder" class="overdue-reminder hidden" role="alert" aria-live="polite">
-                <h4><i class="fas fa-bell"></i> شكاوى متأخرة بدون رد <span id="overdueComplaintCount" class="overdue-reminder-count"></span></h4>
-                <div>مرّ أكثر من 24 ساعة على بلاغ من «إبلاغ عن شكوى جديدة الآن» دون رد من الإدارة:</div>
-                <ul id="overdueComplaintList"></ul>
-            </section>
             <div class="mgr-tabs">
                 <div class="mgr-tab active" onclick="window._switchTab('complaints', this)">
                     <i class="fas fa-list-alt"></i> سجل الشكاوى <span class="tab-count" id="tabCountComplaints">0</span>
@@ -1448,6 +1442,12 @@ function getCurrentTimeFormatted() {
                     const defMgr = DEFAULT_MANAGERS.find(m => m.username === 'admin' && m.password === password);
                     if (defMgr) {
                         currentUserData = { ...defMgr, branch: 'كل الفروع', active: true, id: 'default_admin' };
+                        currentUserDocId = 'default_admin';
+                        const savedThemeColor = localStorage.getItem('complaints_theme_default_admin');
+                        if (savedThemeColor && /^#[0-9a-fA-F]{6}$/.test(savedThemeColor)) {
+                            currentUserData.themeColor = savedThemeColor;
+                            applyThemeColor(savedThemeColor);
+                        }
                         sessionStorage.setItem('active_session', JSON.stringify(currentUserData));
                         document.getElementById('login-section').classList.add('hidden');
                         document.getElementById('manager-section').classList.remove('hidden');
@@ -1499,6 +1499,7 @@ function getCurrentTimeFormatted() {
                 // توجيه المستخدم حسب الرتبة
                 if (empData.role === 'manager' || empData.role === 'viewer') {
                     document.body.classList.remove('employee-session');
+                    if (empData.themeColor) applyThemeColor(empData.themeColor);
                     applyEmployeeThemeSettings();
                     document.getElementById('manager-section').classList.remove('hidden');
                     applyViewerRestrictions();
@@ -1524,8 +1525,12 @@ function getCurrentTimeFormatted() {
             window.handleLogin = handleLogin;
 
             function handleLogout() {
+                if (themeSaveTimeout) clearTimeout(themeSaveTimeout);
+                themeSaveTimeout = null;
                 if (themeSettingsSaveTimeout) clearTimeout(themeSettingsSaveTimeout);
                 themeSettingsSaveTimeout = null;
+                if (sessionInterval) clearInterval(sessionInterval);
+                sessionInterval = null;
                 if (unsubSnapshot) unsubSnapshot();
                 if (unsubEmpSnapshot) unsubEmpSnapshot();
                 unsubSnapshot = null;
@@ -1534,12 +1539,7 @@ function getCurrentTimeFormatted() {
                 currentUserDocId = null;
                 currentUserData = null;
                 allComplaints = [];
-                allQuickAlerts = [];
                 allEmployees = [];
-                if (overdueQuickAlertsUnsub) overdueQuickAlertsUnsub();
-                overdueQuickAlertsUnsub = null;
-                if (overdueReminderInterval) clearInterval(overdueReminderInterval);
-                overdueReminderInterval = null;
 
                 sessionStorage.removeItem('active_session');
                 document.getElementById('manager-section').classList.add('hidden');
@@ -1548,9 +1548,10 @@ function getCurrentTimeFormatted() {
                 document.getElementById('shared-quick-alerts-page').classList.add('hidden');
                 document.getElementById('blacklist-page').classList.add('hidden');
                 document.getElementById('login-section').classList.remove('hidden');
-                document.getElementById('username').value = '';
+                document.getElementById('usernameSelect').selectedIndex = 0;
                 document.getElementById('password').value = '';
                 document.getElementById('error-msg').classList.add('hidden');
+                applyThemeColor('#00f2ff');
                 document.body.classList.remove('theme-applied');
                 document.body.classList.remove('employee-session');
                 document.getElementById('employeeThemePanel')?.classList.add('hidden');
@@ -1588,10 +1589,14 @@ function getCurrentTimeFormatted() {
                 document.documentElement.style.setProperty('--emp-accent-30', `rgba(${r},${g},${b},0.3)`);
                 document.documentElement.style.setProperty('--emp-accent-40', `rgba(${r},${g},${b},0.4)`);
                 document.documentElement.style.setProperty('--call-color', color);
-                const btn = document.getElementById('empThemeBtn');
-                if (btn) btn.style.background = color;
-                const picker = document.getElementById('empThemeColorPicker');
-                if (picker) picker.value = color;
+                ['empThemeBtn', 'mgrThemeBtn'].forEach(id => {
+                    const button = document.getElementById(id);
+                    if (button) button.style.background = color;
+                });
+                ['empThemeColorPicker', 'mgrThemeColorPicker'].forEach(id => {
+                    const picker = document.getElementById(id);
+                    if (picker) picker.value = color;
+                });
                 document.body.classList.add('theme-applied');
             }
 
@@ -1695,39 +1700,43 @@ function getCurrentTimeFormatted() {
                 });
             });
 
-        document.getElementById('empThemeColorPicker')?.addEventListener('input', function(e) {
-        const newColor = e.target.value;
-        applyThemeColor(newColor); // تغيير اللون في الشاشة فوراً
-        
-        document.getElementById('themeSavingText').classList.add('show');
-        
-        if (themeSaveTimeout) clearTimeout(themeSaveTimeout);
-        
-        themeSaveTimeout = setTimeout(async () => {
-            if (currentUserDocId) {
-                try {
-                    // 1. التحديث في قاعدة البيانات السحابية
-                    await updateDoc(doc(db, 'employees', currentUserDocId), { themeColor: newColor });
-                    
-                    // 2. التحديث في الـ SessionStorage (هذا هو الجزء الذي كان ينقصك)
-                    const sessionData = JSON.parse(sessionStorage.getItem('active_session'));
-                    if (sessionData) {
+        ['empThemeColorPicker', 'mgrThemeColorPicker'].forEach(pickerId => {
+            document.getElementById(pickerId)?.addEventListener('input', function(e) {
+                const newColor = e.target.value;
+                const savingText = document.getElementById(
+                    currentUserData?.role === 'employee' ? 'themeSavingText' : 'mgrThemeSavingText'
+                );
+                applyThemeColor(newColor);
+                if (savingText) savingText.classList.add('show');
+                if (themeSaveTimeout) clearTimeout(themeSaveTimeout);
+
+                const userDocId = currentUserDocId;
+                const userData = currentUserData;
+                themeSaveTimeout = setTimeout(async () => {
+                    try {
+                        if (!userData) return;
+                        if (userDocId && userDocId !== 'default_admin') {
+                            await updateDoc(doc(db, 'employees', userDocId), { themeColor: newColor });
+                        } else {
+                            localStorage.setItem('complaints_theme_default_admin', newColor);
+                        }
+
+                        if (currentUserDocId !== userDocId || currentUserData !== userData) return;
+                        userData.themeColor = newColor;
+                        const sessionData = JSON.parse(sessionStorage.getItem('active_session') || '{}');
                         sessionData.themeColor = newColor;
                         sessionStorage.setItem('active_session', JSON.stringify(sessionData));
+                        showToast('تم حفظ اللون المفضل بنجاح');
+                    } catch (error) {
+                        console.error('Theme Save Error:', error);
+                        showToast('فشل حفظ اللون', true);
+                    } finally {
+                        if (savingText) savingText.classList.remove('show');
+                        themeSaveTimeout = null;
                     }
-
-                    // 3. تحديث البيانات المحلية للمستخدم الحالي في الكود
-                    if (currentUserData) currentUserData.themeColor = newColor;
-
-                    showToast('تم حفظ اللون المفضل بنجاح ✅');
-                } catch(err) {
-                    console.error("Theme Save Error:", err);
-                    showToast('فشل حفظ اللون في السحابة', true);
-                }
-            }
-            document.getElementById('themeSavingText').classList.remove('show');
-        }, 1000);
-    });
+                }, 700);
+            });
+        });
 
             window._showLocationSuggestions = function(val) {
                 const box = document.getElementById('locationSuggestions');
@@ -1897,8 +1906,6 @@ const countBadge = document.getElementById('empComplaintsCount');
             window.refreshEmployeeView = refreshEmployeeView;
 
             function loadManagerData() {
-                startOverdueQuickAlertsListener();
-                renderOverdueComplaintReminder();
                 const month = document.getElementById('mgrMonthFilter')?.value;
                 const dateFrom = document.getElementById('mgrDateFrom')?.value;
                 const dateTo = document.getElementById('mgrDateTo')?.value;
@@ -1965,70 +1972,6 @@ const countBadge = document.getElementById('empComplaintsCount');
                 }).join('');
             }
             window.loadManagerData = loadManagerData;
-
-            function renderOverdueComplaintReminder() {
-                const reminder = document.getElementById('overdueComplaintReminder');
-                const list = document.getElementById('overdueComplaintList');
-                const count = document.getElementById('overdueComplaintCount');
-                if (!reminder || !list || !count) return;
-
-                const now = Date.now();
-                const overdue = allQuickAlerts
-                    .map(alert => {
-                        const createdAt = alert.createdAt;
-                        const createdAtMs = typeof createdAt?.toDate === 'function'
-                            ? createdAt.toDate().getTime()
-                            : (typeof createdAt?.seconds === 'number'
-                                ? createdAt.seconds * 1000
-                                : (createdAt instanceof Date ? createdAt.getTime() : NaN));
-                        const status = String(alert.status || '');
-                        const hasResponse = Boolean(String(alert.responderName || '').trim())
-                            || ['كامل', 'هيتم ارساله', 'استرجاع', 'البديل', 'تم إرسال المكالمة']
-                                .some(responseStatus => status.includes(responseStatus));
-                        return { alert, createdAtMs, hasResponse };
-                    })
-                    .filter(item => !item.hasResponse
-                        && Number.isFinite(item.createdAtMs)
-                        && now - item.createdAtMs >= 24 * 60 * 60 * 1000)
-                    .sort((a, b) => a.createdAtMs - b.createdAtMs);
-
-                list.replaceChildren();
-                if (!overdue.length || (currentUserData?.role !== 'manager' && currentUserData?.role !== 'viewer')) {
-                    reminder.classList.add('hidden');
-                    return;
-                }
-
-                count.textContent = overdue.length;
-                overdue.slice(0, 8).forEach(({ alert, createdAtMs }) => {
-                    const hoursLate = Math.floor((now - createdAtMs) / (60 * 60 * 1000));
-                    const item = document.createElement('li');
-                    const branch = alert.branch || 'فرع غير محدد';
-                    const employee = alert.sender || 'غير معروف';
-                    item.textContent = `رقم ${alert.phone || 'غير مسجل'} — ${branch} — الموظف: ${employee} — منذ ${hoursLate} ساعة`;
-                    list.appendChild(item);
-                });
-                if (overdue.length > 8) {
-                    const more = document.createElement('li');
-                    more.textContent = `و ${overdue.length - 8} شكاوى أخرى`;
-                    list.appendChild(more);
-                }
-                reminder.classList.remove('hidden');
-            }
-
-            function startOverdueQuickAlertsListener() {
-                if (overdueQuickAlertsUnsub
-                    || (currentUserData?.role !== 'manager' && currentUserData?.role !== 'viewer')) return;
-
-                overdueQuickAlertsUnsub = onSnapshot(collection(db, 'quick_alerts'), (snap) => {
-                    allQuickAlerts = snap.docs.map(item => ({ id: item.id, ...item.data() }));
-                    renderOverdueComplaintReminder();
-                }, (error) => {
-                    console.error('Quick alerts reminder listener error:', error);
-                    showToast('تعذر تحميل بلاغات التنبيه: ' + error.message, true);
-                });
-                if (overdueReminderInterval) clearInterval(overdueReminderInterval);
-                overdueReminderInterval = setInterval(renderOverdueComplaintReminder, 60 * 1000);
-            }
 
         // 1. وظيفة التبديل بين الأقسام
         window._switchTab = function(tab, el) {
@@ -2720,6 +2663,11 @@ const cQuery = query(collection(db, 'complaints'), orderBy('createdAt', 'desc'))
                 applyEmployeeThemeSettings();
                 document.getElementById('login-section').classList.add('hidden');
                 document.getElementById('manager-section').classList.remove('hidden');
+                const managerThemeColor = sData.themeColor
+                    || (sData.id === 'default_admin' ? localStorage.getItem('complaints_theme_default_admin') : null);
+                if (managerThemeColor && /^#[0-9a-fA-F]{6}$/.test(managerThemeColor)) {
+                    applyThemeColor(managerThemeColor);
+                }
                 applyViewerRestrictions();
             } else {
                 document.body.classList.add('employee-session');
