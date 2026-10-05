@@ -48,7 +48,7 @@
                     --text: #f1f5f9;
                     --success: #10b981;
                     --danger: #ef4444;
-                    --warning: #fbbf24;
+                    --warning: #ffb703;
                     --emp-accent: #00f2ff;
                     --emp-accent-8: rgba(0,242,255,0.08);
                     --emp-accent-15: rgba(0,242,255,0.15);
@@ -374,7 +374,18 @@
                 .customizable-page input:focus,
                 .customizable-page select:focus { border-color: var(--page-accent) !important; box-shadow: 0 0 20px rgba(var(--page-accent-rgb),0.2) !important; }
                 .customizable-page .btn:not(.btn-logout):not(.btn-cancel) { background: var(--page-accent) !important; color: var(--page-accent-text, #fff) !important; }
-                .customizable-page .btn-neon { background: var(--page-accent) !important; color: var(--page-accent-text, #fff) !important; }
+                #quick-alerts-page [data-quick-alert-button] { background: var(--quick-action-color) !important; color: var(--quick-action-text, #111827) !important; }
+                .quick-alert-theme-panel {
+                    display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+                    gap: 12px; padding: 14px; margin: 0 0 18px;
+                    background: rgba(15,23,42,0.85); border: 1px solid var(--border); border-radius: 14px;
+                }
+                .quick-alert-theme-control { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+                .quick-alert-theme-control label { color: #cbd5e1; font-size: 12px; font-weight: 700; }
+                .quick-alert-theme-control input[type="color"] {
+                    width: 40px; height: 34px; padding: 3px; border: 1px solid var(--border);
+                    border-radius: 9px; cursor: pointer; background: transparent;
+                }
                 .customizable-page .page-color-picker { display: none; align-items: center; gap: 8px; color: var(--page-accent); font-size: 12px; font-weight: 700; }
                 body.employee-session .customizable-page .page-color-picker { display: flex; }
                 .customizable-page .page-color-picker input[type="color"] {
@@ -1003,9 +1014,55 @@
                 <input type="color" data-theme-group="pageColors" data-theme-key="quickAlerts" value="#fbbf24" aria-label="تغيير لون صفحة البلاغات السريعة">
                 <span class="theme-settings-saving"><i class="fas fa-spinner fa-spin"></i></span>
             </label>
+            <button class="btn btn-sm employee-theme-toggle" type="button" onclick="window._toggleQuickAlertThemePanel()">
+                <i class="fas fa-palette"></i> تخصيص ألوان الأزرار
+            </button>
             <button class="btn btn-logout" onclick="window._backToMain()" style="border-color: #94a3b8; color: #94a3b8;">
                 <i class="fas fa-arrow-right"></i> العودة للرئيسية
             </button>
+        </div>
+        <div id="quickAlertThemePanel" class="quick-alert-theme-panel hidden">
+            <div class="quick-alert-theme-control">
+                <label for="quickAlertSendColor">زر إبلاغ الشكوى</label>
+                <input type="color" id="quickAlertSendColor" data-theme-group="quickAlertButtons" data-theme-key="send" value="#fbbf24">
+            </div>
+            <div class="quick-alert-theme-control">
+                <label for="quickAlertFollowColor">زر متابعة بلاغات الزملاء</label>
+                <input type="color" id="quickAlertFollowColor" data-theme-group="quickAlertButtons" data-theme-key="follow" value="#0ea5e9">
+            </div>
+            <div class="quick-alert-theme-control">
+                <label for="quickAlertCompleteColor">زر كامل</label>
+                <input type="color" id="quickAlertCompleteColor" data-theme-group="quickAlertButtons" data-theme-key="complete" value="#10b981">
+            </div>
+            <div class="quick-alert-theme-control">
+                <label for="quickAlertSendColorAction">زر هيتم ارساله</label>
+                <input type="color" id="quickAlertSendColorAction" data-theme-group="quickAlertButtons" data-theme-key="sendAction" value="#ef4444">
+            </div>
+            <div class="quick-alert-theme-control">
+                <label for="quickAlertRefundColor">زر استرجاع</label>
+                <input type="color" id="quickAlertRefundColor" data-theme-group="quickAlertButtons" data-theme-key="refund" value="#0ea5e9">
+            </div>
+            <div class="quick-alert-theme-control">
+                <label for="quickAlertReplacementColor">زر البديل</label>
+                <input type="color" id="quickAlertReplacementColor" data-theme-group="quickAlertButtons" data-theme-key="replacement" value="#a855f7">
+            </div>
+            <div class="quick-alert-theme-control">
+                <label for="quickAlertCallColor">زر المكالمة</label>
+                <input type="color" id="quickAlertCallColor" data-theme-group="quickAlertButtons" data-theme-key="call" value="#06b6d4">
+            </div>
+            <div class="quick-alert-theme-control">
+                <label for="quickAlertRequestCallColor">زر طلب مكالمة</label>
+                <input type="color" id="quickAlertRequestCallColor" data-theme-group="quickAlertButtons" data-theme-key="requestCall" value="#06b6d4">
+            </div>
+            <div class="quick-alert-theme-control">
+                <label for="quickAlertEditColor">زر تعديل البلاغ</label>
+                <input type="color" id="quickAlertEditColor" data-theme-group="quickAlertButtons" data-theme-key="edit" value="#00f2ff">
+            </div>
+            <div class="quick-alert-theme-control">
+                <label for="quickAlertDeleteColor">زر حذف البلاغ</label>
+                <input type="color" id="quickAlertDeleteColor" data-theme-group="quickAlertButtons" data-theme-key="delete" value="#ef4444">
+            </div>
+            <span class="theme-settings-saving"><i class="fas fa-spinner fa-spin"></i> جاري حفظ الألوان...</span>
         </div>
 
         <div class="card" style="border: 1px solid var(--warning);">
@@ -1018,7 +1075,7 @@
                     <label style="font-size: 13px; color: #94a3b8;">مراجعة يوم آخر:</label>
                     <input type="date" id="qPageDateFilter" onchange="window._changeQuickAlertsDate(this.value)" style="width: auto; padding: 5px 10px; height: 35px; border-radius: 8px;">
                 </div>
-                <button class="btn btn-sm" onclick="window._showSharedQuickAlertsPage()" style="background:#0ea5e9; color:#fff; margin-top:12px;">
+                <button class="btn btn-sm" data-quick-alert-button="follow" onclick="window._showSharedQuickAlertsPage()" style="--quick-action-color:#0ea5e9; color:#fff; margin-top:12px;">
                 <i class="fas fa-clipboard-list"></i> متابعة بلاغات الزملاء
                 </button>
             </div>
@@ -1082,7 +1139,7 @@
 </div>
 
 <div style="display: flex; align-items: flex-end;">
-    <button class="btn btn-neon" onclick="window._sendQuickAlertFromPage()" style="background: var(--warning); color: #000; height: 45px; margin: 0; min-width: 150px;">
+    <button class="btn btn-neon" id="qPageSendButton" data-quick-alert-button="send" onclick="window._sendQuickAlertFromPage()" style="background: var(--warning); color: #000; height: 45px; margin: 0; min-width: 150px;">
         <i class="fas fa-paper-plane"></i> أبلغ الشكوى
     </button>
 </div>
@@ -1111,6 +1168,53 @@
                         </tbody>
                     </table>
                 </div>
+            </div>
+        </div>
+        <div class="modal-overlay" id="quickAlertEditModal">
+            <div class="modal-box" style="border-color: var(--warning); max-width: 560px;">
+                <div class="modal-header">
+                    <h3 style="color: var(--warning); background: none; -webkit-text-fill-color: var(--warning); margin: 0;">
+                        <i class="fas fa-pen-to-square"></i> تعديل بيانات البلاغ السريع
+                    </h3>
+                    <button type="button" class="modal-close" onclick="window._closeQuickAlertEdit()"><i class="fas fa-times"></i></button>
+                </div>
+                <form onsubmit="window._saveQuickAlertEdit(event)">
+                    <div class="modal-grid" style="grid-template-columns: 1fr;">
+                        <div class="input-box">
+                            <label for="quickAlertEditPhone">رقم هاتف العميل</label>
+                            <div class="field-wrap"><i class="fas fa-phone"></i><input type="text" id="quickAlertEditPhone" required></div>
+                        </div>
+                        <div class="input-box">
+                            <label for="quickAlertEditBranch">الفرع الموجه له البلاغ</label>
+                            <div class="field-wrap"><i class="fas fa-store"></i><input type="text" id="quickAlertEditBranch" list="qPageBranchOptions" required oninput="window._toggleQuickAlertEditFields()"></div>
+                        </div>
+                        <div class="input-box hidden" id="quickAlertEditRelatedBranchBox">
+                            <label for="quickAlertEditRelatedBranch">الفرع المختص</label>
+                            <div class="field-wrap">
+                                <i class="fas fa-store"></i>
+                                <select id="quickAlertEditRelatedBranch">
+                                    <option value="" disabled selected>اختر الفرع المختص...</option>
+                                    <option value="العباسيه">العباسيه</option>
+                                    <option value="عبده باشا">عبده باشا</option>
+                                    <option value="نادي السكه">نادي السكه</option>
+                                    <option value="عباس العقاد">عباس العقاد</option>
+                                    <option value="يوسف عباس">يوسف عباس</option>
+                                    <option value="المعهد">المعهد</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="input-box" id="quickAlertEditDetailsBox">
+                            <label for="quickAlertEditDetails">تفصيل الشكوى</label>
+                            <div class="field-wrap"><i class="fas fa-comment-dots"></i><input type="text" id="quickAlertEditDetails"></div>
+                        </div>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-cancel" onclick="window._closeQuickAlertEdit()">إلغاء</button>
+                        <button type="submit" class="btn" style="background: var(--warning); color: #000;">
+                            <i class="fas fa-save"></i> حفظ التعديلات
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
         <div id="shared-quick-alerts-page" class="app-container hidden customizable-page">
@@ -1340,6 +1444,18 @@
                     quickAlerts: '#fbbf24',
                     sharedQuickAlerts: '#0ea5e9',
                     blacklist: '#ef4444'
+                },
+                quickAlertButtons: {
+                    send: '#fbbf24',
+                    follow: '#0ea5e9',
+                    complete: '#10b981',
+                    sendAction: '#ef4444',
+                    refund: '#0ea5e9',
+                    replacement: '#a855f7',
+                    call: '#06b6d4',
+                    requestCall: '#06b6d4',
+                    edit: '#00f2ff',
+                    delete: '#ef4444'
                 },
                 pageColors: {
                     quickAlerts: '#fbbf24',
@@ -1603,9 +1719,10 @@ function getCurrentTimeFormatted() {
             function normalizeThemeSettings(rawSettings) {
                 const settings = {
                     shortcutColors: { ...DEFAULT_THEME_SETTINGS.shortcutColors },
+                    quickAlertButtons: { ...DEFAULT_THEME_SETTINGS.quickAlertButtons },
                     pageColors: { ...DEFAULT_THEME_SETTINGS.pageColors }
                 };
-                ['shortcutColors', 'pageColors'].forEach(group => {
+                ['shortcutColors', 'quickAlertButtons', 'pageColors'].forEach(group => {
                     const source = rawSettings?.[group];
                     Object.keys(settings[group]).forEach(key => {
                         const color = source?.[key];
@@ -1625,7 +1742,7 @@ function getCurrentTimeFormatted() {
                 return luminance > 0.45 ? '#111827' : '#ffffff';
             }
 
-            function applyEmployeeThemeSettings(rawSettings) {
+            function applyEmployeeThemeSettings(rawSettings = currentUserData?.themeSettings) {
                 const settings = normalizeThemeSettings(rawSettings);
                 const shortcutElements = {
                     quickAlerts: document.getElementById('empQuickAlertsShortcut'),
@@ -1653,12 +1770,24 @@ function getCurrentTimeFormatted() {
                     page.style.setProperty('--page-accent-text', getThemeTextColor(color));
                 });
 
+                const quickAlertButtonElements = document.querySelectorAll('#quick-alerts-page [data-quick-alert-button]');
+                quickAlertButtonElements.forEach(button => {
+                    const color = settings.quickAlertButtons[button.dataset.quickAlertButton];
+                    if (!color) return;
+                    button.style.setProperty('--quick-action-color', color);
+                    button.style.setProperty('--quick-action-text', getThemeTextColor(color));
+                });
+
                 document.querySelectorAll('[data-theme-group][data-theme-key]').forEach(input => {
                     const color = settings[input.dataset.themeGroup]?.[input.dataset.themeKey];
                     if (color) input.value = color;
                 });
-                if (currentUserData?.role === 'employee') currentUserData.themeSettings = settings;
+                if (currentUserData) currentUserData.themeSettings = settings;
             }
+
+            window._toggleQuickAlertThemePanel = function() {
+                document.getElementById('quickAlertThemePanel')?.classList.toggle('hidden');
+            };
 
             window._toggleEmployeeThemePanel = function() {
                 document.getElementById('employeeThemePanel')?.classList.toggle('hidden');
@@ -1666,8 +1795,8 @@ function getCurrentTimeFormatted() {
 
             document.querySelectorAll('[data-theme-group][data-theme-key]').forEach(input => {
                 input.addEventListener('input', function() {
-                    if (currentUserData?.role !== 'employee' || !currentUserDocId) {
-                        showToast('تخصيص الألوان متاح للموظف المسجل فقط', true);
+                    if (!currentUserData || !currentUserDocId) {
+                        showToast('يرجى تسجيل الدخول لتخصيص الألوان', true);
                         return;
                     }
                     const group = this.dataset.themeGroup;
@@ -1678,13 +1807,13 @@ function getCurrentTimeFormatted() {
                     settings[group][key] = this.value.toLowerCase();
                     currentUserData.themeSettings = settings;
                     applyEmployeeThemeSettings(settings);
-                    const employeeDocId = currentUserDocId;
+                    const userDocId = currentUserDocId;
                     document.querySelectorAll('.theme-settings-saving').forEach(status => status.classList.add('show'));
                     if (themeSettingsSaveTimeout) clearTimeout(themeSettingsSaveTimeout);
                     themeSettingsSaveTimeout = setTimeout(async () => {
                         try {
-                            await updateDoc(doc(db, 'employees', employeeDocId), { themeSettings: settings });
-                            if (currentUserDocId !== employeeDocId) return;
+                            await updateDoc(doc(db, 'employees', userDocId), { themeSettings: settings });
+                            if (currentUserDocId !== userDocId) return;
                             const sessionData = JSON.parse(sessionStorage.getItem('active_session') || '{}');
                             sessionData.themeSettings = settings;
                             sessionStorage.setItem('active_session', JSON.stringify(sessionData));
@@ -3001,11 +3130,15 @@ const mainComplaintData = {
     status: 'تحت المراجعة'
 };
 
-                // 3. التنفيذ: الحفظ في المكانين في نفس اللحظة
-                await Promise.all([
-                    addDoc(collection(db, 'quick_alerts'), alertData),     // يروح لصفحة البلاغات السريعة
-                    addDoc(collection(db, 'complaints'), mainComplaintData) // يروح لسجل الشكاوى الرئيسي
-                ]);
+                // حفظ البلاغ والسجل الرئيسي مع ربطهما لتسهيل مزامنتهما عند التعديل.
+                const quickAlertRef = doc(collection(db, 'quick_alerts'));
+                const mainComplaintRef = doc(collection(db, 'complaints'));
+                alertData.mainComplaintId = mainComplaintRef.id;
+                mainComplaintData.quickAlertId = quickAlertRef.id;
+                const batch = writeBatch(db);
+                batch.set(quickAlertRef, alertData);
+                batch.set(mainComplaintRef, mainComplaintData);
+                await batch.commit();
 
                 // مسح الخانة بعد الإرسال
                 phoneInput.value = '';
@@ -3054,15 +3187,21 @@ window._updateQuickStatus = async function(id, status) {
         });
 
         // 2. تحديث السجل الرئيسي (الشكاوى)
-        const qMain = query(collection(db, 'complaints'), 
-            where('phone', '==', alertData.phone),
-            where('date', '==', alertData.dateStr)
-        );
-
-        const mainSnap = await getDocs(qMain);
+        let mainComplaintDocs = [];
+        if (alertData.mainComplaintId) {
+            const linkedComplaint = await getDoc(doc(db, 'complaints', alertData.mainComplaintId));
+            if (linkedComplaint.exists()) mainComplaintDocs = [linkedComplaint];
+        } else {
+            const qMain = query(collection(db, 'complaints'),
+                where('phone', '==', alertData.phone),
+                where('date', '==', alertData.dateStr)
+            );
+            const mainSnap = await getDocs(qMain);
+            mainComplaintDocs = mainSnap.docs;
+        }
         const updatePromises = [];
 
-        mainSnap.forEach((mainDoc) => {
+        mainComplaintDocs.forEach((mainDoc) => {
             const docRef = doc(db, 'complaints', mainDoc.id);
             
             // تحضير البيانات المطلوب تحديثها
@@ -3086,6 +3225,7 @@ window._updateQuickStatus = async function(id, status) {
     
     // دالة الاستماع للبلاغات (تم تعديلها لتقبل تاريخ محدد)
     let quickAlertsUnsub = null;
+    let quickAlertEditRecord = null;
 
    function startQuickAlertsListener(targetDate = null) {
     if (typeof quickAlertsUnsub === 'function') quickAlertsUnsub();
@@ -3144,25 +3284,169 @@ const time = d.createdAt?.toDate ? d.createdAt.toDate().toLocaleTimeString('ar-E
                     <td>
                         <div style="display:flex; gap:5px; justify-content:center; flex-wrap: wrap;">
                             ${isManager ? `
-                                <button class="btn btn-sm" style="background:#10b981; color:#fff;" onclick="window._updateQuickStatus('${d.id}', 'كامل ✅')" title="كامل">كامل</button>
-                                <button class="btn btn-sm" style="background:#ef4444; color:#fff;" onclick="window._updateQuickStatus('${d.id}', 'هيتم ارساله  ❌')" title="هيتم ارساله">هيتم ارساله</button>
-                                <button class="btn btn-sm" style="background:#0ea5e9; color:#fff;" onclick="window._updateQuickStatus('${d.id}', 'استرجاع 🔄')" title="استرجاع">استرجاع</button>
-                                <button class="btn btn-sm" style="background:#a855f7; color:#fff;" onclick="window._updateQuickStatus('${d.id}', 'البديل 🔃')" title="البديل">البديل</button>
-                              <button class="btn btn-sm" style="background:var(--call-color); color:#fff;" onclick="window._sendCallAction('${d.id}')" title="إرسال رابط المكالمة"><i class="fas fa-upload"></i> المكالمة</button>
+                                <button class="btn btn-sm" data-quick-alert-button="complete" style="background:#10b981; color:#fff;" onclick="window._updateQuickStatus('${d.id}', 'كامل ✅')" title="كامل">كامل</button>
+                                <button class="btn btn-sm" data-quick-alert-button="sendAction" style="background:#ef4444; color:#fff;" onclick="window._updateQuickStatus('${d.id}', 'هيتم ارساله  ❌')" title="هيتم ارساله">هيتم ارساله</button>
+                                <button class="btn btn-sm" data-quick-alert-button="refund" style="background:#0ea5e9; color:#fff;" onclick="window._updateQuickStatus('${d.id}', 'استرجاع 🔄')" title="استرجاع">استرجاع</button>
+                                <button class="btn btn-sm" data-quick-alert-button="replacement" style="background:#a855f7; color:#fff;" onclick="window._updateQuickStatus('${d.id}', 'البديل 🔃')" title="البديل">البديل</button>
+                              <button class="btn btn-sm" data-quick-alert-button="call" style="background:var(--call-color); color:#fff;" onclick="window._sendCallAction('${d.id}')" title="إرسال رابط المكالمة"><i class="fas fa-upload"></i> المكالمة</button>
         ` : `
-            <button class="btn btn-sm" style="background:var(--call-color); color:#fff; font-size:10px;" onclick="window._updateQuickStatus('${d.id}', 'مطلوب مكالمة 📞')">طلب مكالمة</button>
+            <button class="btn btn-sm" data-quick-alert-button="requestCall" style="background:var(--call-color); color:#fff; font-size:10px;" onclick="window._updateQuickStatus('${d.id}', 'مطلوب مكالمة 📞')">طلب مكالمة</button>
         `}
                             
                        ${(isManager || isOwner) ? `
-                            <button class="btn btn-sm btn-del" onclick="window._deleteQuickAlert('${d.id}')"><i class="fas fa-trash"></i></button>
+                            <button class="btn btn-sm btn-edit" data-quick-alert-button="edit" onclick="window._openQuickAlertEdit('${d.id}')" title="تعديل بيانات البلاغ"><i class="fas fa-pen"></i></button>
+                            <button class="btn btn-sm btn-del" data-quick-alert-button="delete" onclick="window._deleteQuickAlert('${d.id}')"><i class="fas fa-trash"></i></button>
                         ` : ''}
                         </div>
                     </td>
                 </tr>
             `;
         }).join('');
+        applyEmployeeThemeSettings(currentUserData?.themeSettings);
     });
 }
+
+window._toggleQuickAlertEditFields = function() {
+    const usesCallCenter = document.getElementById('quickAlertEditBranch').value.trim() === 'مركز الاتصالات';
+    const relatedBranchBox = document.getElementById('quickAlertEditRelatedBranchBox');
+    const relatedBranch = document.getElementById('quickAlertEditRelatedBranch');
+    const details = document.getElementById('quickAlertEditDetails');
+
+    relatedBranchBox.classList.toggle('hidden', !usesCallCenter);
+    relatedBranch.required = usesCallCenter;
+    details.required = usesCallCenter;
+};
+
+window._openQuickAlertEdit = async function(id) {
+    try {
+        const alertSnapshot = await getDoc(doc(db, 'quick_alerts', id));
+        if (!alertSnapshot.exists()) {
+            showToast('تعذر العثور على البلاغ المطلوب تعديله', true);
+            return;
+        }
+
+        const record = { id: alertSnapshot.id, ...alertSnapshot.data() };
+        const isManager = currentUserData?.role === 'manager';
+        const isOwner = currentUserData?.role === 'employee' && record.senderId === currentUserDocId;
+        if (!isManager && !isOwner) {
+            showToast('يمكنك تعديل البلاغات التي أضفتها أنت فقط', true);
+            return;
+        }
+
+        quickAlertEditRecord = record;
+        document.getElementById('quickAlertEditPhone').value = record.phone || '';
+        document.getElementById('quickAlertEditBranch').value = record.routedThrough || record.branch || '';
+        document.getElementById('quickAlertEditRelatedBranch').value = record.routedThrough ? record.branch || '' : '';
+        document.getElementById('quickAlertEditDetails').value = record.details || '';
+        window._toggleQuickAlertEditFields();
+        document.getElementById('quickAlertEditModal').classList.add('active');
+    } catch (error) {
+        console.error('Failed to load quick alert for editing:', error);
+        showToast('تعذر تحميل بيانات البلاغ: ' + error.message, true);
+    }
+};
+
+window._closeQuickAlertEdit = function() {
+    document.getElementById('quickAlertEditModal').classList.remove('active');
+    quickAlertEditRecord = null;
+};
+
+window._saveQuickAlertEdit = async function(event) {
+    event.preventDefault();
+    const record = quickAlertEditRecord;
+    if (!record) {
+        showToast('تعذر تحديد البلاغ المطلوب تعديله', true);
+        return;
+    }
+
+    const phone = document.getElementById('quickAlertEditPhone').value.trim();
+    const selectedBranch = document.getElementById('quickAlertEditBranch').value.trim();
+    const usesCallCenter = selectedBranch === 'مركز الاتصالات';
+    const relatedBranch = document.getElementById('quickAlertEditRelatedBranch').value;
+    const details = document.getElementById('quickAlertEditDetails').value.trim();
+    if (!phone || !selectedBranch || (usesCallCenter && (!relatedBranch || !details))) {
+        showToast('يرجى استكمال رقم الهاتف والفرع والتفاصيل المطلوبة', true);
+        return;
+    }
+
+    const branch = usesCallCenter ? relatedBranch : selectedBranch;
+    const quickAlertUpdates = {
+        phone,
+        branch,
+        routedThrough: usesCallCenter ? selectedBranch : '',
+        details
+    };
+
+    try {
+        const quickAlertRef = doc(db, 'quick_alerts', record.id);
+        let mainComplaintRef = null;
+        let syncWarning = '';
+
+        if (record.mainComplaintId) {
+            const linkedComplaintRef = doc(db, 'complaints', record.mainComplaintId);
+            const linkedComplaint = await getDoc(linkedComplaintRef);
+            if (linkedComplaint.exists()) {
+                mainComplaintRef = linkedComplaintRef;
+            }
+        }
+
+        if (!mainComplaintRef && record.senderId && record.dateStr) {
+            const legacyQuery = query(
+                collection(db, 'complaints'),
+                where('phone', '==', record.phone),
+                where('date', '==', record.dateStr)
+            );
+            const legacySnapshot = await getDocs(legacyQuery);
+            const ownedComplaints = legacySnapshot.docs.filter(
+                complaint => complaint.data().userId === record.senderId
+            );
+            const exactMatches = ownedComplaints.filter(complaint => {
+                const complaintData = complaint.data();
+                return complaintData.branch === record.branch &&
+                    (complaintData.details || '') === (record.details || '');
+            });
+            const match = exactMatches.length === 1
+                ? exactMatches[0]
+                : ownedComplaints.length === 1
+                    ? ownedComplaints[0]
+                    : null;
+
+            if (match) {
+                mainComplaintRef = match.ref;
+                quickAlertUpdates.mainComplaintId = match.id;
+            } else {
+                syncWarning = ownedComplaints.length > 1
+                    ? ' تعذر تحديد سجل الشكوى المرتبط بسبب وجود أكثر من سجل مطابق.'
+                    : ' لم يُعثر على سجل الشكوى الرئيسي المرتبط.';
+            }
+        } else if (!mainComplaintRef) {
+            syncWarning = ' لم يُعثر على سجل الشكوى الرئيسي المرتبط.';
+        }
+
+        const batch = writeBatch(db);
+        batch.update(quickAlertRef, quickAlertUpdates);
+        if (mainComplaintRef) {
+            batch.update(mainComplaintRef, {
+                phone,
+                branch,
+                routedThrough: selectedBranch,
+                details,
+                quickAlertId: record.id
+            });
+        }
+        await batch.commit();
+
+        window._closeQuickAlertEdit();
+        if (syncWarning) {
+            showToast('تم تعديل البلاغ السريع، لكن لم تتم مزامنة السجل الرئيسي.' + syncWarning, true);
+        } else {
+            showToast('تم تعديل البلاغ وتحديث سجل الشكوى الرئيسي بنجاح');
+        }
+    } catch (error) {
+        console.error('Failed to update quick alert:', error);
+        showToast('تعذر حفظ تعديلات البلاغ: ' + error.message, true);
+    }
+};
 
 function renderSharedEmployeeComplaints(phoneSearch) {
      const tbody = document.getElementById('sharedQuickAlertsBody');
