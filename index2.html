@@ -931,6 +931,9 @@
                     <div class="cloud-dot"></div>
                     <span>متصل بالسحابة</span>
                 </div>
+                <button class="btn btn-sm" id="mgrComplaintSoundToggle" type="button" onclick="window._toggleManagerComplaintSound()" style="background:rgba(251,191,36,0.15); color:#fbbf24; border:1px solid rgba(251,191,36,0.4);">
+                    <i class="fas fa-volume-xmark"></i> تفعيل صوت الشكاوى
+                </button>
                 <button class="btn btn-logout" onclick="handleLogout()"><i class="fas fa-power-off"></i> خروج</button>
             </div>
             <!-- أضف هذا الزر في شريط الموظف وشريط المدير -->
@@ -1539,6 +1542,8 @@
             let unsubEmpSnapshot = null;
             let localCache = JSON.parse(localStorage.getItem('db_complaints_cache') || '[]');
             let localEmpCache = JSON.parse(localStorage.getItem('db_employees_cache') || '[]');
+            let complaintAudioContext = null;
+            let managerComplaintSoundEnabled = localStorage.getItem('manager_complaint_sound_enabled') === 'true';
             let themeSaveTimeout = null;
             let themeSettingsSaveTimeout = null;
 
@@ -1613,16 +1618,101 @@ function getCurrentTimeFormatted() {
                 return currentUserData && currentUserData.role === 'viewer';
             }
 
+            function updateManagerComplaintSoundButton() {
+                const button = document.getElementById('mgrComplaintSoundToggle');
+                if (!button) return;
+                button.innerHTML = managerComplaintSoundEnabled
+                    ? '<i class="fas fa-volume-high"></i> إيقاف صوت الشكاوى'
+                    : '<i class="fas fa-volume-xmark"></i> تفعيل صوت الشكاوى';
+                button.setAttribute('aria-pressed', String(managerComplaintSoundEnabled));
+            }
+
+            function playManagerComplaintSound() {
+                if (!managerComplaintSoundEnabled || currentUserData?.role !== 'manager'
+                    || !complaintAudioContext || complaintAudioContext.state !== 'running') return;
+
+                const now = complaintAudioContext.currentTime;
+                const oscillator = complaintAudioContext.createOscillator();
+                const gain = complaintAudioContext.createGain();
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(880, now);
+                oscillator.frequency.setValueAtTime(1174, now + 0.16);
+                gain.gain.setValueAtTime(0.0001, now);
+                gain.gain.exponentialRampToValueAtTime(0.18, now + 0.02);
+                gain.gain.setValueAtTime(0.18, now + 0.16);
+                gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.42);
+                oscillator.connect(gain);
+                gain.connect(complaintAudioContext.destination);
+                oscillator.start(now);
+                oscillator.stop(now + 0.43);
+            }
+
+            function unlockManagerComplaintAudio() {
+                if (!managerComplaintSoundEnabled || currentUserData?.role !== 'manager') return;
+                const AudioContextConstructor = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContextConstructor) return;
+
+                try {
+                    if (!complaintAudioContext) complaintAudioContext = new AudioContextConstructor();
+                    if (complaintAudioContext.state !== 'running') {
+                        complaintAudioContext.resume().catch(error => {
+                            console.error('Unable to resume manager complaint sound:', error);
+                        });
+                    }
+                } catch (error) {
+                    console.error('Unable to initialize manager complaint sound:', error);
+                }
+            }
+
+            document.addEventListener('pointerdown', unlockManagerComplaintAudio, true);
+            document.addEventListener('keydown', unlockManagerComplaintAudio, true);
+
+            window._toggleManagerComplaintSound = async function() {
+                if (currentUserData?.role !== 'manager') return;
+
+                if (managerComplaintSoundEnabled) {
+                    managerComplaintSoundEnabled = false;
+                    localStorage.setItem('manager_complaint_sound_enabled', 'false');
+                    updateManagerComplaintSoundButton();
+                    showToast('تم إيقاف صوت تنبيهات الشكاوى');
+                    return;
+                }
+
+                const AudioContextConstructor = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContextConstructor) {
+                    showToast('هذا المتصفح لا يدعم التنبيه الصوتي', true);
+                    return;
+                }
+
+                try {
+                    if (!complaintAudioContext) complaintAudioContext = new AudioContextConstructor();
+                    await complaintAudioContext.resume();
+                    if (complaintAudioContext.state !== 'running') {
+                        throw new Error('تعذر تشغيل الصوت في المتصفح');
+                    }
+                    managerComplaintSoundEnabled = true;
+                    localStorage.setItem('manager_complaint_sound_enabled', 'true');
+                    updateManagerComplaintSoundButton();
+                    playManagerComplaintSound();
+                    showToast('تم تفعيل صوت تنبيهات الشكاوى الجديدة');
+                } catch (error) {
+                    console.error('Unable to enable manager complaint sound:', error);
+                    showToast('تعذر تفعيل الصوت: ' + error.message, true);
+                }
+            };
+
         function applyViewerRestrictions() {
             const empTab = document.getElementById('mgrEmpTab');
             const exportDrop = document.getElementById('mgrExportDropdown');
             const deleteTh = document.getElementById('mgrDeleteTh');
             const mgrIcon = document.getElementById('mgrIcon');
             const mgrTitle = document.getElementById('mgrTitleSpan');
+            const complaintSoundToggle = document.getElementById('mgrComplaintSoundToggle');
             // السطر الجديد للتحكم في زر التقارير
             const reportTab = document.getElementById('mgrReportTab'); 
 
             if (isViewerUser()) {
+                if (complaintSoundToggle) complaintSoundToggle.style.display = 'none';
                 if (empTab) empTab.style.display = 'none';
                 if (exportDrop) exportDrop.style.display = 'none';
                 if (deleteTh) deleteTh.style.display = 'none';
@@ -1633,6 +1723,7 @@ function getCurrentTimeFormatted() {
                 if (mgrIcon) { mgrIcon.className = 'fas fa-eye'; mgrIcon.style.color = '#a855f7'; }
                 if (mgrTitle) mgrTitle.innerHTML = '<strong>' + (currentUserData.fullName || 'مشاهد') + '</strong> <span class="viewer-badge-session">(مدير🤵‍♂️)</span>';
             } else {
+                if (complaintSoundToggle) complaintSoundToggle.style.display = '';
                 if (empTab) empTab.style.display = '';
                 if (exportDrop) exportDrop.style.display = '';
                 if (deleteTh) deleteTh.style.display = '';
@@ -1643,6 +1734,7 @@ function getCurrentTimeFormatted() {
                 if (mgrIcon) { mgrIcon.className = 'fas fa-crown'; mgrIcon.style.color = '#fbbf24'; }
                 if (mgrTitle) mgrTitle.textContent = 'المدير العام';
             }
+            updateManagerComplaintSoundButton();
         }
         async function handleLogin() {
             const selectedValue = document.getElementById('usernameSelect').value;
@@ -2822,10 +2914,23 @@ const countBadge = document.getElementById('empComplaintsCount');
 
             function startRealtimeListeners() {
 const cQuery = query(collection(db, 'complaints'), orderBy('createdAt', 'desc'));
+              let hasInitialComplaintSnapshot = false;
               unsubSnapshot = onSnapshot(cQuery, (snap) => {
+                    const newComplaints = hasInitialComplaintSnapshot
+                        ? snap.docChanges().filter(change => change.type === 'added')
+                        : [];
+                    hasInitialComplaintSnapshot = true;
                     allComplaints = snap.docs.map(d => ({ id: d.id, ...d.data() }));
                     localCache = allComplaints;
                     localStorage.setItem('db_complaints_cache', JSON.stringify(localCache));
+
+                    if (newComplaints.length && currentUserData?.role === 'manager') {
+                        try {
+                            playManagerComplaintSound();
+                        } catch (error) {
+                            console.error('Unable to play manager complaint sound:', error);
+                        }
+                    }
 
                     if (currentUserData?.role === 'manager' || currentUserData?.role === 'viewer') {
                         loadManagerData();
@@ -3408,6 +3513,7 @@ const time = d.createdAt?.toDate ? d.createdAt.toDate().toLocaleTimeString('ar-E
                 </tr>
             `;
         }).join('');
+        window._filterQuickTableByPhone(document.getElementById('qPageSearchInTable')?.value || '');
         applyEmployeeThemeSettings(currentUserData?.themeSettings);
     });
 }
@@ -4038,19 +4144,19 @@ window._filterQuickTableByPhone = function(searchValue) {
     if (!tbody) return;
     
     const rows = tbody.getElementsByTagName('tr');
-    const search = searchValue.trim();
+    const search = normalizeEmployeePhone(searchValue);
 
     for (let i = 0; i < rows.length; i++) {
-        // عمود الهاتف أصبح هو الخامس (index 4) بسبب إضافة عمود التفاصيل ومتصدر الجدول
-        const phoneCell = rows[i].getElementsByTagName('td')[4]; 
+        const cells = rows[i].getElementsByTagName('td');
+        if (cells.length === 1) {
+            rows[i].style.display = '';
+            continue;
+        }
+        const phoneCell = cells[3];
         
         if (phoneCell) {
-            const phoneText = phoneCell.textContent || phoneCell.innerText;
-            if (search === "" || phoneText.includes(search)) {
-                rows[i].style.display = "";
-            } else {
-                rows[i].style.display = "none";
-            }
+            const phoneText = normalizeEmployeePhone(phoneCell.textContent || phoneCell.innerText);
+            rows[i].style.display = !search || phoneText.includes(search) ? '' : 'none';
         }
     }
 };
