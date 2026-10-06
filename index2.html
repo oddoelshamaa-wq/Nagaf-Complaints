@@ -451,6 +451,71 @@
                     font-weight: 800;
                 }
 
+                html[data-theme="light"] {
+                    color-scheme: light;
+                    --bg: #f1f5f9;
+                    --primary: #087f8c;
+                    --secondary: #6d28d9;
+                    --glass: rgba(255,255,255,0.92);
+                    --border: rgba(15,23,42,0.14);
+                    --text: #172033;
+                }
+                html[data-theme="dark"] { color-scheme: dark; }
+                .theme-mode-toggle {
+                    position: fixed; top: 16px; left: 20px; z-index: 9998;
+                    display: inline-flex; align-items: center; gap: 9px;
+                    padding: 10px 15px; border: 1px solid var(--border); border-radius: 14px;
+                    background: var(--glass); color: var(--text); font: 700 13px 'Cairo', sans-serif;
+                    cursor: pointer; box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+                    backdrop-filter: blur(12px); transition: background 0.25s, color 0.25s, transform 0.25s;
+                }
+                .theme-mode-toggle:hover { transform: translateY(-2px); }
+                .theme-mode-toggle:focus-visible { outline: 3px solid var(--primary); outline-offset: 3px; }
+                html[data-theme="light"] body::before {
+                    background: radial-gradient(circle at 20% 30%, rgba(8,127,140,0.07), transparent 40%),
+                                radial-gradient(circle at 80% 70%, rgba(109,40,217,0.06), transparent 40%);
+                }
+                html[data-theme="light"] .filter-bar,
+                html[data-theme="light"] .stat-card,
+                html[data-theme="light"] .employee-theme-panel,
+                html[data-theme="light"] .quick-alert-theme-panel {
+                    background: rgba(255,255,255,0.82);
+                }
+                html[data-theme="light"] th { background: rgba(8,127,140,0.08); }
+                html[data-theme="light"] td { background: rgba(255,255,255,0.62); }
+                html[data-theme="light"] tr:hover td { background: rgba(8,127,140,0.07); }
+                html[data-theme="light"] input,
+                html[data-theme="light"] select,
+                html[data-theme="light"] textarea {
+                    color: #172033 !important;
+                    background-color: rgba(255,255,255,0.88) !important;
+                }
+                html[data-theme="light"] input::placeholder,
+                html[data-theme="light"] textarea::placeholder { color: #64748b; }
+                html[data-theme="light"] select option { background-color: #fff; color: #172033; }
+                html[data-theme="light"] .modal-box {
+                    background: linear-gradient(145deg, #fff, #f1f5f9);
+                    border-color: rgba(8,127,140,0.22);
+                }
+                html[data-theme="light"] .export-dropdown-menu {
+                    background: linear-gradient(145deg, #fff, #f1f5f9);
+                }
+                html[data-theme="light"] .location-input-wrap .location-suggestions { background: #fff; }
+                html[data-theme="light"] .mgr-tab { color: #475569; }
+                html[data-theme="light"] .mgr-tab:hover { color: #172033; }
+                html[data-theme="light"] .btn-cancel { color: #475569; }
+                html[data-theme="light"] .btn-cancel:hover { color: #172033; }
+                html[data-theme="light"] .stat-card .stat-label,
+                html[data-theme="light"] .filter-bar .f-label,
+                html[data-theme="light"] .theme-picker-bar .color-label,
+                html[data-theme="light"] .session-bar .session-time,
+                html[data-theme="light"] .export-dropdown-menu .exp-row label,
+                html[data-theme="light"] .quick-alert-theme-control label { color: #475569; }
+                @media (max-width: 700px) {
+                    .theme-mode-toggle { top: 10px; left: 10px; padding: 8px 11px; }
+                    .theme-mode-toggle span { display: none; }
+                }
+
                 @media (max-width: 1000px) { .grid-layout { grid-template-columns: 1fr 1fr; } }
             @media (max-width: 700px) {
             .card { backdrop-filter: none; background: rgba(15,23,42,0.95); }
@@ -482,6 +547,43 @@
         </head>
         <body>
 
+        <button type="button" id="themeModeToggle" class="theme-mode-toggle" onclick="window.toggleThemeMode()" aria-label="تفعيل الوضع الفاتح" aria-pressed="false">
+            <i class="fas fa-sun" aria-hidden="true"></i><span>الوضع الفاتح</span>
+        </button>
+        <script>
+            (function () {
+                try {
+                    var savedTheme = localStorage.getItem('complaints_color_mode');
+                    document.documentElement.dataset.theme = savedTheme === 'light' ? 'light' : 'dark';
+                } catch (error) {
+                    console.warn('تعذر تحميل تفضيل ألوان الموقع.', error);
+                    document.documentElement.dataset.theme = 'dark';
+                }
+
+                window.updateThemeModeButton = function () {
+                    var button = document.getElementById('themeModeToggle');
+                    if (!button) return;
+                    var isLight = document.documentElement.dataset.theme === 'light';
+                    button.innerHTML = isLight
+                        ? '<i class="fas fa-moon" aria-hidden="true"></i><span>الوضع الداكن</span>'
+                        : '<i class="fas fa-sun" aria-hidden="true"></i><span>الوضع الفاتح</span>';
+                    button.setAttribute('aria-label', isLight ? 'تفعيل الوضع الداكن' : 'تفعيل الوضع الفاتح');
+                    button.setAttribute('aria-pressed', String(isLight));
+                };
+
+                window.toggleThemeMode = function () {
+                    var nextTheme = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
+                    document.documentElement.dataset.theme = nextTheme;
+                    window.updateThemeModeButton();
+                    try {
+                        localStorage.setItem('complaints_color_mode', nextTheme);
+                    } catch (error) {
+                        console.warn('تعذر حفظ تفضيل ألوان الموقع.', error);
+                    }
+                };
+                window.updateThemeModeButton();
+            }());
+        </script>
         <div id="toast" class="toast"><i class="fas fa-check-circle"></i> <span id="toastMsg"></span></div>
 
         <!-- ========== مودال إضافة/تعديل موظف ========== -->
@@ -671,7 +773,7 @@
                         <div class="input-box"><label>رقم الاتصال</label><div class="field-wrap"><i class="fas fa-mobile-alt"></i><input type="text" id="phone"></div></div>
                         <div class="input-box"><label>تصنيف الشكوى</label><div class="field-wrap"><i class="fas fa-tags"></i>
                             <select id="complaintType" required>
-                                <option value="تأخير">تأخير</option><option value="ناقص">ناقص</option>
+                                <option value="تأخير">تأخير</option><option value="مركز الاتصالات">مركز الاتصالات</option><option value="ناقص">ناقص</option>
                                 <option value="طلب خطأ">طلب خطأ</option><option value="سوء تعبئة">سوء تعبئة</option>
                                 <option value="جودة">جودة</option><option value="سوء خدمة">سوء خدمة</option>
                                 <option value="خطأ متلقي">خطأ متلقي</option><option value="خطأ متلقي طلبات">خطأ متلقي طلبات</option>
@@ -763,7 +865,7 @@
                     <div class="f-item"><i class="fas fa-phone"></i><input type="text" id="empSearchPhone" oninput="refreshEmployeeView()" placeholder="رقم الهاتف..." style="width:100%;"></div>
                     <div class="f-item narrow"><i class="fas fa-tags"></i>
                         <select id="empTypeFilter" onchange="refreshEmployeeView()" style="width:100%;">
-                            <option value="">كل الأنواع</option><option value="تأخير">تأخير</option><option value="ناقص">ناقص</option>
+                            <option value="">كل الأنواع</option><option value="مركز الاتصالات">مركز الاتصالات</option><option value="تأخير">تأخير</option><option value="ناقص">ناقص</option>
                             <option value="طلب خطأ">طلب خطأ</option><option value="سوء تعبئة">سوء تعبئة</option>
                             <option value="جودة">جودة</option><option value="سوء خدمة">سوء خدمة</option>
                             <option value="خطأ متلقي">خطأ متلقي</option><option value="خطأ متلقي طلبات">خطأ متلقي طلبات</option>
@@ -973,6 +1075,7 @@
                     <tr>
                         <th>الفرع</th>
                         <th>إجمالي الشكاوى</th>
+                        <th>مركز الاتصالات</th>
                         <th>تأخير</th>
                         <th>ناقص</th>
                         <th>طلب خطأ</th>
@@ -2170,7 +2273,7 @@ const countBadge = document.getElementById('empComplaintsCount');
         const tfoot = document.getElementById('reportTableFoot');
         if (!tbody) return;
 
-        tbody.innerHTML = '<tr><td colspan="14" style="text-align:center; padding:30px;"><i class="fas fa-spinner fa-spin"></i> جاري تحليل البيانات...</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="15" style="text-align:center; padding:30px;"><i class="fas fa-spinner fa-spin"></i> جاري تحليل البيانات...</td></tr>';
 
         try {
             const ordersSnap = await getDocs(collection(db, 'daily_orders'));
@@ -2196,7 +2299,7 @@ const countBadge = document.getElementById('empComplaintsCount');
             const branches = ["العباسيه", "عبده باشا", "نادي السكه", "عباس العقاد", "يوسف عباس", "المعهد", "مركز الاتصالات"];
             
             let grandTotals = {
-                complaints: 0, delay: 0, missing: 0, wrong: 0, packaging: 0, 
+                complaints: 0, callCenter: 0, delay: 0, missing: 0, wrong: 0, packaging: 0, 
                 quality: 0, service: 0, rcvError: 0, takerError: 0, delivery: 0, foreign: 0, orders: 0
             };
 
@@ -2215,6 +2318,7 @@ const countBadge = document.getElementById('empComplaintsCount');
                 
                 const stats = {
                     total: brComplaints.length,
+                    callCenter: brComplaints.filter(c => c.complaintType === 'مركز الاتصالات').length,
                     delay: brComplaints.filter(c => c.complaintType === 'تأخير').length,
                     missing: brComplaints.filter(c => c.complaintType === 'ناقص').length,
                     wrong: brComplaints.filter(c => c.complaintType === 'طلب خطأ').length,
@@ -2245,6 +2349,7 @@ const countBadge = document.getElementById('empComplaintsCount');
                     <tr style="${rowStyle}">
                         <td style="font-weight:bold; color:${br === "مركز الاتصالات" ? '#94a3b8' : 'var(--primary)'}">${br} ${br === "مركز الاتصالات" ? '<small>()</small>' : ''}</td>
                         <td style="font-size:15px; font-weight:bold;">${stats.total}</td>
+                        <td>${stats.callCenter}</td>
                         <td>${stats.delay}</td>
                         <td>${stats.missing}</td>
                         <td>${stats.wrong}</td>
@@ -2271,6 +2376,7 @@ const countBadge = document.getElementById('empComplaintsCount');
                 <tr style="background: rgba(0, 242, 255, 0.1); border-top: 2px solid var(--primary);">
                     <td style="color:var(--primary)">الإجمالي العام </td>
                     <td>${grandTotals.complaints}</td>
+                    <td>${grandTotals.callCenter}</td>
                     <td>${grandTotals.delay}</td>
                     <td>${grandTotals.missing}</td>
                     <td>${grandTotals.wrong}</td>
@@ -2290,7 +2396,7 @@ const countBadge = document.getElementById('empComplaintsCount');
 
         } catch (e) {
             console.error("Report Error:", e);
-            tbody.innerHTML = '<tr><td colspan="14" style="color:var(--danger);">حدث خطأ في استخراج البيانات</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="15" style="color:var(--danger);">حدث خطأ في استخراج البيانات</td></tr>';
         }
     };
 
@@ -3119,7 +3225,7 @@ const mainComplaintData = {
     branch: branch,
     routedThrough: selectedBranch,
     phone: phone,
-    complaintType: 'تأخير',
+    complaintType: usesCallCenter ? 'مركز الاتصالات' : 'تأخير',
     complaintTime: getCurrentTimeFormatted(), // <--- هذا السطر الجديد لإضافة الوقت في سجل الموظف
     customerName: '', 
     details: details, // <--- أضفنا هذا السطر ليتم كتابة التفصيل في سجل الموظف الرئيسي
@@ -3430,6 +3536,7 @@ window._saveQuickAlertEdit = async function(event) {
                 phone,
                 branch,
                 routedThrough: selectedBranch,
+                complaintType: usesCallCenter ? 'مركز الاتصالات' : 'تأخير',
                 details,
                 quickAlertId: record.id
             });
