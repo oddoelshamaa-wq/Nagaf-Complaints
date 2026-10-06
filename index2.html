@@ -388,6 +388,7 @@
                 }
                 .customizable-page .page-color-picker { display: none; align-items: center; gap: 8px; color: var(--page-accent); font-size: 12px; font-weight: 700; }
                 body.employee-session .customizable-page .page-color-picker { display: flex; }
+                body.manager-session .customizable-page .page-color-picker { display: flex; }
                 .customizable-page .page-color-picker input[type="color"] {
                     width: 34px; height: 32px; padding: 2px; border: 1px solid rgba(255,255,255,0.3);
                     border-radius: 8px; cursor: pointer; background: transparent;
@@ -461,8 +462,14 @@
                     --text: #172033;
                 }
                 html[data-theme="dark"] { color-scheme: dark; }
+                .theme-mode-widget {
+                    position: fixed; bottom: 20px; left: 20px; z-index: 9998;
+                    display: inline-flex; align-items: center; gap: 4px;
+                    padding: 4px; border: 1px solid var(--border); border-radius: 16px;
+                    background: var(--glass); box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+                    backdrop-filter: blur(12px);
+                }
                 .theme-mode-toggle {
-                    position: fixed; top: 16px; left: 20px; z-index: 9998;
                     display: inline-flex; align-items: center; gap: 9px;
                     padding: 10px 15px; border: 1px solid var(--border); border-radius: 14px;
                     background: var(--glass); color: var(--text); font: 700 13px 'Cairo', sans-serif;
@@ -471,6 +478,19 @@
                 }
                 .theme-mode-toggle:hover { transform: translateY(-2px); }
                 .theme-mode-toggle:focus-visible { outline: 3px solid var(--primary); outline-offset: 3px; }
+                .theme-mode-widget .theme-mode-toggle { box-shadow: none; }
+                .theme-mode-widget.is-collapsed .theme-mode-toggle span { display: none; }
+                .theme-mode-widget.is-collapsed .theme-mode-toggle {
+                    width: 38px; height: 38px; justify-content: center; padding: 0;
+                    border-radius: 12px;
+                }
+                .theme-mode-collapse {
+                    display: inline-grid; place-items: center; width: 28px; height: 30px;
+                    padding: 0; border: 0; border-radius: 9px;
+                    background: transparent; color: var(--text); cursor: pointer;
+                }
+                .theme-mode-collapse:hover { background: var(--border); }
+                .theme-mode-collapse:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
                 html[data-theme="light"] body::before {
                     background: radial-gradient(circle at 20% 30%, rgba(8,127,140,0.07), transparent 40%),
                                 radial-gradient(circle at 80% 70%, rgba(109,40,217,0.06), transparent 40%);
@@ -512,8 +532,8 @@
                 html[data-theme="light"] .export-dropdown-menu .exp-row label,
                 html[data-theme="light"] .quick-alert-theme-control label { color: #475569; }
                 @media (max-width: 700px) {
-                    .theme-mode-toggle { top: 10px; left: 10px; padding: 8px 11px; }
-                    .theme-mode-toggle span { display: none; }
+                    .theme-mode-widget { bottom: 12px; left: 12px; }
+                    .theme-mode-toggle { padding: 8px 11px; }
                 }
 
                 @media (max-width: 1000px) { .grid-layout { grid-template-columns: 1fr 1fr; } }
@@ -547,9 +567,14 @@
         </head>
         <body>
 
-        <button type="button" id="themeModeToggle" class="theme-mode-toggle" onclick="window.toggleThemeMode()" aria-label="تفعيل الوضع الفاتح" aria-pressed="false">
-            <i class="fas fa-sun" aria-hidden="true"></i><span>الوضع الفاتح</span>
-        </button>
+        <div id="themeModeWidget" class="theme-mode-widget is-collapsed">
+            <button type="button" id="themeModeToggle" class="theme-mode-toggle" onclick="window.toggleThemeMode()" aria-label="تفعيل الوضع الفاتح" aria-pressed="false">
+                <i class="fas fa-sun" aria-hidden="true"></i><span>الوضع الفاتح</span>
+            </button>
+            <button type="button" class="theme-mode-collapse" onclick="window.toggleThemeModeWidget()" aria-controls="themeModeToggle" aria-expanded="false" aria-label="فتح زر تغيير الوضع" title="فتح أو طي زر تغيير الوضع">
+                <i class="fas fa-chevron-right" aria-hidden="true"></i>
+            </button>
+        </div>
         <script>
             (function () {
                 try {
@@ -580,6 +605,15 @@
                     } catch (error) {
                         console.warn('تعذر حفظ تفضيل ألوان الموقع.', error);
                     }
+                };
+                window.toggleThemeModeWidget = function () {
+                    var widget = document.getElementById('themeModeWidget');
+                    var button = widget && widget.querySelector('.theme-mode-collapse');
+                    if (!widget || !button) return;
+                    var isCollapsed = widget.classList.toggle('is-collapsed');
+                    button.setAttribute('aria-expanded', String(!isCollapsed));
+                    button.setAttribute('aria-label', isCollapsed ? 'فتح زر تغيير الوضع' : 'طي زر تغيير الوضع');
+                    button.querySelector('i').className = isCollapsed ? 'fas fa-chevron-right' : 'fas fa-chevron-left';
                 };
                 window.updateThemeModeButton();
             }());
@@ -1260,6 +1294,7 @@
 
                                 <th>الوقت</th>
                                 <th>الفرع</th>
+                                <th>تصنيف الشكوى</th>
                                 <th>رقم الهاتف</th>
                                 <th>تفصيل الشكوه</th>
                                 <th>الموظف</th>
@@ -1755,13 +1790,24 @@ function getCurrentTimeFormatted() {
                         currentUserData = { ...defMgr, branch: 'كل الفروع', active: true, id: 'default_admin' };
                         currentUserDocId = 'default_admin';
                         const savedThemeColor = localStorage.getItem('complaints_theme_default_admin');
+                        const savedThemeSettings = localStorage.getItem('complaints_theme_settings_default_admin');
+                        if (savedThemeSettings) {
+                            try {
+                                currentUserData.themeSettings = normalizeThemeSettings(JSON.parse(savedThemeSettings));
+                            } catch (error) {
+                                console.error('Unable to load manager theme settings:', error);
+                            }
+                        }
                         if (savedThemeColor && /^#[0-9a-fA-F]{6}$/.test(savedThemeColor)) {
                             currentUserData.themeColor = savedThemeColor;
                             applyThemeColor(savedThemeColor);
                         }
                         sessionStorage.setItem('active_session', JSON.stringify(currentUserData));
+                        document.body.classList.remove('employee-session');
+                        document.body.classList.add('manager-session');
                         document.getElementById('login-section').classList.add('hidden');
                         document.getElementById('manager-section').classList.remove('hidden');
+                        applyEmployeeThemeSettings(currentUserData.themeSettings);
                         applyViewerRestrictions();
                         loadManagerData();
                         startSessionTimer();
@@ -1810,13 +1856,15 @@ function getCurrentTimeFormatted() {
                 // توجيه المستخدم حسب الرتبة
                 if (empData.role === 'manager' || empData.role === 'viewer') {
                     document.body.classList.remove('employee-session');
+                    document.body.classList.toggle('manager-session', empData.role === 'manager');
                     if (empData.themeColor) applyThemeColor(empData.themeColor);
-                    applyEmployeeThemeSettings();
+                    applyEmployeeThemeSettings(empData.themeSettings);
                     document.getElementById('manager-section').classList.remove('hidden');
                     applyViewerRestrictions();
                     loadManagerData();
                 } else {
                     document.body.classList.add('employee-session');
+                    document.body.classList.remove('manager-session');
                     document.getElementById('employee-section').classList.remove('hidden');
                     // عرض اسم المستخدم (محمد) في شريط الحالة
     // التعديل: إظهار الاسم الكامل بدلاً من اسم المستخدم
@@ -1865,7 +1913,9 @@ function getCurrentTimeFormatted() {
                 applyThemeColor('#00f2ff');
                 document.body.classList.remove('theme-applied');
                 document.body.classList.remove('employee-session');
+                document.body.classList.remove('manager-session');
                 document.getElementById('employeeThemePanel')?.classList.add('hidden');
+                document.getElementById('quickAlertThemePanel')?.classList.add('hidden');
                 document.querySelectorAll('.theme-settings-saving').forEach(status => status.classList.remove('show'));
                 applyEmployeeThemeSettings();
             }
@@ -2007,7 +2057,11 @@ function getCurrentTimeFormatted() {
                     if (themeSettingsSaveTimeout) clearTimeout(themeSettingsSaveTimeout);
                     themeSettingsSaveTimeout = setTimeout(async () => {
                         try {
-                            await updateDoc(doc(db, 'employees', userDocId), { themeSettings: settings });
+                            if (userDocId === 'default_admin' && currentUserData?.role === 'manager') {
+                                localStorage.setItem('complaints_theme_settings_default_admin', JSON.stringify(settings));
+                            } else {
+                                await updateDoc(doc(db, 'employees', userDocId), { themeSettings: settings });
+                            }
                             if (currentUserDocId !== userDocId) return;
                             const sessionData = JSON.parse(sessionStorage.getItem('active_session') || '{}');
                             sessionData.themeSettings = settings;
@@ -2084,13 +2138,16 @@ function getCurrentTimeFormatted() {
             document.getElementById('complaintForm')?.addEventListener('submit', async function(e) {
                 e.preventDefault();
                 const editId = document.getElementById('editDocId').value;
+                const branch = document.getElementById('branch').value;
                 const data = {
                     date: document.getElementById('date').value,
-                    branch: document.getElementById('branch').value,
+                    branch,
                     orderNo: document.getElementById('orderNo').value.trim(),
                     customerName: document.getElementById('customerName').value.trim(),
                     phone: document.getElementById('phone').value.trim(),
-                    complaintType: document.getElementById('complaintType').value,
+                    complaintType: branch === 'مركز الاتصالات'
+                        ? 'خطأ متلقي'
+                        : document.getElementById('complaintType').value,
                     orderTime: document.getElementById('orderTime').value,
                     complaintTime: document.getElementById('complaintTime').value,
                     location: document.getElementById('location').value.trim(),
@@ -2142,7 +2199,10 @@ function getCurrentTimeFormatted() {
                 document.getElementById('orderNo').value = c.orderNo || '';
                 document.getElementById('customerName').value = c.customerName || '';
                 document.getElementById('phone').value = c.phone || '';
-                document.getElementById('complaintType').value = c.complaintType || '';
+                document.getElementById('complaintType').value =
+                    c.branch === 'مركز الاتصالات' || c.routedThrough === 'مركز الاتصالات'
+                        ? 'خطأ متلقي'
+                        : c.complaintType || '';
                 document.getElementById('orderTime').value = c.orderTime || '';
                 document.getElementById('complaintTime').value = c.complaintTime || '';
                 document.getElementById('location').value = c.location || '';
@@ -2189,7 +2249,11 @@ function getCurrentTimeFormatted() {
                 if (dateTo && tsToDateStr(c.date) > dateTo) return false;
                 if (nameSearch && !c.customerName?.toLowerCase().includes(nameSearch)) return false;
                 if (phoneSearch && !c.phone?.toLowerCase().includes(phoneSearch)) return false;
-                if (typeFilter && c.complaintType !== typeFilter) return false;
+                const isCallCenterComplaint = c.routedThrough === 'مركز الاتصالات' || c.branch === 'مركز الاتصالات';
+                const complaintType = isCallCenterComplaint
+                    ? 'خطأ متلقي'
+                    : c.complaintType;
+                if (typeFilter && complaintType !== typeFilter) return false;
 
                 return true;
             });
@@ -2208,11 +2272,11 @@ const countBadge = document.getElementById('empComplaintsCount');
             tbody.innerHTML = filtered.map(c => `
                 <tr>
                     <td>${tsToDateStr(c.date)}</td>
-                    <td>${c.branch || ''}</td>
+                    <td>${isCallCenterComplaint ? 'مركز الاتصالات' : c.branch || ''}</td>
                     <td>${c.orderNo || ''}</td>
                     <td>${c.customerName || ''}</td>
                     <td>${c.phone || ''}</td>
-                    <td>${c.complaintType || ''}</td>
+                    <td>${isCallCenterComplaint ? 'خطأ متلقي' : c.complaintType || ''}</td>
                     <td>${tsToDateStr(c.date)}</td>
                     <td>${format12Hour(c.orderTime)}</td>
 <td>${format12Hour(c.complaintTime)}</td>
@@ -2274,7 +2338,7 @@ const countBadge = document.getElementById('empComplaintsCount');
                 tbody.innerHTML = filtered.map(c => {
                     let row = `
                         <td>${tsToDateStr(c.date)}</td>
-                        <td>${c.routedThrough || c.branch || ''}</td>
+                        <td>${c.branch || ''}</td>
                         <td>${c.orderNo || ''}</td>
                         <td>${c.customerName || ''}</td>
                         <td>${c.phone || ''}</td>
@@ -3000,7 +3064,21 @@ const cQuery = query(collection(db, 'complaints'), orderBy('createdAt', 'desc'))
 
             if (sData.role === 'manager' || sData.role === 'viewer') {
                 document.body.classList.remove('employee-session');
-                applyEmployeeThemeSettings();
+                document.body.classList.toggle('manager-session', sData.role === 'manager');
+                const managerThemeSettings = sData.themeSettings
+                    || (sData.id === 'default_admin'
+                        ? localStorage.getItem('complaints_theme_settings_default_admin')
+                        : null);
+                let parsedManagerThemeSettings = managerThemeSettings;
+                if (typeof managerThemeSettings === 'string') {
+                    try {
+                        parsedManagerThemeSettings = JSON.parse(managerThemeSettings);
+                    } catch (error) {
+                        console.error('Unable to parse manager theme settings:', error);
+                        parsedManagerThemeSettings = null;
+                    }
+                }
+                applyEmployeeThemeSettings(parsedManagerThemeSettings);
                 document.getElementById('login-section').classList.add('hidden');
                 document.getElementById('manager-section').classList.remove('hidden');
                 const managerThemeColor = sData.themeColor
@@ -3011,6 +3089,7 @@ const cQuery = query(collection(db, 'complaints'), orderBy('createdAt', 'desc'))
                 applyViewerRestrictions();
             } else {
                 document.body.classList.add('employee-session');
+                document.body.classList.remove('manager-session');
                 document.getElementById('login-section').classList.add('hidden');
                 document.getElementById('employee-section').classList.remove('hidden');
                 document.getElementById('emp-name-display').textContent = sData.fullName;
@@ -3314,6 +3393,7 @@ const cQuery = query(collection(db, 'complaints'), orderBy('createdAt', 'desc'))
                     phone: phone,
                     branch: branch,
                     routedThrough: usesCallCenter ? selectedBranch : '',
+                    complaintType: usesCallCenter ? 'خطأ متلقي' : '',
                     details: details,
 
                 sender: currentUserData.fullName || currentUserData.username || 'موظف', 
@@ -3327,10 +3407,10 @@ const cQuery = query(collection(db, 'complaints'), orderBy('createdAt', 'desc'))
               // داخل دالة _sendQuickAlertFromPage ابحث عن متغير mainComplaintData وأضف:
 const mainComplaintData = {
     date: getCurrentDate(),
-    branch: branch,
-    routedThrough: selectedBranch,
+    branch: usesCallCenter ? selectedBranch : branch,
+    routedThrough: usesCallCenter ? selectedBranch : '',
     phone: phone,
-    complaintType: usesCallCenter ? 'مركز الاتصالات' : 'تأخير',
+    complaintType: usesCallCenter ? 'خطأ متلقي' : '',
     complaintTime: getCurrentTimeFormatted(), // <--- هذا السطر الجديد لإضافة الوقت في سجل الموظف
     customerName: '', 
     details: details, // <--- أضفنا هذا السطر ليتم كتابة التفصيل في سجل الموظف الرئيسي
@@ -3455,7 +3535,7 @@ window._updateQuickStatus = async function(id, status) {
         docs.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
 
         if (docs.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="9" class="empty-state">لا توجد بلاغات مسجلة لهذا التاريخ</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="10" class="empty-state">لا توجد بلاغات مسجلة لهذا التاريخ</td></tr>';
             return;
         }
 
@@ -3481,7 +3561,17 @@ const time = d.createdAt?.toDate ? d.createdAt.toDate().toLocaleTimeString('ar-E
                     <td style="font-weight:bold; color:#94a3b8;">${index + 1}</td> <!-- عمود الرقم -->
                     <td>${time}</td>
                     <td><b style="color:var(--primary)">${d.branch}</b>${d.routedThrough ? `<br><small>${d.routedThrough}</small>` : ''}</td>
-                                       <td>${d.phone}</td>
+                    <td>
+                        ${d.routedThrough === 'مركز الاتصالات' || d.branch === 'مركز الاتصالات'
+                            ? 'خطأ متلقي'
+                            : (isManager || isOwner) ? `<select aria-label="تصنيف الشكوى" data-current-type="${['ناقص', 'طلب خطأ', 'جودة'].includes(d.complaintType) ? d.complaintType : ''}" onchange="window._updateQuickComplaintType('${d.id}', this.value, this)">
+                            <option value="" disabled ${!['ناقص', 'طلب خطأ', 'جودة'].includes(d.complaintType) ? 'selected' : ''}>اختر التصنيف</option>
+                            <option value="ناقص" ${d.complaintType === 'ناقص' ? 'selected' : ''}>ناقص</option>
+                            <option value="طلب خطأ" ${d.complaintType === 'طلب خطأ' ? 'selected' : ''}>طلب خطأ</option>
+                            <option value="جودة" ${d.complaintType === 'جودة' ? 'selected' : ''}>جودة</option>
+                        </select>` : (d.complaintType || '—')}
+                    </td>
+                    <td>${d.phone}</td>
                     <td style="white-space: normal; max-width: 250px; text-align: right;">${d.details || ''}</td>
                     <td>${d.sender}</td>
                     <td><span class="badge" style="background:${color}22; color:${color};">${callIcon} ${d.status}</span></td>
@@ -3517,6 +3607,93 @@ const time = d.createdAt?.toDate ? d.createdAt.toDate().toLocaleTimeString('ar-E
         applyEmployeeThemeSettings(currentUserData?.themeSettings);
     });
 }
+
+window._updateQuickComplaintType = async function(id, complaintType, select) {
+    const allowedTypes = ['ناقص', 'طلب خطأ', 'جودة'];
+    if (!allowedTypes.includes(complaintType)) {
+        showToast('يرجى اختيار تصنيف صحيح للشكوى', true);
+        return;
+    }
+
+    const previousType = select.dataset.currentType || '';
+    try {
+        const quickAlertRef = doc(db, 'quick_alerts', id);
+        const quickAlertSnapshot = await getDoc(quickAlertRef);
+        if (!quickAlertSnapshot.exists()) {
+            showToast('تعذر العثور على البلاغ لتحديث تصنيفه', true);
+            select.value = previousType;
+            return;
+        }
+
+        const record = quickAlertSnapshot.data();
+        const isManager = currentUserData?.role === 'manager';
+        const isOwner = currentUserData?.role === 'employee' && record.senderId === currentUserDocId;
+        if (!isManager && !isOwner) {
+            select.value = previousType;
+            showToast('يمكنك تعديل تصنيف البلاغات التي أضفتها أنت فقط', true);
+            return;
+        }
+
+        let mainComplaintRef = null;
+        let syncWarning = '';
+
+        if (record.mainComplaintId) {
+            const linkedComplaintRef = doc(db, 'complaints', record.mainComplaintId);
+            const linkedComplaint = await getDoc(linkedComplaintRef);
+            if (linkedComplaint.exists()) mainComplaintRef = linkedComplaintRef;
+        }
+
+        if (!mainComplaintRef && record.senderId && record.dateStr) {
+            const legacyQuery = query(
+                collection(db, 'complaints'),
+                where('phone', '==', record.phone),
+                where('date', '==', record.dateStr)
+            );
+            const legacySnapshot = await getDocs(legacyQuery);
+            const ownedComplaints = legacySnapshot.docs.filter(
+                complaint => complaint.data().userId === record.senderId
+            );
+            const exactMatches = ownedComplaints.filter(complaint => {
+                const complaintData = complaint.data();
+                return complaintData.branch === record.branch &&
+                    (complaintData.details || '') === (record.details || '');
+            });
+            const match = exactMatches.length === 1
+                ? exactMatches[0]
+                : ownedComplaints.length === 1
+                    ? ownedComplaints[0]
+                    : null;
+
+            if (match) {
+                mainComplaintRef = match.ref;
+            } else {
+                syncWarning = ownedComplaints.length > 1
+                    ? ' تعذر تحديد سجل الشكوى المرتبط لوجود أكثر من سجل مطابق.'
+                    : ' لم يُعثر على سجل الشكوى الرئيسي المرتبط.';
+            }
+        } else if (!mainComplaintRef) {
+            syncWarning = ' لم يُعثر على سجل الشكوى الرئيسي المرتبط.';
+        }
+
+        const batch = writeBatch(db);
+        batch.update(quickAlertRef, { complaintType });
+        if (mainComplaintRef) {
+            batch.update(mainComplaintRef, { complaintType });
+        }
+        await batch.commit();
+        select.dataset.currentType = complaintType;
+
+        if (syncWarning) {
+            showToast('تم حفظ التصنيف في البلاغ السريع، لكن لم تتم مزامنة سجل الشكوى الرئيسي.' + syncWarning, true);
+        } else {
+            showToast('تم تحديث تصنيف الشكوى بنجاح');
+        }
+    } catch (error) {
+        console.error('Failed to update quick complaint type:', error);
+        select.value = previousType;
+        showToast('تعذر حفظ تصنيف الشكوى: ' + error.message, true);
+    }
+};
 
 window._toggleQuickAlertEditFields = function() {
     const usesCallCenter = document.getElementById('quickAlertEditBranch').value.trim() === 'مركز الاتصالات';
@@ -3586,6 +3763,7 @@ window._saveQuickAlertEdit = async function(event) {
         phone,
         branch,
         routedThrough: usesCallCenter ? selectedBranch : '',
+        complaintType: usesCallCenter ? 'خطأ متلقي' : (record.complaintType || ''),
         details
     };
 
@@ -3640,9 +3818,9 @@ window._saveQuickAlertEdit = async function(event) {
         if (mainComplaintRef) {
             batch.update(mainComplaintRef, {
                 phone,
-                branch,
-                routedThrough: selectedBranch,
-                complaintType: usesCallCenter ? 'مركز الاتصالات' : 'تأخير',
+                branch: usesCallCenter ? selectedBranch : branch,
+                routedThrough: usesCallCenter ? selectedBranch : '',
+                complaintType: usesCallCenter ? 'خطأ متلقي' : (record.complaintType || ''),
                 details,
                 quickAlertId: record.id
             });
@@ -3705,7 +3883,7 @@ function renderSharedEmployeeComplaints(phoneSearch) {
          const row = tbody.insertRow();
          [
              tsToDateStr(complaint.date) || '—',
-             complaint.routedThrough || complaint.branch || '—',
+             complaint.branch || '—',
              complaint.orderNo || '—',
              complaint.customerName || '—',
              complaint.phone || '—',
