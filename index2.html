@@ -172,6 +172,21 @@
                 .filter-bar .f-item.narrow { flex: 0 0 auto; min-width: 140px; }
                 .filter-bar .f-label { color: #94a3b8; font-size: 13px; font-weight: 700; white-space: nowrap; padding-left: 8px; border-left: 2px solid var(--primary); }
                 .table-wrap { border-radius: 16px; overflow: hidden; border: 1px solid var(--border); overflow-x: auto; }
+                #tab-reports > h3 { color: #3b82f6; text-align: center; }
+                #tab-reports .report-filter-bar { justify-content: flex-start; }
+                #tab-reports .report-period-field { flex: 0 0 auto; min-width: 180px; }
+                #tab-reports .report-period-field select { width: 100%; }
+                #tab-reports .report-date-field { flex: 0 0 auto; min-width: 155px; }
+                #tab-reports .report-export-color { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; color: var(--text); font-size: 13px; font-weight: 700; white-space: nowrap; cursor: pointer; }
+                #tab-reports .report-export-color input[type="color"],
+                #tab-reports .report-chart-color input[type="color"] { width: 42px; height: 38px; padding: 3px; border: 1px solid var(--border); border-radius: 10px; background: transparent; cursor: pointer; }
+                #tab-reports .report-chart-color { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; color: var(--text); font-size: 13px; font-weight: 700; white-space: nowrap; cursor: pointer; }
+                #tab-reports .order-entry-mode-field { flex: 0 0 auto; min-width: 145px; }
+                #tab-reports .order-entry-date-field { flex: 0 0 auto; min-width: 155px; }
+                #tab-reports .order-entry-range-fields { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+                #tab-reports #reportTable { min-width: 1320px; }
+                #tab-reports #reportTable th { color: var(--primary); }
+                #tab-reports #reportTable td { font-weight: 700; }
                 table { width: 100%; border-collapse: collapse; min-width: 1200px; }
                 th {
                     background: rgba(255,255,255,0.05); color: var(--primary);
@@ -460,6 +475,8 @@
                     --glass: rgba(255,255,255,0.92);
                     --border: rgba(15,23,42,0.14);
                     --text: #172033;
+                    --muted-text: #475569;
+                    --surface: rgba(255,255,255,0.86);
                 }
                 html[data-theme="dark"] { color-scheme: dark; }
                 .theme-mode-widget {
@@ -495,21 +512,30 @@
                     background: radial-gradient(circle at 20% 30%, rgba(8,127,140,0.07), transparent 40%),
                                 radial-gradient(circle at 80% 70%, rgba(109,40,217,0.06), transparent 40%);
                 }
+                html[data-theme="light"] .card {
+                    background: var(--glass);
+                    color: var(--text);
+                    box-shadow: 0 18px 42px rgba(15,23,42,0.10);
+                }
                 html[data-theme="light"] .filter-bar,
                 html[data-theme="light"] .stat-card,
                 html[data-theme="light"] .employee-theme-panel,
-                html[data-theme="light"] .quick-alert-theme-panel {
-                    background: rgba(255,255,255,0.82);
+                html[data-theme="light"] .quick-alert-theme-panel,
+                html[data-theme="light"] .employee-theme-toggle,
+                html[data-theme="light"] .mgr-tab {
+                    background: var(--surface);
                 }
                 html[data-theme="light"] th { background: rgba(8,127,140,0.08); }
                 html[data-theme="light"] td { background: rgba(255,255,255,0.62); }
                 html[data-theme="light"] tr:hover td { background: rgba(8,127,140,0.07); }
-                html[data-theme="light"] input,
+                html[data-theme="light"] input:not([type="checkbox"]):not([type="radio"]):not([type="color"]),
                 html[data-theme="light"] select,
                 html[data-theme="light"] textarea {
                     color: #172033 !important;
                     background-color: rgba(255,255,255,0.88) !important;
                 }
+                html[data-theme="light"] input[type="checkbox"],
+                html[data-theme="light"] input[type="radio"] { accent-color: var(--primary); }
                 html[data-theme="light"] input::placeholder,
                 html[data-theme="light"] textarea::placeholder { color: #64748b; }
                 html[data-theme="light"] select option { background-color: #fff; color: #172033; }
@@ -517,10 +543,14 @@
                     background: linear-gradient(145deg, #fff, #f1f5f9);
                     border-color: rgba(8,127,140,0.22);
                 }
+                html[data-theme="light"] .modal-overlay { background: rgba(15,23,42,0.28); }
                 html[data-theme="light"] .export-dropdown-menu {
                     background: linear-gradient(145deg, #fff, #f1f5f9);
                 }
                 html[data-theme="light"] .location-input-wrap .location-suggestions { background: #fff; }
+                html[data-theme="light"] .employee-theme-control label,
+                html[data-theme="light"] .quick-alert-theme-control label { color: var(--muted-text); }
+                html[data-theme="light"] .badge-employee { color: #087f8c; }
                 html[data-theme="light"] .mgr-tab { color: #475569; }
                 html[data-theme="light"] .mgr-tab:hover { color: #172033; }
                 html[data-theme="light"] .btn-cancel { color: #475569; }
@@ -531,6 +561,22 @@
                 html[data-theme="light"] .session-bar .session-time,
                 html[data-theme="light"] .export-dropdown-menu .exp-row label,
                 html[data-theme="light"] .quick-alert-theme-control label { color: #475569; }
+                html[data-theme="light"] [style*="background: rgba(0,0,0"] {
+                    background-color: var(--surface) !important;
+                }
+                html[data-theme="light"] [style*="color: #94a3b8"],
+                html[data-theme="light"] [style*="color:#94a3b8"],
+                html[data-theme="light"] [style*="color: #cbd5e1"],
+                html[data-theme="light"] [style*="color:#cbd5e1"] { color: var(--muted-text) !important; }
+                html[data-theme="light"] #blacklist-page #blockResultDetail,
+                html[data-theme="light"] #blacklist-page #blockResultDetail [style*="color: #fff"],
+                html[data-theme="light"] #blacklist-page #blockResultDetail [style*="color:#fff"] {
+                    color: var(--text) !important;
+                }
+                html[data-theme="light"] #blacklist-page #blockResultDetail [style*="color:#fecaca"],
+                html[data-theme="light"] #blacklist-page #blockResultDetail [style*="color: #fecaca"] {
+                    color: #b91c1c !important;
+                }
                 @media (max-width: 700px) {
                     .theme-mode-widget { bottom: 12px; left: 12px; }
                     .theme-mode-toggle { padding: 8px 11px; }
@@ -539,6 +585,7 @@
                 @media (max-width: 1000px) { .grid-layout { grid-template-columns: 1fr 1fr; } }
             @media (max-width: 700px) {
             .card { backdrop-filter: none; background: rgba(15,23,42,0.95); }
+            html[data-theme="light"] .card { background: var(--glass); }
             .card::after { display: none; }
         }
                 /* تغيير لون أيقونة التقويم الافتراضية داخل خانة التاريخ والمستعرض */
@@ -594,6 +641,14 @@
                         : '<i class="fas fa-sun" aria-hidden="true"></i><span>الوضع الفاتح</span>';
                     button.setAttribute('aria-label', isLight ? 'تفعيل الوضع الداكن' : 'تفعيل الوضع الفاتح');
                     button.setAttribute('aria-pressed', String(isLight));
+                    if (window.myChart) {
+                        var chartTextColor = isLight ? '#475569' : '#94a3b8';
+                        window.myChart.options.scales.y.ticks.color = chartTextColor;
+                        window.myChart.options.scales.y.grid.color = isLight ? 'rgba(15,23,42,0.12)' : 'rgba(255,255,255,0.05)';
+                        window.myChart.options.scales.x.ticks.color = chartTextColor;
+                        window.myChart.options.plugins.legend.labels.color = isLight ? '#172033' : '#fff';
+                        window.myChart.update();
+                    }
                 };
 
                 window.toggleThemeMode = function () {
@@ -809,6 +864,7 @@
                             <select id="complaintType" required>
                                 <option value="تأخير">تأخير</option><option value="مركز الاتصالات">مركز الاتصالات</option><option value="ناقص">ناقص</option>
                                 <option value="طلب خطأ">طلب خطأ</option><option value="سوء تعبئة">سوء تعبئة</option>
+                                <option value="خطأ في الباقي">خطأ في الباقي</option>
                                 <option value="جودة">جودة</option><option value="سوء خدمة">سوء خدمة</option>
                                 <option value="خطأ متلقي">خطأ متلقي</option><option value="خطأ متلقي طلبات">خطأ متلقي طلبات</option>
                                 <option value="مندوب">مندوب</option><option value="جسم غريب">جسم غريب</option>
@@ -901,6 +957,7 @@
                         <select id="empTypeFilter" onchange="refreshEmployeeView()" style="width:100%;">
                             <option value="">كل الأنواع</option><option value="مركز الاتصالات">مركز الاتصالات</option><option value="تأخير">تأخير</option><option value="ناقص">ناقص</option>
                             <option value="طلب خطأ">طلب خطأ</option><option value="سوء تعبئة">سوء تعبئة</option>
+                            <option value="خطأ في الباقي">خطأ في الباقي</option>
                             <option value="جودة">جودة</option><option value="سوء خدمة">سوء خدمة</option>
                             <option value="خطأ متلقي">خطأ متلقي</option><option value="خطأ متلقي طلبات">خطأ متلقي طلبات</option>
                             <option value="جسم غريب">جسم غريب</option>
@@ -1006,6 +1063,23 @@
                         <div class="f-item"><i class="fas fa-user"></i><input type="text" id="searchName" oninput="loadManagerData()" placeholder="اسم العميل..." style="width:100%;"></div>
                         <div class="f-item"><i class="fas fa-phone"></i><input type="text" id="searchPhone" oninput="loadManagerData()" placeholder="رقم الهاتف..." style="width:100%;"></div>
                         <div class="f-item narrow"><i class="fas fa-user-tie"></i><input type="text" id="searchUser" oninput="loadManagerData()" placeholder="اسم الموظف..." style="width:100%;"></div>
+                        <div class="f-item narrow"><i class="fas fa-tags"></i>
+                            <select id="mgrTypeFilter" onchange="loadManagerData()" style="width:100%;">
+                                <option value="">كل التصنيفات</option>
+                                <option value="مركز الاتصالات">مركز الاتصالات</option>
+                                <option value="تأخير">تأخير</option>
+                                <option value="ناقص">ناقص</option>
+                                <option value="طلب خطأ">طلب خطأ</option>
+                                <option value="سوء تعبئة">سوء تعبئة</option>
+                                <option value="خطأ في الباقي">خطأ في الباقي</option>
+                                <option value="جودة">جودة</option>
+                                <option value="سوء خدمة">سوء خدمة</option>
+                                <option value="خطأ متلقي">خطأ متلقي</option>
+                                <option value="خطأ متلقي طلبات">خطأ متلقي طلبات</option>
+                                <option value="مندوب">مندوب</option>
+                                <option value="جسم غريب">جسم غريب</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="export-dropdown" id="mgrExportDropdown" style="flex-shrink:0;">
                         <button class="btn export-btn" onclick="window._toggleMgrExport(event)"><i class="fas fa-file-excel"></i> تصدير Excel</button>
@@ -1079,8 +1153,24 @@
         
         <!-- مدخلات عدد الأوردرات -->
         <div class="filter-bar" style="background: rgba(0, 242, 255, 0.05); border: 1px dashed var(--primary);">
-            <span class="f-label">إدخال أوردرات اليوم:</span>
-            <div class="f-item narrow"><i class="fas fa-calendar-day"></i><input type="date" id="orderEntryDate" onchange="window._loadDailyOrdersForDate()"></div>
+            <span class="f-label">إدخال إجمالي الأوردرات:</span>
+            <div class="f-item order-entry-mode-field"><i class="fas fa-calendar-day"></i>
+                <select id="orderEntryMode" onchange="window._toggleOrderEntryMode()">
+                    <option value="day">يوم واحد</option>
+                    <option value="month">شهر كامل</option>
+                    <option value="range">من تاريخ إلى تاريخ</option>
+                </select>
+            </div>
+            <div class="f-item order-entry-date-field" id="orderEntrySingleDate">
+                <i class="fas fa-calendar-day"></i><input type="date" id="orderEntryDate" onchange="window._loadDailyOrdersForDate()">
+            </div>
+            <div class="f-item order-entry-date-field" id="orderEntryMonth" style="display:none;">
+                <i class="fas fa-calendar-alt"></i><input type="month" id="orderEntryMonthValue" onchange="window._loadDailyOrdersForDate()" title="الشهر">
+            </div>
+            <div class="order-entry-range-fields" id="orderEntryDateRange" style="display:none;">
+                <div class="f-item order-entry-date-field"><span>من:</span><input type="date" id="orderEntryFromDate" aria-label="من تاريخ" title="تاريخ بداية الفترة"></div>
+                <div class="f-item order-entry-date-field"><span>إلى:</span><input type="date" id="orderEntryToDate" aria-label="إلى تاريخ" title="تاريخ نهاية الفترة"></div>
+            </div>
             <div class="f-item narrow">
                 <select id="orderBranchSelect" onchange="window._loadDailyOrdersForDate()">
                     <option value="العباسيه">العباسيه</option>
@@ -1097,11 +1187,23 @@
         </div>
 
         <!-- فلاتر التقرير -->
-        <div class="filter-bar">
+        <div class="filter-bar report-filter-bar">
             <span class="f-label">تصفية التقرير:</span>
-            <div class="f-item narrow"><i class="fas fa-calendar-alt"></i><input type="month" id="reportMonthFilter" onchange="window._generateReport()"></div>
-            <div class="f-item narrow"><i class="fas fa-arrow-right"></i><input type="date" id="repDateFrom" onchange="window._generateReport()"></div>
-            <div class="f-item narrow"><i class="fas fa-arrow-left"></i><input type="date" id="repDateTo" onchange="window._generateReport()"></div>
+            <div class="f-item report-period-field"><i class="fas fa-list-alt"></i>
+                <select id="reportViewMode" onchange="window._generateReport()">
+                    <option value="period">إجمالي الفترة</option>
+                    <option value="daily">تفصيلي حسب اليوم</option>
+                </select>
+            </div>
+            <div class="f-item report-date-field"><i class="fas fa-calendar-alt"></i><input type="month" id="reportMonthFilter" onchange="window._generateReport()" aria-label="الشهر"></div>
+            <div class="f-item report-date-field"><span>من:</span><input type="date" id="repDateFrom" onchange="window._generateReport()" aria-label="من تاريخ" title="تاريخ بداية الفترة"></div>
+            <div class="f-item report-date-field"><span>إلى:</span><input type="date" id="repDateTo" onchange="window._generateReport()" aria-label="إلى تاريخ" title="تاريخ نهاية الفترة"></div>
+            <label class="report-export-color" for="reportExportColor">لون ملف Excel
+                <input type="color" id="reportExportColor" value="#087f8c" onchange="window._saveReportExportColor()" aria-label="تغيير لون ملف Excel">
+            </label>
+            <label class="report-chart-color" for="reportChartColor">لون الرسم البياني
+                <input type="color" id="reportChartColor" value="#00f2ff" onchange="window._saveReportChartColor()" aria-label="تغيير لون الرسم البياني">
+            </label>
             <button class="btn btn-sm export-btn" onclick="window._exportReportExcel()" style="background: linear-gradient(45deg, #0284c7, #0369a1); margin:0;"><i class="fas fa-file-excel"></i> تصدير التقرير</button>
         </div>
 
@@ -1110,13 +1212,14 @@
             <table id="reportTable">
                 <thead>
                     <tr>
+                        <th id="reportDateHeader" class="hidden">التاريخ</th>
                         <th>الفرع</th>
                         <th>إجمالي الشكاوى</th>
-                        <th>مركز الاتصالات</th>
                         <th>تأخير</th>
                         <th>ناقص</th>
                         <th>طلب خطأ</th>
                         <th>سوء تعبئة</th>
+                        <th>خطأ في الباقي</th>
                         <th>جودة</th>
                         <th>سوء خدمة</th>
                         <th>خطأ متلقي</th>
@@ -2269,7 +2372,9 @@ const countBadge = document.getElementById('empComplaintsCount');
                 return;
             }
 
-            tbody.innerHTML = filtered.map(c => `
+            tbody.innerHTML = filtered.map(c => {
+                const isCallCenterComplaint = c.routedThrough === 'مركز الاتصالات' || c.branch === 'مركز الاتصالات';
+                return `
                 <tr>
                     <td>${tsToDateStr(c.date)}</td>
                     <td>${isCallCenterComplaint ? 'مركز الاتصالات' : c.branch || ''}</td>
@@ -2289,7 +2394,8 @@ const countBadge = document.getElementById('empComplaintsCount');
                     <td><button class="btn btn-sm btn-edit" onclick="window._editComplaint('${c.id}')"><i class="fas fa-edit"></i></button></td>
                     <td><button class="btn btn-sm btn-del" onclick="window._deleteComplaint('${c.id}')"><i class="fas fa-trash"></i></button></td>
                 </tr>
-            `).join('');
+            `;
+            }).join('');
         }
             window.refreshEmployeeView = refreshEmployeeView;
 
@@ -2300,6 +2406,7 @@ const countBadge = document.getElementById('empComplaintsCount');
                 const nameSearch = document.getElementById('searchName')?.value.trim().toLowerCase();
                 const phoneSearch = document.getElementById('searchPhone')?.value.trim().toLowerCase();
                 const userSearch = document.getElementById('searchUser')?.value.trim().toLowerCase();
+                const typeFilter = document.getElementById('mgrTypeFilter')?.value;
                 const isViewer = isViewerUser();
 
                 let filtered = allComplaints.filter(c => {
@@ -2309,6 +2416,7 @@ const countBadge = document.getElementById('empComplaintsCount');
                     if (nameSearch && !c.customerName?.toLowerCase().includes(nameSearch)) return false;
                     if (phoneSearch && !c.phone?.toLowerCase().includes(phoneSearch)) return false;
                     if (userSearch && !(c.employeeName || c.addedBy || c.userName || '').toLowerCase().includes(userSearch)) return false;
+                    if (typeFilter && c.complaintType !== typeFilter) return false;
                     return true;
                 });
 
@@ -2381,8 +2489,16 @@ const countBadge = document.getElementById('empComplaintsCount');
             if (tab === 'employees') renderEmployeesTable();
         if (tab === 'reports') {
             const now = new Date();
+            document.getElementById('reportViewMode').value = 'period';
             document.getElementById('reportMonthFilter').value = now.toISOString().substring(0, 7);
+            document.getElementById('repDateFrom').value = '';
+            document.getElementById('repDateTo').value = '';
             document.getElementById('orderEntryDate').value = now.toISOString().substring(0, 10);
+            document.getElementById('orderEntryMonthValue').value = now.toISOString().substring(0, 7);
+            document.getElementById('orderEntryMode').value = 'day';
+            document.getElementById('orderEntryFromDate').value = '';
+            document.getElementById('orderEntryToDate').value = '';
+            window._toggleOrderEntryMode();
             
             // تشغيل الجلب فوراً لليوم الحالي
             window._loadDailyOrdersForDate(); 
@@ -2420,34 +2536,104 @@ const countBadge = document.getElementById('empComplaintsCount');
             }
         };
 
+    let reportGenerationId = 0;
     window._generateReport = async function() {
+        const generationId = ++reportGenerationId;
+        const dailyMode = document.getElementById('reportViewMode').value === 'daily';
         const month = document.getElementById('reportMonthFilter').value;
         const dateFrom = document.getElementById('repDateFrom').value;
         const dateTo = document.getElementById('repDateTo').value;
+        const hasDateRange = Boolean(dateFrom || dateTo);
+        const hasCompleteDateRange = Boolean(dateFrom && dateTo);
         
         const tbody = document.getElementById('reportTableBody');
         const tfoot = document.getElementById('reportTableFoot');
+        document.getElementById('reportDateHeader').classList.toggle('hidden', !dailyMode);
         if (!tbody) return;
+        const columnCount = dailyMode ? 16 : 15;
+        const setReportMessage = message => {
+            tbody.innerHTML = `<tr><td colspan="${columnCount}" style="text-align:center; padding:30px;">${message}</td></tr>`;
+            tfoot.innerHTML = '';
+            updateChart([], []);
+        };
 
-        tbody.innerHTML = '<tr><td colspan="15" style="text-align:center; padding:30px;"><i class="fas fa-spinner fa-spin"></i> جاري تحليل البيانات...</td></tr>';
+        const isDateInReportPeriod = date => {
+            if (hasCompleteDateRange) return date >= dateFrom && date <= dateTo;
+            if (month) return date.startsWith(month);
+            return true;
+        };
+
+        if (hasDateRange && !hasCompleteDateRange) {
+            setReportMessage('أدخل تاريخ البداية والنهاية معاً');
+            return;
+        }
+        if (hasCompleteDateRange && dateFrom > dateTo) {
+            setReportMessage('تاريخ البداية يجب أن يكون قبل تاريخ النهاية');
+            return;
+        }
+        if (dailyMode && !hasCompleteDateRange && !month) {
+            setReportMessage('اختر شهراً أو أدخل تاريخ البداية والنهاية للتفصيل اليومي');
+            return;
+        }
+
+        tbody.innerHTML = `<tr><td colspan="${columnCount}" style="text-align:center; padding:30px;"><i class="fas fa-spinner fa-spin"></i> جاري تحليل البيانات...</td></tr>`;
 
         try {
+            const monthStart = month ? `${month}-01` : null;
+            const monthEnd = month
+                ? `${month}-${String(new Date(Number(month.slice(0, 4)), Number(month.slice(5, 7)), 0).getDate()).padStart(2, '0')}`
+                : null;
+            const reportDateRange = hasCompleteDateRange
+                ? { startDate: dateFrom, endDate: dateTo }
+                : month
+                    ? { startDate: monthStart, endDate: monthEnd }
+                    : null;
             const ordersSnap = await getDocs(collection(db, 'daily_orders'));
-            let branchOrdersMap = {}; 
+            if (generationId !== reportGenerationId) return;
+            const branchOrdersMap = {};
+            const dailyOrdersMap = {};
+            const includedOrderPeriods = ordersSnap.docs
+                .filter(docSnap => {
+                    const data = docSnap.data();
+                    if (!data?.startDate || !data?.endDate || !data.branch || dailyMode) return false;
+                    if (!hasDateRange && month) return false;
+                    return !reportDateRange ||
+                        (data.startDate >= reportDateRange.startDate && data.endDate <= reportDateRange.endDate);
+                })
+                .map(docSnap => ({ ...docSnap.data(), id: docSnap.id }));
+            const includedOrderPeriodIds = new Set(includedOrderPeriods.map(orderPeriod => orderPeriod.id));
 
-            ordersSnap.forEach(doc => {
-                const data = doc.data();
-                if (!data || !data.date || !data.branch) return; 
-
-                const orderDate = data.date;
-                let isIncluded = false;
-                if (dateFrom && dateTo) {
-                    if (orderDate >= dateFrom && orderDate <= dateTo) isIncluded = true;
-                } else if (month && orderDate.startsWith(month)) {
-                    isIncluded = true;
+            ordersSnap.forEach(docSnap => {
+                const data = docSnap.data();
+                if (data?.month && data.branch) {
+                    if (!dailyMode && !hasDateRange && data.month === month) {
+                        branchOrdersMap[data.branch] = (branchOrdersMap[data.branch] || 0) + (data.count || 0);
+                    }
+                    return;
                 }
+                if (data?.startDate && data?.endDate && data.branch) {
+                    if (includedOrderPeriodIds.has(docSnap.id)) {
+                        branchOrdersMap[data.branch] = (branchOrdersMap[data.branch] || 0) + (data.count || 0);
+                    }
+                    return;
+                }
+                if (!data?.date || !data.branch) return;
+                if (dailyMode) {
+                    if (isDateInReportPeriod(data.date)) {
+                        const key = `${data.date}_${data.branch}`;
+                        dailyOrdersMap[key] = (dailyOrdersMap[key] || 0) + (data.count || 0);
+                    }
+                    return;
+                }
+                if (!hasDateRange && month && !dailyMode) return;
+                const coveredByPeriodEntry = includedOrderPeriods.some(orderPeriod =>
+                    orderPeriod.branch === data.branch &&
+                    data.date >= orderPeriod.startDate &&
+                    data.date <= orderPeriod.endDate
+                );
+                if (coveredByPeriodEntry) return;
 
-                if (isIncluded) {
+                if (isDateInReportPeriod(data.date)) {
                     branchOrdersMap[data.branch] = (branchOrdersMap[data.branch] || 0) + (data.count || 0);
                 }
             });
@@ -2455,61 +2641,77 @@ const countBadge = document.getElementById('empComplaintsCount');
             const branches = ["العباسيه", "عبده باشا", "نادي السكه", "عباس العقاد", "يوسف عباس", "المعهد", "مركز الاتصالات"];
             
             let grandTotals = {
-                complaints: 0, callCenter: 0, delay: 0, missing: 0, wrong: 0, packaging: 0, 
+                complaints: 0, delay: 0, missing: 0, wrong: 0, packaging: 0, changeRemainder: 0,
                 quality: 0, service: 0, rcvError: 0, takerError: 0, delivery: 0, foreign: 0, orders: 0
             };
 
             let reportHtml = '';
             let chartLabels = [];
             let chartData = [];
+            let reportDates = [];
+            if (dailyMode) {
+                {
+                    const startDate = hasCompleteDateRange ? dateFrom : monthStart;
+                    const endDate = hasCompleteDateRange ? dateTo : monthEnd;
+                    const [startYear, startMonth, startDay] = startDate.split('-').map(Number);
+                    const [endYear, endMonth, endDay] = endDate.split('-').map(Number);
+                    const cursor = new Date(Date.UTC(startYear, startMonth - 1, startDay));
+                    const lastDay = Date.UTC(endYear, endMonth - 1, endDay);
+                    while (cursor.getTime() <= lastDay) {
+                        reportDates.push(cursor.toISOString().substring(0, 10));
+                        cursor.setUTCDate(cursor.getUTCDate() + 1);
+                    }
+                }
+            }
+            const reportRows = dailyMode
+                ? reportDates.flatMap(date => branches.map(br => ({ br, date })))
+                : branches.map(br => ({ br, date: '' }));
+            const dailyComplaintTotals = {};
 
-            branches.forEach(br => {
+            reportRows.forEach(({ br, date }) => {
                 const brComplaints = allComplaints.filter(c => {
                     const cDate = tsToDateStr(c.date);
                     if (c.branch !== br || !cDate) return false;
-                    if (dateFrom && dateTo) return (cDate >= dateFrom && cDate <= dateTo);
-                    else if (month) return cDate.startsWith(month);
-                    return true;
+                    return dailyMode ? cDate === date : isDateInReportPeriod(cDate);
                 });
                 
                 const stats = {
                     total: brComplaints.length,
-                    callCenter: brComplaints.filter(c => c.complaintType === 'مركز الاتصالات').length,
                     delay: brComplaints.filter(c => c.complaintType === 'تأخير').length,
                     missing: brComplaints.filter(c => c.complaintType === 'ناقص').length,
                     wrong: brComplaints.filter(c => c.complaintType === 'طلب خطأ').length,
                     packaging: brComplaints.filter(c => c.complaintType === 'سوء تعبئة').length,
+                    changeRemainder: brComplaints.filter(c => c.complaintType === 'خطأ في الباقي').length,
                     quality: brComplaints.filter(c => c.complaintType === 'جودة').length,
                     service: brComplaints.filter(c => c.complaintType === 'سوء خدمة').length,
                     rcvError: brComplaints.filter(c => c.complaintType === 'خطأ متلقي').length,
                     takerError: brComplaints.filter(c => c.complaintType === 'خطأ متلقي طلبات').length,
                     delivery: brComplaints.filter(c => c.complaintType === 'مندوب').length,
                     foreign: brComplaints.filter(c => c.complaintType === 'جسم غريب').length,
-                    orders: branchOrdersMap[br] || 0
+                    orders: dailyMode ? (dailyOrdersMap[`${date}_${br}`] || 0) : (branchOrdersMap[br] || 0)
                 };
 
-                // --- التعديل هنا: استثناء مركز الاتصالات من الجمع في الإجمالي العام ---
-                if (br !== "مركز الاتصالات") {
-                    Object.keys(grandTotals).forEach(key => {
-                        grandTotals[key] += stats[key === 'complaints' ? 'total' : key];
-                    });
-                }
+                Object.keys(grandTotals).forEach(key => {
+                    grandTotals[key] += stats[key === 'complaints' ? 'total' : key];
+                });
 
                 const percentage = stats.orders > 0 ? ((stats.total / stats.orders) * 100).toFixed(2) : "0.00";
                 const statusColor = percentage > 3 ? '#ef4444' : '#00f2ff';
+                if (dailyMode) dailyComplaintTotals[date] = (dailyComplaintTotals[date] || 0) + stats.total;
 
                 // تمييز سطر مركز الاتصالات بلون مختلف قليلاً ليعرف المستخدم أنه منفصل
                 const rowStyle = br === "مركز الاتصالات" ? "background: rgba(255,255,255,0.03); border-top: 1px dashed #666;" : "";
 
                 reportHtml += `
                     <tr style="${rowStyle}">
-                        <td style="font-weight:bold; color:${br === "مركز الاتصالات" ? '#94a3b8' : 'var(--primary)'}">${br} ${br === "مركز الاتصالات" ? '<small>()</small>' : ''}</td>
+                        ${dailyMode ? `<td>${date}</td>` : ''}
+                        <td style="font-weight:bold; color:${br === "مركز الاتصالات" ? '#94a3b8' : 'var(--primary)'}">${br}</td>
                         <td style="font-size:15px; font-weight:bold;">${stats.total}</td>
-                        <td>${stats.callCenter}</td>
                         <td>${stats.delay}</td>
                         <td>${stats.missing}</td>
                         <td>${stats.wrong}</td>
                         <td>${stats.packaging}</td>
+                        <td>${stats.changeRemainder}</td>
                         <td>${stats.quality}</td>
                         <td>${stats.service}</td>
                         <td>${stats.rcvError}</td>
@@ -2521,22 +2723,29 @@ const countBadge = document.getElementById('empComplaintsCount');
                     </tr>
                 `;
 
-                chartLabels.push(br);
-                chartData.push(stats.total);
+                if (!dailyMode) {
+                    chartLabels.push(br);
+                    chartData.push(stats.total);
+                }
             });
 
+            if (dailyMode) {
+                chartLabels = reportDates;
+                chartData = reportDates.map(date => dailyComplaintTotals[date] || 0);
+            }
             tbody.innerHTML = reportHtml;
 
             const grandPercentage = grandTotals.orders > 0 ? ((grandTotals.complaints / grandTotals.orders) * 100).toFixed(2) : "0.00";
             tfoot.innerHTML = `
                 <tr style="background: rgba(0, 242, 255, 0.1); border-top: 2px solid var(--primary);">
+                    ${dailyMode ? '<td></td>' : ''}
                     <td style="color:var(--primary)">الإجمالي العام </td>
                     <td>${grandTotals.complaints}</td>
-                    <td>${grandTotals.callCenter}</td>
                     <td>${grandTotals.delay}</td>
                     <td>${grandTotals.missing}</td>
                     <td>${grandTotals.wrong}</td>
                     <td>${grandTotals.packaging}</td>
+                    <td>${grandTotals.changeRemainder}</td>
                     <td>${grandTotals.quality}</td>
                     <td>${grandTotals.service}</td>
                     <td>${grandTotals.rcvError}</td>
@@ -2548,28 +2757,36 @@ const countBadge = document.getElementById('empComplaintsCount');
                 </tr>
             `;
 
-            updateChart(chartLabels, chartData);
+            updateChart(chartLabels, chartData, dailyMode ? 'عدد الشكاوى لكل يوم' : 'عدد الشكاوى لكل فرع');
 
         } catch (e) {
             console.error("Report Error:", e);
-            tbody.innerHTML = '<tr><td colspan="15" style="color:var(--danger);">حدث خطأ في استخراج البيانات</td></tr>';
+            tbody.innerHTML = `<tr><td colspan="${columnCount}" style="color:var(--danger);">حدث خطأ في استخراج البيانات</td></tr>`;
         }
     };
 
     // دالة تحديث الرسم البياني
-    function updateChart(labels, data) {
+    function updateChart(labels, data, seriesLabel = 'عدد الشكاوى لكل فرع') {
         const ctx = document.getElementById('complaintsChart').getContext('2d');
         if (window.myChart) window.myChart.destroy();
-        
+        const isLightTheme = document.documentElement.dataset.theme === 'light';
+        const chartTextColor = isLightTheme ? '#475569' : '#94a3b8';
+        const selectedChartColor = document.getElementById('reportChartColor')?.value;
+        const chartColor = /^#[\da-f]{6}$/i.test(selectedChartColor || '')
+            ? selectedChartColor
+            : (isLightTheme ? '#087f8c' : '#00f2ff');
+        const chartRgb = chartColor.slice(1).match(/.{2}/g).map(value => parseInt(value, 16));
+        const chartFillColor = `rgba(${chartRgb.join(',')},${isLightTheme ? 0.55 : 0.6})`;
+
         window.myChart = new Chart(ctx, {
             type: 'bar',
             data: {
                 labels: labels,
                 datasets: [{
-                    label: 'عدد الشكاوى لكل فرع',
+                    label: seriesLabel,
                     data: data,
-                    backgroundColor: 'rgba(0, 242, 255, 0.6)',
-                    borderColor: '#00f2ff',
+                    backgroundColor: chartFillColor,
+                    borderColor: chartColor,
                     borderWidth: 1,
                     borderRadius: 8
                 }]
@@ -2578,11 +2795,11 @@ const countBadge = document.getElementById('empComplaintsCount');
                 responsive: true,
                 maintainAspectRatio: false,
                 scales: {
-                    y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } },
-                    x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { family: 'Cairo' } } }
+                    y: { beginAtZero: true, grid: { color: isLightTheme ? 'rgba(15,23,42,0.12)' : 'rgba(255,255,255,0.05)' }, ticks: { color: chartTextColor } },
+                    x: { grid: { display: false }, ticks: { color: chartTextColor, font: { family: 'Cairo' } } }
                 },
                 plugins: {
-                    legend: { labels: { color: '#fff', font: { family: 'Cairo' } } }
+                    legend: { labels: { color: isLightTheme ? '#172033' : '#fff', font: { family: 'Cairo' } } }
                 }
             }
         });
@@ -3249,26 +3466,30 @@ const cQuery = query(collection(db, 'complaints'), orderBy('createdAt', 'desc'))
             }
         };
         window._resetReportFilters = function() {
+            document.getElementById('reportViewMode').value = 'period';
             document.getElementById('repDateFrom').value = '';
             document.getElementById('repDateTo').value = '';
             const now = new Date();
             document.getElementById('reportMonthFilter').value = now.toISOString().substring(0, 7);
-            window._generateReport(); // إعادة تحديث البيانات
+            window._generateReport();
         };
         // وظيفة لجلب عدد الأوردرات المسجل مسبقاً عند تغيير التاريخ أو الفرع
         // 1. وظيفة الجلب التلقائي (بمجرد تغيير التاريخ أو الفرع)
         window._loadDailyOrdersForDate = async function() {
+            const mode = document.getElementById('orderEntryMode').value;
+            if (mode === 'range') return;
             const date = document.getElementById('orderEntryDate').value;
+            const month = document.getElementById('orderEntryMonthValue').value;
             const branch = document.getElementById('orderBranchSelect').value;
             const countInput = document.getElementById('orderCountInput');
 
-            if (!date || !branch) return;
+            if ((mode === 'month' && !month) || (mode === 'day' && !date) || !branch) return;
 
             try {
-                // بناء المعرف (نفس المعرف المستخدم في الحفظ)
-                const docId = `${date}_${branch}`;
+                const docId = mode === 'month'
+                    ? `month_${month}_${branch}`
+                    : `${date}_${branch}`;
                 
-                // جلب المستند مباشرة باستخدام الدوال المستوردة في أعلى الملف
                 const docRef = doc(db, 'daily_orders', docId);
                 const docSnap = await getDoc(docRef);
 
@@ -3287,35 +3508,97 @@ const cQuery = query(collection(db, 'complaints'), orderBy('createdAt', 'desc'))
         // 2. وظيفة الحفظ المحدثة
         window._saveDailyOrders = async function() {
             const date = document.getElementById('orderEntryDate').value;
+            const entryMode = document.getElementById('orderEntryMode').value;
+            const selectedMonth = document.getElementById('orderEntryMonthValue').value;
+            const startDate = entryMode === 'range' ? document.getElementById('orderEntryFromDate').value : date;
+            const endDate = entryMode === 'range' ? document.getElementById('orderEntryToDate').value : date;
             const branch = document.getElementById('orderBranchSelect').value;
             const count = parseInt(document.getElementById('orderCountInput').value);
 
-            if (!date || !count || count < 0) {
-                showToast('يرجى إدخال التاريخ وعدد الأوردرات بشكل صحيح', true);
+            if ((entryMode === 'month' ? !selectedMonth : (!startDate || !endDate)) ||
+                !Number.isInteger(count) || count < 0) {
+                showToast('يرجى إدخال التاريخ أو الفترة وعدد الأوردرات بشكل صحيح', true);
+                return;
+            }
+            if (entryMode === 'range' && startDate > endDate) {
+                showToast('تاريخ البداية يجب أن يكون قبل تاريخ النهاية', true);
+                document.getElementById('orderEntryFromDate').focus();
                 return;
             }
 
             try {
-                const docId = `${date}_${branch}`;
-                
-                // استخدام setDoc مع db المعرف في المودول
-                await setDoc(doc(db, 'daily_orders', docId), {
-                    date: date,
-                    branch: branch,
-                    count: count,
-                    updatedAt: serverTimestamp()
-                });
-                
-                showToast(`تم حفظ ${count} أوردر لفرع ${branch}`);
-                
-                // تلوين الخانة للتأكيد
+                if (entryMode === 'month') {
+                    const monthId = `month_${selectedMonth}_${branch}`;
+                    await setDoc(doc(db, 'daily_orders', monthId), {
+                        month: selectedMonth,
+                        branch,
+                        count,
+                        updatedAt: serverTimestamp()
+                    });
+                    showToast(`تم حفظ إجمالي ${count} أوردر لفرع ${branch} في ${selectedMonth}`);
+                } else if (entryMode === 'range') {
+                    const periodId = `period_${startDate}_${endDate}_${branch}`;
+                    const existingPeriods = await getDocs(collection(db, 'daily_orders'));
+                    const hasOverlappingPeriod = existingPeriods.docs.some(periodDoc => {
+                        if (periodDoc.id === periodId) return false;
+                        const periodData = periodDoc.data();
+                        return periodData.startDate && periodData.endDate &&
+                            periodData.branch === branch &&
+                            startDate <= periodData.endDate &&
+                            endDate >= periodData.startDate;
+                    });
+                    if (hasOverlappingPeriod) {
+                        showToast('توجد فترة أوردرات متداخلة لهذا الفرع. عدّل الفترة المحفوظة أولاً.', true);
+                        return;
+                    }
+                    await setDoc(doc(db, 'daily_orders', periodId), {
+                        startDate,
+                        endDate,
+                        branch,
+                        count,
+                        updatedAt: serverTimestamp()
+                    });
+                    showToast(`تم حفظ إجمالي ${count} أوردر لفرع ${branch} خلال الفترة`);
+                } else {
+                    const existingPeriods = await getDocs(collection(db, 'daily_orders'));
+                    const coveredByPeriod = existingPeriods.docs.some(periodDoc => {
+                        const periodData = periodDoc.data();
+                        return periodData.startDate && periodData.endDate &&
+                            periodData.branch === branch &&
+                            startDate >= periodData.startDate &&
+                            startDate <= periodData.endDate;
+                    });
+                    if (coveredByPeriod) {
+                        showToast('هذا التاريخ مشمول في إجمالي فترة محفوظة. عدّل إجمالي الفترة بدلاً من تسجيله مرة أخرى.', true);
+                        return;
+                    }
+                    const docId = `${startDate}_${branch}`;
+                    await setDoc(doc(db, 'daily_orders', docId), {
+                        date: startDate,
+                        branch,
+                        count,
+                        updatedAt: serverTimestamp()
+                    });
+                    showToast(`تم حفظ ${count} أوردر لفرع ${branch}`);
+                }
+
                 document.getElementById('orderCountInput').style.backgroundColor = "rgba(16, 185, 129, 0.1)";
-                
-                // تحديث التقرير في الجدول بالأسفل فوراً
                 window._generateReport();
             } catch (e) {
                 showToast('فشل الحفظ: ' + e.message, true);
             }
+        };
+        window._toggleOrderEntryMode = function() {
+            const mode = document.getElementById('orderEntryMode').value;
+            const isRange = mode === 'range';
+            const isMonth = mode === 'month';
+            document.getElementById('orderEntrySingleDate').style.display = isRange || isMonth ? 'none' : 'flex';
+            document.getElementById('orderEntryMonth').style.display = isMonth ? 'flex' : 'none';
+            document.getElementById('orderEntryDateRange').style.display = isRange ? 'flex' : 'none';
+            const countInput = document.getElementById('orderCountInput');
+            countInput.value = '';
+            countInput.style.backgroundColor = 'transparent';
+            if (mode !== 'range') window._loadDailyOrdersForDate();
         };
         // --- وظائف شاشة البلاغات المستقلة ---
 
@@ -3564,10 +3847,11 @@ const time = d.createdAt?.toDate ? d.createdAt.toDate().toLocaleTimeString('ar-E
                     <td>
                         ${d.routedThrough === 'مركز الاتصالات' || d.branch === 'مركز الاتصالات'
                             ? 'خطأ متلقي'
-                            : (isManager || isOwner) ? `<select aria-label="تصنيف الشكوى" data-current-type="${['ناقص', 'طلب خطأ', 'جودة'].includes(d.complaintType) ? d.complaintType : ''}" onchange="window._updateQuickComplaintType('${d.id}', this.value, this)">
-                            <option value="" disabled ${!['ناقص', 'طلب خطأ', 'جودة'].includes(d.complaintType) ? 'selected' : ''}>اختر التصنيف</option>
+                            : (isManager || isOwner) ? `<select aria-label="تصنيف الشكوى" data-current-type="${['ناقص', 'طلب خطأ', 'خطأ في الباقي', 'جودة'].includes(d.complaintType) ? d.complaintType : ''}" onchange="window._updateQuickComplaintType('${d.id}', this.value, this)">
+                            <option value="" disabled ${!['ناقص', 'طلب خطأ', 'خطأ في الباقي', 'جودة'].includes(d.complaintType) ? 'selected' : ''}>اختر التصنيف</option>
                             <option value="ناقص" ${d.complaintType === 'ناقص' ? 'selected' : ''}>ناقص</option>
                             <option value="طلب خطأ" ${d.complaintType === 'طلب خطأ' ? 'selected' : ''}>طلب خطأ</option>
+                            <option value="خطأ في الباقي" ${d.complaintType === 'خطأ في الباقي' ? 'selected' : ''}>خطأ في الباقي</option>
                             <option value="جودة" ${d.complaintType === 'جودة' ? 'selected' : ''}>جودة</option>
                         </select>` : (d.complaintType || '—')}
                     </td>
@@ -3609,7 +3893,7 @@ const time = d.createdAt?.toDate ? d.createdAt.toDate().toLocaleTimeString('ar-E
 }
 
 window._updateQuickComplaintType = async function(id, complaintType, select) {
-    const allowedTypes = ['ناقص', 'طلب خطأ', 'جودة'];
+    const allowedTypes = ['ناقص', 'طلب خطأ', 'خطأ في الباقي', 'جودة'];
     if (!allowedTypes.includes(complaintType)) {
         showToast('يرجى اختيار تصنيف صحيح للشكوى', true);
         return;
@@ -4230,9 +4514,17 @@ function renderSharedEmployeeComplaints(phoneSearch) {
         };
         window._exportReportExcel = async function() {
         const table = document.getElementById('reportTable');
-        const rows = Array.from(table.querySelectorAll('tr'));
+        await window._generateReport();
+        const dailyMode = document.getElementById('reportViewMode').value === 'daily';
+        const month = document.getElementById('reportMonthFilter').value;
+        const dateFrom = document.getElementById('repDateFrom').value;
+        const dateTo = document.getElementById('repDateTo').value;
+        const periodLabel = dateFrom && dateTo
+            ? `${dateFrom}_${dateTo}`
+            : month || 'كل_الفترة';
+        const tableRows = Array.from(table.querySelectorAll('tr'));
         
-        if (rows.length <= 1) {
+        if (tableRows.length <= 1) {
             showToast('لا توجد بيانات لتصديرها', true);
             return;
         }
@@ -4263,28 +4555,87 @@ function renderSharedEmployeeComplaints(phoneSearch) {
 
             // 4. بناء ملف الإكسيل
             const workbook = new ExcelJS.Workbook();
-            const worksheet = workbook.addWorksheet('تحليل الأداء', {
-                views: [{ rightToLeft: true, showGridLines: false }]
+            const colorPicker = document.getElementById('reportExportColor');
+            const accentHex = colorPicker?.value.match(/^#[\da-f]{6}$/i) ? colorPicker.value : '#087f8c';
+            const accentRgb = accentHex.slice(1).match(/.{2}/g).map(value => parseInt(value, 16));
+            const toArgb = (rgb) => `FF${rgb.map(value => value.toString(16).padStart(2, '0')).join('').toUpperCase()}`;
+            const tintColor = (amount) => toArgb(accentRgb.map(value => Math.round(value + (255 - value) * amount)));
+            const shadeColor = (amount) => toArgb(accentRgb.map(value => Math.round(value * (1 - amount))));
+            const accentArgb = toArgb(accentRgb);
+            const worksheet = workbook.addWorksheet(dailyMode ? 'التفصيل اليومي' : 'إجمالي الفترة', {
+                views: [{ rightToLeft: true, showGridLines: false, state: 'frozen', ySplit: 4 }]
+            });
+            const reportRows = tableRows.map(row =>
+                Array.from(row.querySelectorAll('th, td'))
+                    .filter(cell => !cell.classList.contains('hidden'))
+                    .map(cell => cell.innerText.trim())
+            );
+            const columnCount = Math.max(...reportRows.map(row => row.length));
+            const percentageColumn = reportRows[0].findIndex(value => value.includes('نسبة')) + 1;
+            const titleRow = worksheet.addRow([dailyMode ? 'تقرير الشكاوى - تفصيلي حسب اليوم' : 'تقرير الشكاوى - إجمالي الفترة']);
+            worksheet.mergeCells(1, 1, 1, columnCount);
+            titleRow.height = 34;
+            titleRow.getCell(1).font = { name: 'Arial', size: 18, bold: true, color: { argb: 'FFFFFFFF' } };
+            titleRow.getCell(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: shadeColor(0.55) } };
+            titleRow.getCell(1).alignment = { horizontal: 'center', vertical: 'middle' };
+
+            const subtitleRow = worksheet.addRow([`الفترة: ${periodLabel}  |  تاريخ التصدير: ${new Date().toLocaleDateString('ar-EG')}`]);
+            worksheet.mergeCells(2, 1, 2, columnCount);
+            subtitleRow.height = 25;
+            subtitleRow.getCell(1).font = { name: 'Arial', size: 11, color: { argb: shadeColor(0.65) } };
+            subtitleRow.getCell(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: tintColor(0.9) } };
+            subtitleRow.getCell(1).alignment = { horizontal: 'center', vertical: 'middle' };
+            worksheet.addRow([]);
+
+            const headerRow = worksheet.addRow(reportRows[0]);
+            headerRow.height = 32;
+            headerRow.eachCell(cell => {
+                cell.font = { name: 'Arial', size: 10, bold: true, color: { argb: 'FFFFFFFF' } };
+                cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: accentArgb } };
+                cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
+                cell.border = { bottom: { style: 'medium', color: { argb: shadeColor(0.2) } } };
             });
 
-            // إضافة بيانات الجدول
-            rows.forEach((row, rowIndex) => {
-                const rowData = Array.from(row.querySelectorAll('th, td')).map(cell => cell.innerText);
-                const excelRow = worksheet.addRow(rowData);
-                excelRow.height = 25;
-
-                excelRow.eachCell((cell) => {
+            reportRows.slice(1).forEach((rowData, dataIndex) => {
+                const excelRow = worksheet.addRow(rowData.map(value => {
+                    const percentage = value.match(/^(-?\d+(?:\.\d+)?)%$/);
+                    if (percentage) return Number(percentage[1]) / 100;
+                    if (/^-?\d+(?:,\d{3})*(?:\.\d+)?$/.test(value)) return Number(value.replace(/,/g, ''));
+                    return value;
+                }));
+                const isTotalRow = dataIndex === reportRows.length - 2;
+                excelRow.height = 24;
+                excelRow.eachCell((cell, columnNumber) => {
+                    cell.font = { name: 'Arial', size: 10, bold: isTotalRow || columnNumber === (dailyMode ? 2 : 1), color: { argb: 'FF1E293B' } };
                     cell.alignment = { horizontal: 'center', vertical: 'middle' };
-                    if (rowIndex === 0) {
-                        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1E40AF' } };
-                        cell.font = { color: { argb: 'FFFFFFFF' }, bold: true };
-                    } else {
-                        cell.border = { bottom: { style: 'thin', color: { argb: 'FFDDDDDD' } } };
+                    cell.border = {
+                        bottom: { style: 'thin', color: { argb: 'FFD7E2EA' } },
+                        left: { style: 'hair', color: { argb: 'FFE2E8F0' } }
+                    };
+                    if (isTotalRow) {
+                        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: tintColor(0.82) } };
+                        cell.font = { ...cell.font, bold: true, color: { argb: shadeColor(0.3) } };
+                        cell.border = { top: { style: 'medium', color: { argb: accentArgb } } };
+                    } else if (dataIndex % 2 === 1) {
+                        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: tintColor(0.94) } };
+                    }
+                    if (typeof cell.value === 'number') {
+                        cell.numFmt = columnNumber === percentageColumn ? '0.00%' : '#,##0';
                     }
                 });
             });
 
-            worksheet.columns.forEach(c => c.width = 18);
+            const preferredWidths = dailyMode
+                ? [14, 22, 15, 12, 12, 14, 14, 15, 12, 14, 14, 17, 12, 13, 17, 15]
+                : [22, 15, 12, 12, 14, 14, 15, 12, 14, 14, 17, 12, 13, 17, 15];
+            worksheet.columns = Array.from({ length: columnCount }, (_, index) => ({
+                width: preferredWidths[index] || 15
+            }));
+            worksheet.autoFilter = {
+                from: { row: 4, column: 1 },
+                to: { row: reportRows.length + 3, column: columnCount }
+            };
+            worksheet.pageSetup = { orientation: 'landscape', fitToPage: true, fitToWidth: 1, fitToHeight: 0 };
 
             // 5. إضافة الصورة للإكسيل (باستخدام الكود النظيف)
             const imageId = workbook.addImage({
@@ -4294,7 +4645,7 @@ function renderSharedEmployeeComplaints(phoneSearch) {
 
             // تحديد مكان الصورة (تحت الجدول بصفين)
             worksheet.addImage(imageId, {
-                tl: { col: 1, row: rows.length + 2 },
+                tl: { col: 1, row: reportRows.length + 5 },
                 ext: { width: 800, height: 400 }
             });
 
@@ -4305,7 +4656,7 @@ function renderSharedEmployeeComplaints(phoneSearch) {
             // تحميل الملف
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
-            link.download = `تقرير_نجف_النهائي.xlsx`;
+            link.download = `تقرير_نجف_${dailyMode ? 'تفصيلي_يومي' : 'إجمالي_الفترة'}_${periodLabel}.xlsx`;
             link.click();
             
             showToast('تم تصدير التقرير بنجاح');
@@ -4315,6 +4666,54 @@ function renderSharedEmployeeComplaints(phoneSearch) {
             showToast('فشل التصدير: ' + error.message, true);
         }
     };
+    window._saveReportExportColor = function() {
+        const picker = document.getElementById('reportExportColor');
+        if (!picker) return;
+        try {
+            localStorage.setItem('complaints_report_export_color', picker.value);
+        } catch (error) {
+            console.error('تعذر حفظ لون تصدير التقرير:', error);
+            showToast('تعذر حفظ لون التصدير على هذا الجهاز', true);
+        }
+    };
+    (function initializeReportExportColor() {
+        const picker = document.getElementById('reportExportColor');
+        if (!picker) return;
+        try {
+            const savedColor = localStorage.getItem('complaints_report_export_color');
+            if (savedColor && /^#[\da-f]{6}$/i.test(savedColor)) picker.value = savedColor;
+        } catch (error) {
+            console.warn('تعذر تحميل لون تصدير التقرير المحفوظ:', error);
+        }
+    })();
+    window._saveReportChartColor = function() {
+        const picker = document.getElementById('reportChartColor');
+        if (!picker || !/^#[\da-f]{6}$/i.test(picker.value)) return;
+        try {
+            localStorage.setItem('complaints_report_chart_color', picker.value);
+        } catch (error) {
+            console.error('تعذر حفظ لون الرسم البياني:', error);
+            showToast('تعذر حفظ لون الرسم البياني على هذا الجهاز', true);
+        }
+        if (window.myChart?.data?.datasets?.[0]) {
+            const rgb = picker.value.slice(1).match(/.{2}/g).map(value => parseInt(value, 16));
+            const isLightTheme = document.documentElement.dataset.theme === 'light';
+            window.myChart.data.datasets[0].backgroundColor = `rgba(${rgb.join(',')},${isLightTheme ? 0.55 : 0.6})`;
+            window.myChart.data.datasets[0].borderColor = picker.value;
+            window.myChart.update();
+        }
+    };
+    (function initializeReportChartColor() {
+        const picker = document.getElementById('reportChartColor');
+        if (!picker) return;
+        picker.value = document.documentElement.dataset.theme === 'light' ? '#087f8c' : '#00f2ff';
+        try {
+            const savedColor = localStorage.getItem('complaints_report_chart_color');
+            if (savedColor && /^#[\da-f]{6}$/i.test(savedColor)) picker.value = savedColor;
+        } catch (error) {
+            console.warn('تعذر تحميل لون الرسم البياني المحفوظ:', error);
+        }
+    })();
     // وظيفة البحث داخل جدول البلاغات السريعة
 // وظيفة البحث داخل جدول البلاغات السريعة
 window._filterQuickTableByPhone = function(searchValue) {
