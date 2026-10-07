@@ -153,6 +153,8 @@
             .filter-bar .f-item input, .filter-bar .f-item select { padding: 9px 38px 9px 14px; font-size: 13px; border-radius: 11px; }
             .filter-bar .f-item.narrow { flex: 0 0 auto; min-width: 140px; }
             .filter-bar .f-label { color: #94a3b8; font-size: 13px; font-weight: 700; white-space: nowrap; padding-left: 8px; border-left: 2px solid var(--primary); }
+            .report-color-picker { display: inline-flex; align-items: center; gap: 8px; color: #cbd5e1; font-size: 12px; font-weight: 700; white-space: nowrap; }
+            .report-color-picker input[type="color"] { width: 38px; height: 36px; padding: 3px; border: 1px solid var(--border); border-radius: 9px; background: rgba(255,255,255,0.06); cursor: pointer; }
             .table-wrap { border-radius: 16px; overflow: hidden; border: 1px solid var(--border); overflow-x: auto; }
             table { width: 100%; border-collapse: collapse; min-width: 1200px; }
             th {
@@ -548,6 +550,7 @@
                             <option value="جودة">جودة</option><option value="سوء خدمة">سوء خدمة</option>
                             <option value="خطأ متلقي">خطأ متلقي</option><option value="خطأ متلقي طلبات">خطأ متلقي طلبات</option>
                             <option value="مندوب">مندوب</option><option value="جسم غريب">جسم غريب</option>
+                            <option value="خطأ في الباقي ">خطأ في الباقي </option>
                         </select>
                     </div></div>
                     <div class="input-box"><label>وقت الطلب</label><div class="field-wrap"><i class="fas fa-clock"></i><input type="time" id="orderTime"></div></div>
@@ -635,9 +638,9 @@
                         <option value="طلب خطأ">طلب خطأ</option><option value="سوء تعبئة">سوء تعبئة</option>
                         <option value="جودة">جودة</option><option value="سوء خدمة">سوء خدمة</option>
                         <option value="خطأ متلقي">خطأ متلقي</option><option value="خطأ متلقي طلبات">خطأ متلقي طلبات</option>
-                        <option value="جسم غريب">جسم غريب</option>
+                        <option value="جسم غريب">جسم غريب</option><option value="مندوب">مندوب</option>
+                        <option value="خطأ في الباقي ">خطأ في الباقي </option>
     <!-- السطر الصحيح بعد التعديل -->
-    <option value="مندوب">مندوب</option>
                     </select>
                 </div>
                 <!-- زر التصدير للموظف -->
@@ -826,6 +829,9 @@
         <div class="f-item narrow"><i class="fas fa-shopping-basket"></i><input type="number" id="orderCountInput" min="0" placeholder="الإجمالي"></div>
         <button class="btn btn-sm btn-neon" onclick="window._saveDailyOrders()" style="width:auto; margin:0;"><i class="fas fa-check"></i> حفظ</button>
     </div>
+    <p style="color:#94a3b8; font-size:12px; margin:-10px 4px 18px;">
+        إدخال الفترة يُحسب كإجمالي مستقل، ولا تُضاف فوقه أعداد الأيام الواقعة داخله.
+    </p>
 
     <!-- فلاتر التقرير -->
     <div class="filter-bar">
@@ -834,6 +840,9 @@
         <div class="f-item narrow"><i class="fas fa-calendar-alt"></i><input type="month" id="reportMonthFilter" onchange="window._generateReport()"></div>
         <div class="f-item narrow"><i class="fas fa-arrow-right"></i><input type="date" id="repDateFrom" onchange="window._generateReport()"></div>
         <div class="f-item narrow"><i class="fas fa-arrow-left"></i><input type="date" id="repDateTo" onchange="window._generateReport()"></div>
+        <div class="f-item narrow"><i class="fas fa-chart-column"></i><select id="reportChartMetric" onchange="window._refreshReportChart()"><option value="orders" selected>عداد الأوردرات</option><option value="complaints">عدد الشكاوى</option><option value="rate">نسبة الشكاوى</option></select></div>
+        <label class="report-color-picker" title="اختيار لون الجدول في ملف Excel"><span><i class="fas fa-table"></i> لون الجدول</span><input id="reportTableColor" type="color" value="#1e40af" onchange="window._saveReportColors()" aria-label="لون الجدول في ملف Excel"></label>
+        <label class="report-color-picker" title="اختيار لون الأعمدة في الرسم البياني وملف Excel"><span><i class="fas fa-chart-column"></i> لون الرسم</span><input id="reportChartColor" type="color" value="#00a6c7" onchange="window._saveReportColors()" aria-label="لون الرسم البياني"></label>
         <button class="btn btn-sm export-btn" onclick="window._exportReportExcel()" style="background: linear-gradient(45deg, #0284c7, #0369a1); margin:0;"><i class="fas fa-file-excel"></i> تصدير التقرير</button>
     </div>
 
@@ -855,6 +864,7 @@
                     <th>خطأ متلقي طلبات</th>
                     <th>مندوب</th>
                     <th>جسم غريب</th>
+                    <th>خطأ في الباقي </th>
                     <th>إجمالي الأوردرات</th>
                     <th>نسبة الشكاوى</th>
                 </tr>
@@ -866,7 +876,7 @@
 
     <!-- منطقة الرسم البياني -->
     <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 20px; border: 1px solid var(--border);">
-        <h4 style="text-align: center; color: var(--primary); margin-bottom: 15px;">التحليل البياني لمعدل الشكاوى لكل فرع</h4>
+        <h4 id="complaintsChartTitle" style="text-align: center; color: var(--primary); margin-bottom: 15px;">عدد الشكاوى لكل فرع</h4>
         <canvas id="complaintsChart" style="max-height: 400px;"></canvas>
     </div>
 </div>
@@ -1677,57 +1687,98 @@ window._generateReport = async function() {
     const tfoot = document.getElementById('reportTableFoot');
     if (!tbody) return;
 
-    tbody.innerHTML = `<tr><td colspan="${dailyMode ? 15 : 14}" style="text-align:center; padding:30px;"><i class="fas fa-spinner fa-spin"></i> جاري تحليل البيانات...</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="${dailyMode ? 16 : 15}" style="text-align:center; padding:30px;"><i class="fas fa-spinner fa-spin"></i> جاري تحليل البيانات...</td></tr>`;
 
     try {
         const ordersSnap = await getDocs(collection(db, 'daily_orders'));
-        let branchOrdersMap = {}; 
-        let dailyOrdersMap = {};
-        let periodOrdersMap = {};
-        let singleDayOrdersMap = {};
+        const branches = ["العباسيه", "عبده باشا", "نادي السكه", "عباس العقاد", "يوسف عباس", "المعهد", "مركز الاتصالات"];
+        const branchOrdersMap = {};
+        const dailyOrdersMap = {};
+        const periodRangesByBranch = {};
+        const reportStart = dateFrom && dateTo ? dateFrom : (month ? `${month}-01` : '');
+        const reportEnd = dateFrom && dateTo
+            ? dateTo
+            : (month ? `${month}-${new Date(Number(month.substring(0, 4)), Number(month.substring(5, 7)), 0).getDate().toString().padStart(2, '0')}` : '');
 
         ordersSnap.forEach(doc => {
             const data = doc.data();
-            if (!data || !data.date || !data.branch) return; 
-
+            if (!data || !data.branch) return;
             const orderDate = data.date || data.dateFrom;
+            if (!orderDate) return;
             const orderDateFrom = data.dateFrom || orderDate;
             const orderDateTo = data.dateTo || orderDate;
-            let isIncluded = false;
-            if (dateFrom && dateTo) {
-                isIncluded = orderDateFrom <= dateTo && orderDateTo >= dateFrom;
-            } else if (month && orderDate.startsWith(month)) {
-                isIncluded = orderDateFrom.substring(0, 7) <= month && orderDateTo.substring(0, 7) >= month;
+            const count = Number(data.count);
+            if (!Number.isFinite(count) || count < 0 || orderDateFrom > orderDateTo) {
+                console.warn(`تم تجاهل إدخال أوردرات غير صالح: ${doc.id}`);
+                return;
+            }
+            if (reportStart && orderDateTo < reportStart) return;
+            if (reportEnd && orderDateFrom > reportEnd) return;
+
+            if (orderDateFrom === orderDateTo) {
+                const dayKey = `${orderDateFrom}_${data.branch}`;
+                dailyOrdersMap[dayKey] = (dailyOrdersMap[dayKey] || 0) + count;
+                return;
             }
 
-            if (isIncluded) {
-                if (orderDateFrom === orderDateTo) {
-                    const dayKey = `${orderDateFrom}_${data.branch}`;
-                    dailyOrdersMap[dayKey] = (dailyOrdersMap[dayKey] || 0) + (data.count || 0);
-                    singleDayOrdersMap[data.branch] = (singleDayOrdersMap[data.branch] || 0) + (data.count || 0);
+            const updatedAt = data.updatedAt && typeof data.updatedAt.toMillis === 'function'
+                ? data.updatedAt.toMillis()
+                : 0;
+            if (!periodRangesByBranch[data.branch]) periodRangesByBranch[data.branch] = [];
+            periodRangesByBranch[data.branch].push({
+                from: orderDateFrom,
+                to: orderDateTo,
+                count,
+                updatedAt,
+                id: doc.id
+            });
+        });
+
+        let overlappingPeriodEntries = 0;
+        Object.keys(periodRangesByBranch).forEach(branch => {
+            const ranges = periodRangesByBranch[branch].sort((a, b) =>
+                b.updatedAt - a.updatedAt || b.from.localeCompare(a.from) || a.id.localeCompare(b.id)
+            );
+            const selectedRanges = [];
+            ranges.forEach(range => {
+                const overlapsSelectedRange = selectedRanges.some(selected =>
+                    range.from <= selected.to && range.to >= selected.from
+                );
+                if (overlapsSelectedRange) {
+                    overlappingPeriodEntries++;
                 } else {
-                    periodOrdersMap[data.branch] = (periodOrdersMap[data.branch] || 0) + (data.count || 0);
+                    selectedRanges.push(range);
                 }
-            }
+            });
+            periodRangesByBranch[branch] = selectedRanges;
+            branchOrdersMap[branch] = selectedRanges.reduce((total, range) => total + range.count, 0);
         });
 
-        Object.keys(singleDayOrdersMap).forEach(branch => {
-            branchOrdersMap[branch] = periodOrdersMap[branch] || singleDayOrdersMap[branch];
-        });
-        Object.keys(periodOrdersMap).forEach(branch => {
-            branchOrdersMap[branch] = periodOrdersMap[branch];
+        const isCoveredByPeriodEntry = (branch, date) =>
+            (periodRangesByBranch[branch] || []).some(range => range.from <= date && range.to >= date);
+
+        branches.forEach(branch => {
+            Object.keys(dailyOrdersMap).forEach(key => {
+                const separator = key.lastIndexOf('_');
+                const orderDate = key.substring(0, separator);
+                if (key.substring(separator + 1) !== branch || isCoveredByPeriodEntry(branch, orderDate)) return;
+                branchOrdersMap[branch] = (branchOrdersMap[branch] || 0) + dailyOrdersMap[key];
+            });
         });
 
-        const branches = ["العباسيه", "عبده باشا", "نادي السكه", "عباس العقاد", "يوسف عباس", "المعهد", "مركز الاتصالات"];
-        
+        if (overlappingPeriodEntries) {
+            showToast(`تم اعتماد أحدث إدخال للفترات المتداخلة وتجاهل ${overlappingPeriodEntries} إدخال لتجنب تكرار الأوردرات`);
+        }
         let grandTotals = {
             complaints: 0, delay: 0, missing: 0, wrong: 0, packaging: 0, 
-            quality: 0, service: 0, rcvError: 0, takerError: 0, delivery: 0, foreign: 0, orders: 0
+            quality: 0, service: 0, rcvError: 0, takerError: 0, delivery: 0, foreign: 0, otherErrors: 0, orders: 0
         };
 
         let reportHtml = '';
         let chartLabels = [];
         let chartData = [];
+        let chartOrderData = [];
+        let chartRateData = [];
         let reportDates = [];
 
         if (dailyMode) {
@@ -1750,6 +1801,13 @@ window._generateReport = async function() {
             ? reportDates.flatMap(date => branches.map(br => ({ br, date })))
             : branches.map(br => ({ br, date: '' }));
         const dailyComplaintTotals = {};
+        const dailyPeriodCoverage = {};
+
+        if (dailyMode) {
+            Object.values(periodRangesByBranch).flat().forEach(range => {
+                grandTotals.orders += range.count;
+            });
+        }
 
         reportRows.forEach(({ br, date }) => {
             const brComplaints = allComplaints.filter(c => {
@@ -1761,6 +1819,7 @@ window._generateReport = async function() {
                 return true;
             });
             
+            const ordersCoveredByPeriod = dailyMode && isCoveredByPeriodEntry(br, date);
             const stats = {
                 total: brComplaints.length,
                 delay: brComplaints.filter(c => c.complaintType === 'تأخير').length,
@@ -1773,7 +1832,10 @@ window._generateReport = async function() {
                 takerError: brComplaints.filter(c => c.complaintType === 'خطأ متلقي طلبات').length,
                 delivery: brComplaints.filter(c => c.complaintType === 'مندوب').length,
                 foreign: brComplaints.filter(c => c.complaintType === 'جسم غريب').length,
-                orders: dailyMode ? (dailyOrdersMap[`${date}_${br}`] || 0) : (branchOrdersMap[br] || 0)
+                otherErrors: brComplaints.filter(c => c.complaintType === 'خطأ في الباقي ').length,
+                orders: dailyMode
+                    ? (ordersCoveredByPeriod ? 0 : (dailyOrdersMap[`${date}_${br}`] || 0))
+                    : (branchOrdersMap[br] || 0)
             };
 
             // --- التعديل هنا: استثناء مركز الاتصالات من الجمع في الإجمالي العام ---
@@ -1783,7 +1845,10 @@ Object.keys(grandTotals).forEach(key => {
 
             const percentage = stats.orders > 0 ? ((stats.total / stats.orders) * 100).toFixed(2) : "0.00";
             const statusColor = percentage > 3 ? '#ef4444' : '#00f2ff';
-            if (dailyMode) dailyComplaintTotals[date] = (dailyComplaintTotals[date] || 0) + stats.total;
+            if (dailyMode) {
+                dailyComplaintTotals[date] = (dailyComplaintTotals[date] || 0) + stats.total;
+                if (ordersCoveredByPeriod) dailyPeriodCoverage[date] = true;
+            }
 
             // تمييز سطر مركز الاتصالات بلون مختلف قليلاً ليعرف المستخدم أنه منفصل
             const rowStyle = br === "مركز الاتصالات" ? "background: rgba(255,255,255,0.03); border-top: 1px dashed #666;" : "";
@@ -1803,21 +1868,29 @@ Object.keys(grandTotals).forEach(key => {
                     <td>${stats.takerError}</td>
                     <td>${stats.delivery}</td>
                     <td>${stats.foreign}</td>
-                    <td style="color:#94a3b8">${stats.orders.toLocaleString()}</td>
-                    <td style="color:${statusColor}; font-weight:900;">${percentage}%</td>
+                    <td>${stats.otherErrors}</td>
+                    <td style="color:#94a3b8" title="${ordersCoveredByPeriod ? 'هذا اليوم داخل إجمالي فترة محفوظة؛ لم يتم جمعه مرة أخرى.' : ''}">${ordersCoveredByPeriod ? 'داخل إجمالي الفترة' : stats.orders.toLocaleString()}</td>
+                    <td style="color:${statusColor}; font-weight:900;">${ordersCoveredByPeriod ? '—' : `${percentage}%`}</td>
                 </tr>
             `;
 
             if (!dailyMode) {
                 chartLabels.push(br);
                 chartData.push(stats.total);
+                chartOrderData.push(stats.orders);
+                chartRateData.push(Number(percentage));
             }
         });
 
         if (dailyMode) {
-            grandTotals.orders = Object.values(branchOrdersMap).reduce((total, count) => total + count, 0);
             chartLabels = reportDates;
             chartData = reportDates.map(date => dailyComplaintTotals[date] || 0);
+            chartOrderData = reportDates.map(date => dailyPeriodCoverage[date]
+                ? null
+                : branches.reduce((total, branch) => total + (dailyOrdersMap[`${date}_${branch}`] || 0), 0));
+            chartRateData = reportDates.map((date, index) =>
+                chartOrderData[index] > 0 ? Number(((chartData[index] / chartOrderData[index]) * 100).toFixed(2)) : null
+            );
         }
 
         tbody.innerHTML = reportHtml;
@@ -1838,23 +1911,81 @@ Object.keys(grandTotals).forEach(key => {
                 <td>${grandTotals.takerError}</td>
                 <td>${grandTotals.delivery}</td>
                 <td>${grandTotals.foreign}</td>
+                <td>${grandTotals.otherErrors}</td>
                 <td>${grandTotals.orders.toLocaleString()}</td>
                 <td style="color:var(--primary)">${grandPercentage}%</td>
             </tr>
         `;
 
-        updateChart(chartLabels, chartData, dailyMode ? 'عدد الشكاوى لكل يوم' : 'عدد الشكاوى لكل فرع');
+        window._reportChartData = { labels: chartLabels, complaints: chartData, orders: chartOrderData, rates: chartRateData, dailyMode };
+        window._refreshReportChart();
 
     } catch (e) {
         console.error("Report Error:", e);
-        tbody.innerHTML = `<tr><td colspan="${dailyMode ? 15 : 14}" style="color:var(--danger);">حدث خطأ في استخراج البيانات</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="${dailyMode ? 16 : 15}" style="color:var(--danger);">حدث خطأ في استخراج البيانات</td></tr>`;
+    }
+};
+
+window._refreshReportChart = function() {
+    const reportData = window._reportChartData;
+    if (!reportData) return;
+    const metric = document.getElementById('reportChartMetric').value;
+    const metricOptions = {
+        complaints: { data: reportData.complaints, label: 'عدد الشكاوى', suffix: '' },
+        orders: { data: reportData.orders, label: 'عداد الأوردرات', suffix: '' },
+        rate: { data: reportData.rates, label: 'نسبة الشكاوى', suffix: '%' }
+    };
+    const selectedMetric = metricOptions[metric] || metricOptions.complaints;
+    const groupingLabel = reportData.dailyMode ? 'لكل يوم' : 'لكل فرع';
+    document.getElementById('complaintsChartTitle').textContent = `${selectedMetric.label} ${groupingLabel}`;
+    updateChart(reportData.labels, selectedMetric.data, selectedMetric.label, selectedMetric.suffix);
+};
+
+window._saveReportColors = function() {
+    const tableColor = document.getElementById('reportTableColor').value;
+    const chartColor = document.getElementById('reportChartColor').value;
+    localStorage.setItem('report_table_color', tableColor);
+    localStorage.setItem('report_chart_color', chartColor);
+    window._refreshReportChart();
+};
+
+function loadReportColors() {
+    const tableColor = localStorage.getItem('report_table_color');
+    const chartColor = localStorage.getItem('report_chart_color');
+    if (/^#[0-9a-f]{6}$/i.test(tableColor || '')) document.getElementById('reportTableColor').value = tableColor;
+    if (/^#[0-9a-f]{6}$/i.test(chartColor || '')) document.getElementById('reportChartColor').value = chartColor;
+}
+
+const reportValueLabelsPlugin = {
+    id: 'reportValueLabels',
+    afterDatasetsDraw(chart) {
+        const { ctx } = chart;
+        ctx.save();
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 14px Cairo, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        chart.data.datasets.forEach((dataset, datasetIndex) => {
+            const meta = chart.getDatasetMeta(datasetIndex);
+            if (meta.hidden) return;
+            meta.data.forEach((bar, index) => {
+                if (dataset.data[index] === null || dataset.data[index] === undefined) return;
+                const value = Number(dataset.data[index] || 0);
+                const displayValue = `${value.toLocaleString('ar-EG')}${dataset.label === 'نسبة الشكاوى' ? '%' : ''}`;
+                ctx.fillText(displayValue, bar.x, bar.y - 7);
+            });
+        });
+        ctx.restore();
     }
 };
 
 // دالة تحديث الرسم البياني
-function updateChart(labels, data, seriesLabel = 'عدد الشكاوى لكل فرع') {
+function updateChart(labels, data, seriesLabel = 'عدد الشكاوى', suffix = '') {
     const ctx = document.getElementById('complaintsChart').getContext('2d');
     if (window.myChart) window.myChart.destroy();
+    const chartColor = document.getElementById('reportChartColor').value;
+    const rgb = chartColor.match(/[0-9a-f]{2}/gi).map(value => parseInt(value, 16));
+    const backgroundColor = `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0.62)`;
     
     window.myChart = new Chart(ctx, {
         type: 'bar',
@@ -1863,25 +1994,33 @@ function updateChart(labels, data, seriesLabel = 'عدد الشكاوى لكل �
             datasets: [{
                 label: seriesLabel,
                 data: data,
-                backgroundColor: 'rgba(0, 242, 255, 0.6)',
-                borderColor: '#00f2ff',
+                backgroundColor,
+                borderColor: chartColor,
                 borderWidth: 1,
                 borderRadius: 8
             }]
         },
+        plugins: [reportValueLabelsPlugin],
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            layout: { padding: { top: 24 } },
             scales: {
-                y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } },
-                x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { family: 'Cairo' } } }
+                y: {
+                    beginAtZero: true,
+                    grid: { color: 'rgba(255,255,255,0.05)' },
+                    ticks: { color: '#94a3b8', font: { family: 'Cairo', size: 14 }, callback: value => `${Number(value).toLocaleString('ar-EG')}${suffix}` }
+                },
+                x: { grid: { display: false }, ticks: { color: '#cbd5e1', font: { family: 'Cairo', size: 14 } } }
             },
             plugins: {
-                legend: { labels: { color: '#fff', font: { family: 'Cairo' } } }
+                legend: { labels: { color: '#fff', font: { family: 'Cairo' } } },
+                tooltip: { callbacks: { label: context => `${seriesLabel}: ${Number(context.raw).toLocaleString('ar-EG')}${suffix}` } }
             }
         }
     });
 }
+loadReportColors();
         function renderEmployeesTable() {
             const search = document.getElementById('empSearchInput')?.value.trim().toLowerCase();
             const roleFilter = document.getElementById('empRoleFilter')?.value;
@@ -2828,80 +2967,122 @@ window._quickCheckBlock = function(phone) {
     };
     window._exportReportExcel = async function() {
     const table = document.getElementById('reportTable');
-    await window._generateReport();
-    const dailyMode = document.getElementById('reportViewMode').value === 'daily';
     const dateFrom = document.getElementById('repDateFrom').value;
     const dateTo = document.getElementById('repDateTo').value;
     const month = document.getElementById('reportMonthFilter').value;
     const reportPeriod = dateFrom && dateTo ? `${dateFrom}_${dateTo}` : (month || getCurrentDate());
-    const rows = Array.from(table.querySelectorAll('tr'));
-    
-    if (rows.length <= 1) {
-        showToast('لا توجد بيانات لتصديرها', true);
+    const dailyMode = document.getElementById('reportViewMode').value === 'daily';
+
+    if (!table) {
+        showToast('جدول التقرير غير موجود', true);
+        return;
+    }
+
+    try {
+        await window._generateReport();
+    } catch (error) {
+        console.error('Report generation before export failed:', error);
+        showToast('تعذر تجهيز التقرير للتصدير: ' + error.message, true);
+        return;
+    }
+
+    const expectedColumns = dailyMode ? 16 : 15;
+    const htmlRows = Array.from(table.querySelectorAll('thead tr, tbody tr, tfoot tr'));
+    const reportRows = Array.from(table.querySelectorAll('tbody tr'));
+    const exportRows = htmlRows.map(row => Array.from(row.querySelectorAll('th, td'))
+        .filter(cell => !cell.classList.contains('hidden'))
+        .map(cell => cell.innerText.trim()));
+
+    if (!reportRows.length || reportRows.some(row => row.querySelectorAll('td').length !== expectedColumns)) {
+        showToast('تعذر تجهيز صفوف التقرير كاملة للتصدير. حدّث التقرير ثم حاول مرة أخرى.', true);
         return;
     }
 
     showToast('جاري معالجة الرسم البياني... انتظر قليلاً');
 
     try {
-        // 1. الحصول على الشارت الأصلي من الصفحة
+        const tableColor = document.getElementById('reportTableColor').value;
+        const tableColorArgb = `FF${tableColor.slice(1).toUpperCase()}`;
+        const tableBandRgb = tableColor.slice(1).match(/.{2}/g).map(channel => {
+            const tinted = Math.round(parseInt(channel, 16) * 0.14 + 255 * 0.86);
+            return tinted.toString(16).padStart(2, '0');
+        }).join('').toUpperCase();
+        const tableBandArgb = `FF${tableBandRgb}`;
         const originalCanvas = document.getElementById('complaintsChart');
-        
-        // 2. إنشاء كانفاس جديد (نسخة طبق الأصل) بخلفية بيضاء صريحة
+        if (!originalCanvas || !originalCanvas.width || !originalCanvas.height) {
+            throw new Error('الرسم البياني غير جاهز للتصدير');
+        }
         const tempCanvas = document.createElement('canvas');
         tempCanvas.width = originalCanvas.width;
         tempCanvas.height = originalCanvas.height;
         const tempCtx = tempCanvas.getContext('2d');
+        if (!tempCtx) throw new Error('تعذر تجهيز صورة الرسم البياني');
 
-        // صبغ الخلفية بالأبيض (حل مشكلة الـ X الأحمر في الإكسيل)
-        tempCtx.fillStyle = '#FFFFFF';
+        tempCtx.fillStyle = '#0f172a';
         tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
-
-        // رسم الشارت فوق الخلفية البيضاء
         tempCtx.drawImage(originalCanvas, 0, 0);
-
-        // 3. تحويل الرسم لصورة وتنظيف الكود (تنظيف الـ Header)
         const fullImageData = tempCanvas.toDataURL('image/png', 1.0);
-        // إزالة "data:image/png;base64," لأن الإكسيل يحتاج البيانات الخام فقط
         const cleanBase64 = fullImageData.split(',')[1];
 
-        // 4. بناء ملف الإكسيل
         const workbook = new ExcelJS.Workbook();
-        const worksheet = workbook.addWorksheet('تحليل الأداء', {
-            views: [{ rightToLeft: true, showGridLines: false }]
+        workbook.views = [{ activeTab: 0, firstSheet: 0, visibility: 'visible' }];
+        const worksheet = workbook.addWorksheet('جدول التقرير', {
+            views: [{ rightToLeft: true, showGridLines: false, state: 'frozen', ySplit: 1 }]
         });
 
-        // إضافة بيانات الجدول
-        rows.forEach((row, rowIndex) => {
-            const rowData = Array.from(row.querySelectorAll('th, td'))
-                .filter(cell => !cell.classList.contains('hidden'))
-                .map(cell => cell.innerText);
-            const excelRow = worksheet.addRow(rowData);
+        worksheet.columns = Array.from({ length: expectedColumns }, (_, columnIndex) => {
+            const maxLength = Math.max(...exportRows.map(row => String(row[columnIndex] || '').length));
+            return {
+                width: Math.min(Math.max(maxLength + 3, 14), 30),
+                style: { alignment: { horizontal: 'center', vertical: 'middle' } }
+            };
+        });
+
+        exportRows.forEach((rowData, rowIndex) => {
+            const excelRow = worksheet.getRow(rowIndex + 1);
+            rowData.forEach((value, columnIndex) => {
+                excelRow.getCell(columnIndex + 1).value = value;
+            });
             excelRow.height = 25;
 
             excelRow.eachCell((cell) => {
                 cell.alignment = { horizontal: 'center', vertical: 'middle' };
                 if (rowIndex === 0) {
-                    cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1E40AF' } };
+                    cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: tableColorArgb } };
                     cell.font = { color: { argb: 'FFFFFFFF' }, bold: true };
-                } else {
-                    cell.border = { bottom: { style: 'thin', color: { argb: 'FFDDDDDD' } } };
+                } else if (rowIndex === exportRows.length - 1) {
+                    cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: tableBandArgb } };
+                    cell.font = { bold: true };
+                } else if (rowIndex % 2 === 0) {
+                    cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: tableBandArgb } };
                 }
+                cell.border = { bottom: { style: 'thin', color: { argb: 'FFDDDDDD' } } };
             });
         });
 
-        worksheet.columns.forEach(c => c.width = 18);
+        worksheet.autoFilter = {
+            from: { row: 1, column: 1 },
+            to: { row: exportRows.length - 1, column: expectedColumns }
+        };
 
-        // 5. إضافة الصورة للإكسيل (باستخدام الكود النظيف)
+        const chartWorksheet = workbook.addWorksheet('الرسم البياني', {
+            views: [{ rightToLeft: true, showGridLines: false }]
+        });
+        chartWorksheet.mergeCells('A1:N1');
+        chartWorksheet.getCell('A1').value = document.getElementById('complaintsChartTitle').textContent;
+        chartWorksheet.getCell('A1').font = { bold: true, size: 16, color: { argb: tableColorArgb } };
+        chartWorksheet.getCell('A1').alignment = { horizontal: 'center', vertical: 'middle' };
+        chartWorksheet.getRow(1).height = 30;
+        chartWorksheet.columns = Array.from({ length: 14 }, () => ({ width: 12 }));
         const imageId = workbook.addImage({
             base64: cleanBase64,
             extension: 'png',
         });
-
-        // تحديد مكان الصورة (تحت الجدول بصفين)
-        worksheet.addImage(imageId, {
-            tl: { col: 1, row: rows.length + 2 },
-            ext: { width: 800, height: 400 }
+        const chartImageWidth = 1100;
+        const chartImageHeight = Math.round(chartImageWidth * originalCanvas.height / originalCanvas.width);
+        chartWorksheet.addImage(imageId, {
+            tl: { col: 0, row: 2 },
+            ext: { width: chartImageWidth, height: chartImageHeight }
         });
 
         // 6. إنتاج الملف للتحميل
