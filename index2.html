@@ -377,6 +377,13 @@
                 .employee-theme-toggle { background: rgba(255,255,255,0.06); color: #cbd5e1; border: 1px solid var(--border); margin: 0; }
                 .theme-settings-saving { display: none; color: var(--warning); font-size: 11px; font-weight: 700; }
                 .theme-settings-saving.show { display: inline; }
+                #employeeComplaintTitle,
+                #employeeComplaintsTitle {
+                    color: var(--employee-title-color) !important;
+                    background: none !important;
+                    -webkit-text-fill-color: var(--employee-title-color) !important;
+                    filter: none !important;
+                }
                 .customizable-page { --page-accent: #fbbf24; --page-accent-rgb: 251,191,36; }
                 .customizable-page .session-bar { background: rgba(var(--page-accent-rgb),0.1) !important; border-color: var(--page-accent) !important; }
                 .customizable-page .session-bar .user-info { color: var(--page-accent) !important; }
@@ -839,10 +846,22 @@
                 <label for="shortcutBlacklistColor">زر القائمة السوداء</label>
                 <input type="color" id="shortcutBlacklistColor" data-theme-group="shortcutColors" data-theme-key="blacklist" value="#ef4444">
             </div>
+            <div class="employee-theme-control">
+                <label for="employeeComplaintTitleColor">عنوان تحرير شكوى جديدة</label>
+                <input type="color" id="employeeComplaintTitleColor" data-theme-group="complaintTitleColors" data-theme-key="newComplaint" value="#6d28d9">
+            </div>
+            <div class="employee-theme-control">
+                <label for="employeeComplaintsTitleColor">عنوان سجل الشكاوى</label>
+                <input type="color" id="employeeComplaintsTitleColor" data-theme-group="complaintTitleColors" data-theme-key="complaintHistory" value="#6d28d9">
+            </div>
+            <div class="employee-theme-control">
+                <label for="employeeComplaintSaveButtonColor">زر حفظ الشكوى</label>
+                <input type="color" id="employeeComplaintSaveButtonColor" data-theme-group="complaintActionColors" data-theme-key="saveComplaint" value="#6d28d9">
+            </div>
             <span class="theme-settings-saving"><i class="fas fa-spinner fa-spin"></i> جاري حفظ الألوان...</span>
         </div>
             <div class="card" style="margin-bottom: 25px;">
-                <h3><i class="fas fa-plus-square"></i> تحرير شكوى جديدة</h3>
+                <h3 id="employeeComplaintTitle"><i class="fas fa-plus-square"></i> تحرير شكوى جديدة</h3>
                 <form id="complaintForm">
                     <input type="hidden" id="editDocId" value="">
                     <div class="grid-layout">
@@ -942,7 +961,7 @@
             </div>
             <div class="card">
                 <!-- ابحث عن هذا السطر في قسم الموظف وحدثه -->
-<h3>
+<h3 id="employeeComplaintsTitle">
     <i class="fas fa-archive"></i> سجل شكاوايا 
     <span id="empComplaintsCount" style="background: var(--emp-accent-20); color: var(--emp-accent); padding: 2px 12px; border-radius: 8px; font-size: 1.1rem; margin-right: 10px; border: 1px solid var(--emp-accent-40);">0</span>
 </h3>
@@ -1707,6 +1726,13 @@
                     quickAlerts: '#fbbf24',
                     sharedQuickAlerts: '#0ea5e9',
                     blacklist: '#ef4444'
+                },
+                complaintTitleColors: {
+                    newComplaint: '#6d28d9',
+                    complaintHistory: '#6d28d9'
+                },
+                complaintActionColors: {
+                    saveComplaint: '#6d28d9'
                 }
             };
 
@@ -2068,9 +2094,11 @@ function getCurrentTimeFormatted() {
                 const settings = {
                     shortcutColors: { ...DEFAULT_THEME_SETTINGS.shortcutColors },
                     quickAlertButtons: { ...DEFAULT_THEME_SETTINGS.quickAlertButtons },
-                    pageColors: { ...DEFAULT_THEME_SETTINGS.pageColors }
+                    pageColors: { ...DEFAULT_THEME_SETTINGS.pageColors },
+                    complaintTitleColors: { ...DEFAULT_THEME_SETTINGS.complaintTitleColors },
+                    complaintActionColors: { ...DEFAULT_THEME_SETTINGS.complaintActionColors }
                 };
-                ['shortcutColors', 'quickAlertButtons', 'pageColors'].forEach(group => {
+                ['shortcutColors', 'quickAlertButtons', 'pageColors', 'complaintTitleColors', 'complaintActionColors'].forEach(group => {
                     const source = rawSettings?.[group];
                     Object.keys(settings[group]).forEach(key => {
                         const color = source?.[key];
@@ -2117,6 +2145,21 @@ function getCurrentTimeFormatted() {
                     page.style.setProperty('--page-accent-rgb', rgb);
                     page.style.setProperty('--page-accent-text', getThemeTextColor(color));
                 });
+
+                const complaintTitleElements = {
+                    newComplaint: document.getElementById('employeeComplaintTitle'),
+                    complaintHistory: document.getElementById('employeeComplaintsTitle')
+                };
+                Object.entries(complaintTitleElements).forEach(([key, heading]) => {
+                    if (heading) heading.style.setProperty('--employee-title-color', settings.complaintTitleColors[key]);
+                });
+
+                const complaintSaveButton = document.getElementById('submitBtn');
+                if (complaintSaveButton) {
+                    const color = settings.complaintActionColors.saveComplaint;
+                    complaintSaveButton.style.background = color;
+                    complaintSaveButton.style.color = getThemeTextColor(color);
+                }
 
                 const quickAlertButtonElements = document.querySelectorAll('#quick-alerts-page [data-quick-alert-button]');
                 quickAlertButtonElements.forEach(button => {
