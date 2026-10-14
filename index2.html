@@ -4762,7 +4762,7 @@ function renderSharedEmployeeComplaints(phoneSearch) {
 window._filterQuickTableByPhone = function(searchValue) {
     const tbody = document.getElementById('qPageTableBody');
     if (!tbody) return;
-    
+
     const rows = tbody.getElementsByTagName('tr');
     const search = normalizeEmployeePhone(searchValue);
 
@@ -4772,8 +4772,8 @@ window._filterQuickTableByPhone = function(searchValue) {
             rows[i].style.display = '';
             continue;
         }
-        const phoneCell = cells[3];
-        
+
+        const phoneCell = cells[4];
         if (phoneCell) {
             const phoneText = normalizeEmployeePhone(phoneCell.textContent || phoneCell.innerText);
             rows[i].style.display = !search || phoneText.includes(search) ? '' : 'none';
