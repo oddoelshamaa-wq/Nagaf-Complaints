@@ -3,7 +3,9 @@
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>نظام الشكاوى - متصل بالسحابة</title>
+            <title>نظام الشكاوى | Elshamaa</title>
+            <link rel="icon" type="image/png" href="./logo.png">
+            <link rel="apple-touch-icon" href="./logo.png">
             <!-- وضع هذا السطر داخل الـ <head> -->
         <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&display=swap" rel="stylesheet">
         <!-- ضع هذا الرابط فوق كل شيء داخل الـ <head> -->
@@ -233,6 +235,7 @@
                 }
                 .toast.show { transform: translateX(-50%) translateY(0); }
                 .toast.error { background: linear-gradient(45deg, #ef4444, #dc2626); box-shadow: 0 10px 30px rgba(239,68,68,0.4); }
+                .toast a { color: inherit; text-decoration: underline; overflow-wrap: anywhere; }
                 .login-card { max-width: 460px; margin: 80px auto 0; }
                 .export-btn {
                     background: linear-gradient(45deg, #15803d, #166534);
@@ -584,6 +587,185 @@
                 html[data-theme="light"] #blacklist-page #blockResultDetail [style*="color: #fecaca"] {
                     color: #b91c1c !important;
                 }
+                .staff-chat-box { max-width: 760px; padding: 24px; }
+                .staff-chat-recipient { margin-bottom: 14px; }
+                .staff-chat-recipient label { display: block; color: var(--primary); font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+                .staff-chat-messages {
+                    height: min(52vh, 480px); min-height: 260px; overflow-y: auto; display: flex; flex-direction: column;
+                    gap: 12px; padding: 14px; border: 1px solid var(--border); border-radius: 16px;
+                    background: rgba(0,0,0,0.18); margin-bottom: 14px;
+                }
+                .staff-chat-empty { color: #94a3b8; text-align: center; margin: auto; font-size: 14px; }
+                .staff-chat-message { max-width: 82%; padding: 10px 14px; border-radius: 14px; background: rgba(255,255,255,0.07); align-self: flex-start; }
+                .staff-chat-message.own { align-self: flex-end; background: rgba(0,242,255,0.12); border: 1px solid rgba(0,242,255,0.2); }
+                .staff-chat-message-head { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; color: var(--primary); font-size: 11px; font-weight: 700; }
+                .staff-chat-message p { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.7; font-size: 14px; }
+                .staff-chat-image-link { display: block; margin-top: 6px; }
+                .staff-chat-image { display: block; max-width: min(320px, 100%); max-height: 320px; border-radius: 12px; object-fit: contain; background: rgba(0,0,0,0.2); }
+                .staff-chat-image-actions { display: flex; margin-top: 7px; }
+                .staff-chat-image-download {
+                    display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 9px;
+                    background: rgba(49,139,101,0.18); border: 1px solid rgba(95,153,123,0.35);
+                    color: #a8d5b8; text-decoration: none; font-size: 12px; font-weight: 700;
+                }
+                .staff-chat-image-download:hover { background: rgba(49,139,101,0.3); color: #e1f1e6; }
+                .staff-chat-receipts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; color: #94a3b8; font-size: 10px; }
+                .staff-chat-receipts .seen { color: #76c99a; }
+                .staff-chat-receipts .downloaded { color: #a8d5b8; }
+                .staff-chat-delete-button, .staff-chat-create-group-toggle {
+                    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+                    border: 1px solid rgba(239,68,68,0.3); border-radius: 9px;
+                    background: rgba(239,68,68,0.12); color: #fca5a5;
+                    font: 700 11px 'Cairo', sans-serif; cursor: pointer;
+                }
+                .staff-chat-delete-button { margin-top: 7px; padding: 5px 9px; }
+                .staff-chat-delete-button:hover { background: rgba(239,68,68,0.24); }
+                .staff-chat-create-group-toggle {
+                    justify-self: start; padding: 8px 12px; border-color: rgba(95,153,123,0.4);
+                    background: rgba(49,139,101,0.16); color: #b7e2c6;
+                }
+                .staff-chat-delete-group-toggle {
+                    justify-self: start; padding: 8px 12px; border: 1px solid rgba(239,68,68,0.35);
+                    border-radius: 9px; background: rgba(239,68,68,0.12); color: #fca5a5;
+                    font: 700 12px 'Cairo', sans-serif; cursor: pointer;
+                }
+                .staff-chat-delete-group-toggle:hover { background: rgba(239,68,68,0.24); }
+                .staff-chat-members-form {
+                    display: grid; gap: 9px; padding: 12px; border: 1px solid var(--border);
+                    border-radius: 13px; background: rgba(255,255,255,0.03);
+                }
+                .staff-chat-members-form label { color: #a8d5b8; font-size: 12px; font-weight: 700; }
+                .staff-chat-members-form select { min-height: 100px; padding: 9px 12px; }
+                .staff-chat-members-actions { display: flex; gap: 8px; }
+                .staff-chat-members-actions button { margin: 0; }
+                .staff-chat-modes { display: flex; gap: 8px; margin-bottom: 14px; }
+                .staff-chat-mode {
+                    flex: 1; padding: 9px 12px; border: 1px solid var(--border); border-radius: 11px;
+                    background: rgba(255,255,255,0.04); color: #94a3b8; font: 700 13px 'Cairo', sans-serif; cursor: pointer;
+                }
+                .staff-chat-mode.active { border-color: rgba(95,153,123,0.55); background: rgba(49,139,101,0.18); color: #a8d5b8; }
+                .staff-chat-group-tools { display: grid; gap: 10px; margin-bottom: 14px; }
+                .staff-chat-create-group { display: grid; gap: 9px; padding: 12px; border: 1px solid var(--border); border-radius: 13px; background: rgba(255,255,255,0.03); }
+                .staff-chat-create-group label { display: block; margin-bottom: 5px; color: #a8d5b8; font-size: 12px; font-weight: 700; }
+                .staff-chat-create-group input, .staff-chat-create-group select { padding: 9px 12px; }
+                .staff-chat-create-group select[multiple] { min-height: 100px; }
+                .staff-chat-create-group .btn { margin: 0; background: linear-gradient(110deg, #176c50, #318b65); color: #fff; }
+                .staff-chat-complaint.taken { opacity: 0.72; }
+                .staff-chat-complaint.taken > p { text-decoration: line-through; text-decoration-color: #76c99a; }
+                .staff-chat-taken-badge { display: inline-flex; gap: 5px; align-items: center; margin-top: 6px; color: #76c99a; font-size: 11px; font-weight: 700; }
+                .staff-chat-take-button { display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; padding: 6px 10px; border: 1px solid rgba(95,153,123,0.4); border-radius: 9px; background: rgba(49,139,101,0.2); color: #b7e2c6; font: 700 12px 'Cairo', sans-serif; cursor: pointer; }
+                .staff-chat-take-button:disabled { opacity: 0.55; cursor: wait; }
+                .staff-chat-copy-phone {
+                    display: inline-flex; align-items: center; gap: 6px; margin: 6px 0 0 6px;
+                    padding: 5px 9px; border: 1px solid rgba(95,153,123,0.4); border-radius: 9px;
+                    background: rgba(49,139,101,0.16); color: #b7e2c6;
+                    font: 700 11px 'Cairo', sans-serif; cursor: pointer;
+                }
+                .staff-chat-copy-phone:hover { background: rgba(49,139,101,0.28); }
+                .staff-chat-message time { display: block; direction: ltr; text-align: left; color: #94a3b8; font-size: 10px; margin-top: 4px; }
+                .staff-chat-compose { display: flex; align-items: flex-end; gap: 10px; }
+                .staff-chat-compose textarea { min-height: 48px; max-height: 130px; resize: vertical; flex: 1; }
+                .staff-chat-compose .btn { min-height: 48px; margin: 0; background: linear-gradient(45deg, var(--primary), var(--secondary)); color: #fff; }
+                .staff-chat-attach {
+                    flex: 0 0 48px; width: 48px; min-height: 48px; padding: 0; margin: 0;
+                    background: rgba(99,102,241,0.18); border: 1px solid rgba(99,102,241,0.35); color: #c7d2fe;
+                }
+                .staff-chat-attachment-preview {
+                    display: flex; align-items: center; gap: 10px; padding: 8px; margin-bottom: 10px;
+                    border: 1px solid var(--border); border-radius: 12px; background: rgba(255,255,255,0.04);
+                }
+                .staff-chat-attachment-preview img { width: 56px; height: 56px; object-fit: cover; border-radius: 8px; }
+                .staff-chat-attachment-name { flex: 1; overflow: hidden; color: #cbd5e1; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+                .staff-chat-attachment-remove { width: 32px; height: 32px; border: 0; border-radius: 50%; background: rgba(239,68,68,0.14); color: #fca5a5; cursor: pointer; }
+                .staff-chat-upload-status { color: #94a3b8; font-size: 12px; margin: 0 0 8px; }
+                .login-brand-logo {
+                    width: 112px; height: 112px; display: block; object-fit: cover; border-radius: 50%;
+                    margin: 0 auto 14px; border: 2px solid rgba(16,185,129,0.55);
+                    box-shadow: 0 0 24px rgba(16,185,129,0.18);
+                }
+                #login-section .login-card {
+                    border-color: rgba(95,153,123,0.34) !important;
+                    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5), 0 0 34px rgba(30,100,73,0.08);
+                }
+                #login-section .login-card::after {
+                    background: linear-gradient(135deg, #5d9b7c, transparent);
+                }
+                #login-section .login-card h3 {
+                    background: linear-gradient(90deg, #c4c1b5, #72ad8d, #e1ded3);
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                    filter: drop-shadow(0 0 7px rgba(75,145,108,0.2));
+                }
+                #login-section .login-card .input-box label,
+                #login-section .login-card .field-wrap i {
+                    color: #79b18f;
+                }
+                #login-section .login-card input:focus,
+                #login-section .login-card select:focus {
+                    border-color: #579875;
+                    box-shadow: 0 0 18px rgba(62,137,98,0.18);
+                }
+                #login-section .login-card .btn-neon {
+                    background: linear-gradient(110deg, #176c50, #318b65 58%, #708b79);
+                    box-shadow: 0 10px 25px rgba(31,105,75,0.28);
+                }
+                #login-section .login-card .btn-neon:hover {
+                    box-shadow: 0 15px 32px rgba(45,130,88,0.34);
+                }
+                .staff-chat-unread-badge {
+                    display: inline-flex; align-items: center; justify-content: center; min-width: 19px; height: 19px;
+                    padding: 0 5px; border-radius: 99px; background: #ef4444; color: #fff; font: 700 11px 'Cairo', sans-serif;
+                }
+                .staff-chat-unread-badge.hidden { display: none; }
+                .staff-chat-floating-notice {
+                    position: fixed; right: 24px; bottom: 90px; z-index: 10001; display: flex; align-items: center; gap: 12px;
+                    width: min(360px, calc(100vw - 32px)); padding: 12px 42px 12px 14px; border: 1px solid rgba(99,102,241,0.5);
+                    border-radius: 20px; background: rgba(15,23,42,0.97); color: #f1f5f9; box-shadow: 0 15px 45px rgba(0,0,0,0.5), 0 0 24px rgba(99,102,241,0.22);
+                    cursor: pointer; animation: staffChatNoticeIn 0.3s ease-out;
+                }
+                .staff-chat-floating-notice.hidden { display: none; }
+                .staff-chat-unread-launcher {
+                    position: fixed; right: 20px; top: 45%; z-index: 10000; width: 58px; height: 58px;
+                    display: grid; place-items: center; border: 0; border-radius: 50%;
+                    background: linear-gradient(135deg, #176c50, #318b65); color: #fff;
+                    box-shadow: 0 8px 26px rgba(0,0,0,0.35); cursor: pointer; font-size: 23px;
+                }
+                .staff-chat-unread-launcher.hidden { display: none; }
+                .staff-chat-unread-launcher-count {
+                    position: absolute; top: -5px; right: -5px; min-width: 23px; height: 23px;
+                    display: grid; place-items: center; padding: 0 5px; border-radius: 99px;
+                    background: #ef4444; color: #fff; font: 700 11px 'Cairo', sans-serif;
+                }
+                @media (max-width: 700px) {
+                    .staff-chat-unread-launcher { right: 12px; width: 52px; height: 52px; font-size: 21px; }
+                }
+                .staff-chat-floating-avatar {
+                    flex: 0 0 52px; width: 52px; height: 52px; display: grid; place-items: center; position: relative;
+                    border-radius: 50%; background: linear-gradient(135deg, #6366f1, #a855f7); color: #fff; font-size: 22px;
+                }
+                .staff-chat-floating-count {
+                    position: absolute; top: -4px; left: -4px; min-width: 21px; height: 21px; padding: 0 5px;
+                    display: grid; place-items: center; border-radius: 99px; background: #ef4444; color: #fff; font: 700 11px 'Cairo', sans-serif;
+                }
+                .staff-chat-floating-copy { min-width: 0; flex: 1; }
+                .staff-chat-floating-copy strong { display: block; color: #a5b4fc; font-size: 13px; }
+                .staff-chat-floating-copy span { display: block; overflow: hidden; color: #cbd5e1; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+                .staff-chat-floating-close {
+                    position: absolute; top: 7px; left: 7px; width: 27px; height: 27px; border: 0; border-radius: 50%;
+                    background: rgba(255,255,255,0.1); color: #cbd5e1; cursor: pointer; font-size: 17px; line-height: 1;
+                }
+                .staff-chat-floating-close:hover { background: rgba(239,68,68,0.8); color: #fff; }
+                @keyframes staffChatNoticeIn { from { opacity: 0; transform: translateY(14px) scale(0.94); } to { opacity: 1; transform: translateY(0) scale(1); } }
+                @media (max-width: 700px) {
+                    .staff-chat-floating-notice { right: 12px; bottom: 76px; width: min(340px, calc(100vw - 24px)); }
+                }
+                @media (max-width: 700px) {
+                    .staff-chat-box { padding: 16px; }
+                    .staff-chat-messages { height: 55vh; min-height: 220px; }
+                    .staff-chat-message { max-width: 92%; }
+                    .staff-chat-compose { align-items: stretch; }
+                    .staff-chat-compose .btn { padding: 10px 14px; }
+                }
                 @media (max-width: 700px) {
                     .theme-mode-widget { bottom: 12px; left: 12px; }
                     .theme-mode-toggle { padding: 8px 11px; }
@@ -682,6 +864,113 @@
         </script>
         <div id="toast" class="toast"><i class="fas fa-check-circle"></i> <span id="toastMsg"></span></div>
 
+        <button type="button" id="staffChatUnreadLauncher" class="staff-chat-unread-launcher hidden"
+            aria-label="فتح الرسائل غير المقروءة" title="الرسائل غير المقروءة"
+            onclick="window._openStaffChatUnread()">
+            <i class="fas fa-comment-dots" aria-hidden="true"></i>
+            <span id="staffChatUnreadLauncherCount" class="staff-chat-unread-launcher-count">0</span>
+        </button>
+
+        <div id="staffChatFloatingNotice" class="staff-chat-floating-notice hidden" role="button" tabindex="0"
+            aria-label="رسالة جديدة، اضغط لفتح المحادثة" onclick="window._openStaffChatFromNotice()"
+            onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window._openStaffChatFromNotice();}">
+            <div class="staff-chat-floating-avatar">
+                <i class="fas fa-comment-dots" aria-hidden="true"></i>
+                <span id="staffChatFloatingCount" class="staff-chat-floating-count">1</span>
+            </div>
+            <div class="staff-chat-floating-copy">
+                <strong id="staffChatFloatingSender">رسالة جديدة</strong>
+                <span id="staffChatFloatingText">اضغط لفتح المحادثة</span>
+            </div>
+            <button type="button" class="staff-chat-floating-close" aria-label="إغلاق التنبيه"
+                onclick="event.stopPropagation();window._dismissStaffChatNotice()">×</button>
+        </div>
+
+        <div class="modal-overlay" id="staffChatModal" role="dialog" aria-modal="true" aria-labelledby="staffChatTitle">
+            <div class="modal-box staff-chat-box">
+                <div class="modal-header">
+                    <div>
+                        <h3 id="staffChatTitle"><i class="fas fa-comments"></i> محادثة المدير والموظف</h3>
+                        <p id="staffChatSubtitle" style="color:#94a3b8; font-size:12px; margin-top:5px;">رسائلك خاصة بينك وبين المدير</p>
+                    </div>
+                    <button type="button" class="modal-close" onclick="window._closeStaffChat()" aria-label="إغلاق المحادثة"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="staff-chat-modes" role="tablist" aria-label="نوع المحادثة">
+                    <button type="button" class="staff-chat-mode active" id="staffChatPrivateMode" role="tab" aria-selected="true" onclick="window._switchStaffChatMode('private')">
+                        <i class="fas fa-user"></i> محادثة خاصة
+                    </button>
+                    <button type="button" class="staff-chat-mode" id="staffChatGroupMode" role="tab" aria-selected="false" onclick="window._switchStaffChatMode('group')">
+                        <i class="fas fa-users"></i> جروبات الشكاوى
+                    </button>
+                </div>
+                <div class="staff-chat-recipient hidden" id="staffChatRecipientWrap">
+                    <label for="staffChatRecipient">اختر الموظف لعرض محادثته</label>
+                    <select id="staffChatRecipient" onchange="window._selectStaffChatEmployee(this.value)">
+                        <option value="">جاري تحميل الموظفين...</option>
+                    </select>
+                </div>
+                <div class="staff-chat-group-tools hidden" id="staffChatGroupTools">
+                    <div>
+                        <label for="staffChatGroupSelect" style="display:block; color:#a8d5b8; font-size:12px; font-weight:700; margin-bottom:5px;">اختر جروب الشكاوى</label>
+                        <select id="staffChatGroupSelect" onchange="window._selectStaffChatGroup(this.value)">
+                            <option value="">جاري تحميل الجروبات...</option>
+                        </select>
+                    </div>
+                    <button type="button" class="staff-chat-create-group-toggle hidden" id="staffChatCreateGroupToggle"
+                        onclick="window._toggleStaffChatCreateGroup()">
+                        <i class="fas fa-plus" aria-hidden="true"></i> إنشاء جروب جديد
+                    </button>
+                    <button type="button" class="staff-chat-create-group-toggle hidden" id="staffChatManageMembersToggle"
+                        onclick="window._toggleStaffChatGroupMembers()">
+                        <i class="fas fa-user-plus" aria-hidden="true"></i> إدارة أعضاء الجروب
+                    </button>
+                    <button type="button" class="staff-chat-delete-group-toggle hidden" id="staffChatDeleteGroupButton"
+                        onclick="window._deleteStaffChatGroup()">
+                        <i class="fas fa-trash" aria-hidden="true"></i> حذف الجروب ورسائله
+                    </button>
+                    <form class="staff-chat-members-form hidden" id="staffChatManageMembersForm"
+                        onsubmit="window._saveStaffChatGroupMembers(event)">
+                        <label for="staffChatManageMembersSelect">أعضاء الجروب</label>
+                        <select id="staffChatManageMembersSelect" multiple aria-describedby="staffChatManageMembersHelp"></select>
+                        <small id="staffChatManageMembersHelp" style="color:#94a3b8; font-size:11px;">
+                            حدّد الموظفين الموجودين لإبقائهم، وأزل التحديد لإخراجهم. اضغط Ctrl لاختيار أكثر من موظف.
+                        </small>
+                        <div class="staff-chat-members-actions">
+                            <button type="submit" class="btn"><i class="fas fa-save"></i> حفظ الأعضاء</button>
+                            <button type="button" class="btn" onclick="window._toggleStaffChatGroupMembers(false)">إلغاء</button>
+                        </div>
+                    </form>
+                    <form class="staff-chat-create-group hidden" id="staffChatCreateGroupForm" onsubmit="window._createStaffChatGroup(event)">
+                        <div>
+                            <label for="staffChatGroupName">اسم الجروب</label>
+                            <input id="staffChatGroupName" maxlength="60" placeholder="مثال: شكاوى فرع المعادي" required>
+                        </div>
+                        <div>
+                            <label for="staffChatGroupMembers">اختار الموظفين</label>
+                            <select id="staffChatGroupMembers" multiple required aria-describedby="staffChatGroupMembersHelp"></select>
+                            <small id="staffChatGroupMembersHelp" style="color:#94a3b8; font-size:11px;">اضغط Ctrl لاختيار أكثر من موظف.</small>
+                        </div>
+                        <button type="submit" class="btn"><i class="fas fa-plus"></i> إنشاء الجروب</button>
+                    </form>
+                </div>
+                <div class="staff-chat-messages" id="staffChatMessages" aria-live="polite">
+                    <div class="staff-chat-empty">اختر محادثة لعرض الرسائل.</div>
+                </div>
+                <div class="staff-chat-attachment-preview hidden" id="staffChatAttachmentPreview">
+                    <img id="staffChatAttachmentImage" alt="معاينة الصورة المرفقة">
+                    <span class="staff-chat-attachment-name" id="staffChatAttachmentName"></span>
+                    <button type="button" class="staff-chat-attachment-remove" onclick="window._clearStaffChatImage()" aria-label="إزالة الصورة"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="staff-chat-upload-status hidden" id="staffChatUploadStatus" role="status"></div>
+                <form class="staff-chat-compose" onsubmit="window._sendStaffChatMessage(event)">
+                    <input type="file" id="staffChatImageFile" accept="image/*" class="hidden" onchange="window._selectStaffChatImage(this.files[0])">
+                    <button type="button" class="btn staff-chat-attach" id="staffChatAttachButton" onclick="document.getElementById('staffChatImageFile').click()" aria-label="إرفاق صورة" title="اختيار صورة"><i class="fas fa-image"></i></button>
+                    <textarea id="staffChatInput" rows="1" maxlength="1000" placeholder="اكتب رسالة أو الصق صورة..." aria-label="اكتب رسالتك أو الصق صورة"></textarea>
+                    <button type="submit" class="btn" id="staffChatSendButton"><i class="fas fa-paper-plane"></i> إرسال</button>
+                </form>
+            </div>
+        </div>
+
         <!-- ========== مودال إضافة/تعديل موظف ========== -->
         <div class="modal-overlay" id="empModal">
             <div class="modal-box">
@@ -762,11 +1051,9 @@
         <div id="login-section" class="app-container hidden">
             <div class="card login-card" style="max-width: 400px; margin: 60px auto; backdrop-filter: blur(15px); border: 1px solid rgba(0, 242, 255, 0.2);">
                 <div style="text-align: center; margin-bottom: 30px;">
-                <div style="width: 80px; height: 80px; background: rgba(0, 242, 255, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; border: 1px solid var(--primary);">
-                        <i class="fas fa-user-lock" style="font-size: 35px; color: var(--primary);"></i>
-                    </div>
-                    <h3 style="margin-bottom: 5px; font-size: 1.8rem;">Complaints System</h3>
-                    <p style="color: #94a3b8; font-size: 14px;">Welcome to Najaf complaints system</p>
+                    <img class="login-brand-logo" src="./logo.png" alt="شعار Elshamaa">
+                    <h3 style="margin-bottom: 5px; font-size: 1.8rem;">نظام الشكاوى</h3>
+                    <p style="color: #94a3b8; font-size: 14px;">Elshamaa · إدارة ومتابعة الشكاوى</p>
                 </div>
 
                 <div class="input-box">
@@ -820,6 +1107,9 @@
             
             <!-- أضف هذا الزر في شريط الموظف وشريط المدير -->
         <div class="employee-shortcuts">
+        <button class="btn btn-sm employee-shortcut" id="empStaffChatButton" onclick="window._openStaffChat()" style="--shortcut-color:#6366f1;">
+            <i class="fas fa-comments"></i> محادثة المدير <span id="empStaffChatBadge" class="staff-chat-unread-badge hidden">0</span>
+        </button>
         <button class="btn btn-sm employee-shortcut" id="empQuickAlertsShortcut" onclick="window._showQuickAlertsPage()" style="--shortcut-color:#fbbf24; --shortcut-text-color:#000;">
             <i class="fas fa-bolt"></i> البلاغات السريعة
         </button>
@@ -1049,6 +1339,9 @@
             <!-- أضف هذا الزر في شريط الموظف وشريط المدير -->
         <button class="btn btn-sm" onclick="window._showQuickAlertsPage()" style="background: var(--warning); color: #000; font-weight: 900; margin-right: 10px;">
             <i class="fas fa-bolt"></i> البلاغات السريعة
+        </button>
+        <button class="btn btn-sm" id="mgrStaffChatButton" onclick="window._openStaffChat()" style="background: #6366f1; color: #fff; font-weight: 900; margin-right: 10px;">
+            <i class="fas fa-comments"></i> محادثات الموظفين <span id="mgrStaffChatBadge" class="staff-chat-unread-badge hidden">0</span>
         </button>
         <button class="btn btn-sm" onclick="window._showBlacklistPage()" style="background: var(--danger); color: #fff; font-weight: 900; margin-right: 10px;">
             <i class="fas fa-user-lock"></i> إدارة المحظورين
@@ -1646,11 +1939,15 @@
         </div>
         <script type="module">
             import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-            import { getAuth, onAuthStateChanged, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+            import {
+                getAuth, onAuthStateChanged, signInWithEmailAndPassword,
+                createUserWithEmailAndPassword, updateProfile, signOut
+            } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+            import { getDatabase, onValue, ref, runTransaction as runRealtimeTransaction } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
             import {
                 getFirestore, collection, addDoc, setDoc, doc, getDocs, getDoc,
                 query, where, orderBy, deleteDoc, onSnapshot, serverTimestamp,
-                writeBatch, Timestamp, updateDoc
+                writeBatch, Timestamp, updateDoc, arrayUnion, limit
             } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
             const firebaseConfig = {
@@ -1663,6 +1960,9 @@
                 appId: "1:787162837531:web:5226796083c1dd112ebebe",
                 measurementId: "G-86VF9YN5XY"
             };
+            const CLOUD_NAME = "dr2ekwtae";
+            const UPLOAD_PRESET = "my_preset";
+            const MAX_CHAT_IMAGE_SIZE = 10 * 1024 * 1024;
 
             function getDaysDifference(d1, d2) {
                 const date1 = new Date(d1);
@@ -1686,6 +1986,7 @@
             const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
             const db = getFirestore(app);
+            const realtimeDb = getDatabase(app);
             
             // أضف هذين السطرين لجعل المتغيرات متاحة لجميع أجزاء الكود
             window.db = db;
@@ -1697,6 +1998,28 @@
             let allEmployees = [];
             let unsubSnapshot = null;
             let unsubEmpSnapshot = null;
+            let unsubStaffChatSnapshot = null;
+            let unsubStaffChatNotifications = null;
+            let unsubStaffChatGroups = null;
+            let unsubStaffChatNotificationGroups = null;
+            let unsubStaffGroupMessages = null;
+            let unsubStaffGroupClaims = null;
+            let staffChatGroupNotificationUnsubs = {};
+            let activeStaffChatEmployeeId = '';
+            let activeStaffChatGroupId = '';
+            let activeStaffChatMode = 'private';
+            let staffChatMessages = [];
+            let staffChatGroupMessages = [];
+            let staffChatGroupClaims = {};
+            let staffClaimAuthEnabled = false;
+            let staffChatGroups = [];
+            let pendingStaffChatSeenUpdates = new Set();
+            let pendingStaffChatTakeIds = new Set();
+            let staffChatUnreadByEmployee = {};
+            let staffChatUnreadStorageKey = '';
+            let pendingStaffChatNotice = null;
+            let selectedStaffChatImage = null;
+            let staffChatImagePreviewUrl = '';
             let localCache = JSON.parse(localStorage.getItem('db_complaints_cache') || '[]');
             let localEmpCache = JSON.parse(localStorage.getItem('db_employees_cache') || '[]');
             let complaintAudioContext = null;
@@ -1771,12 +2094,1367 @@ function getCurrentTimeFormatted() {
 
             function showToast(msg, err) {
                 const t = document.getElementById('toast');
-                document.getElementById('toastMsg').textContent = msg;
+                const message = document.getElementById('toastMsg');
+                const indexUrlMatch = String(msg).match(/https:\/\/console\.firebase\.google\.com\/[^\s]+/);
+                message.replaceChildren();
+                if (indexUrlMatch) {
+                    const urlStart = indexUrlMatch.index;
+                    const url = indexUrlMatch[0].replace(/[),.;]+$/, '');
+                    const firebaseUrl = new URL(url);
+                    if (firebaseUrl.pathname.includes('/firestore/indexes')) {
+                        message.append(document.createTextNode(String(msg).slice(0, urlStart)));
+                        const link = document.createElement('a');
+                        link.href = firebaseUrl.href;
+                        link.target = '_blank';
+                        link.rel = 'noopener noreferrer';
+                        link.textContent = 'فتح صفحة إنشاء الفهرس';
+                        message.append(link);
+                        message.append(document.createTextNode(String(msg).slice(urlStart + url.length)));
+                    } else {
+                        message.textContent = msg;
+                    }
+                } else {
+                    message.textContent = msg;
+                }
                 t.className = 'toast' + (err ? ' error' : '');
                 t.querySelector('i').className = err ? 'fas fa-exclamation-circle' : 'fas fa-check-circle';
                 setTimeout(() => t.classList.add('show'), 10);
                 setTimeout(() => t.classList.remove('show'), 3500);
             }
+
+            function updateStaffChatUnreadBadges() {
+                const unreadCount = Object.values(staffChatUnreadByEmployee).reduce((total, count) => total + count, 0);
+                [['empStaffChatBadge', unreadCount], ['mgrStaffChatBadge', unreadCount]].forEach(([id, count]) => {
+                    const badge = document.getElementById(id);
+                    if (!badge) return;
+                    badge.textContent = count > 99 ? '99+' : String(count);
+                    badge.classList.toggle('hidden', count === 0);
+                });
+                const launcher = document.getElementById('staffChatUnreadLauncher');
+                const launcherCount = document.getElementById('staffChatUnreadLauncherCount');
+                if (launcher && launcherCount) {
+                    launcherCount.textContent = unreadCount > 99 ? '99+' : String(unreadCount);
+                    launcher.classList.toggle('hidden', unreadCount === 0);
+                }
+            }
+
+            function saveStaffChatUnreadState() {
+                if (!staffChatUnreadStorageKey) return;
+                try {
+                    localStorage.setItem(staffChatUnreadStorageKey, JSON.stringify(staffChatUnreadByEmployee));
+                } catch (error) {
+                    console.error('Unable to save unread chat counts:', error);
+                }
+            }
+
+            function renderStaffChatNotice() {
+                const notice = document.getElementById('staffChatFloatingNotice');
+                if (!pendingStaffChatNotice) {
+                    notice.classList.add('hidden');
+                    return;
+                }
+                document.getElementById('staffChatFloatingSender').textContent = pendingStaffChatNotice.senderName || 'رسالة جديدة';
+                document.getElementById('staffChatFloatingText').textContent = pendingStaffChatNotice.text || 'اضغط لفتح المحادثة';
+                document.getElementById('staffChatFloatingCount').textContent = pendingStaffChatNotice.count > 99
+                    ? '99+'
+                    : String(pendingStaffChatNotice.count || 1);
+                notice.classList.remove('hidden');
+            }
+
+            function createStaffChatDeleteButton(collectionName, message) {
+                const currentUserId = currentUserDocId || currentUserData?.id || '';
+                if (!currentUserId || message.senderId !== currentUserId) return null;
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'staff-chat-delete-button';
+                button.innerHTML = '<i class="fas fa-trash" aria-hidden="true"></i> حذف رسالتي';
+                button.addEventListener('click', () => deleteStaffChatMessage(collectionName, message.id, message.senderId));
+                return button;
+            }
+
+            async function deleteStaffChatMessage(collectionName, messageId, senderId) {
+                const currentUserId = currentUserDocId || currentUserData?.id || '';
+                if (!currentUserId || senderId !== currentUserId
+                    || !['employee', 'manager'].includes(currentUserData?.role)) {
+                    showToast('يمكنك حذف رسائلك أنت فقط.', true);
+                    return;
+                }
+                if (!confirm('هل تريد حذف رسالتك نهائياً؟')) return;
+                try {
+                    await deleteDoc(doc(db, collectionName, messageId));
+                    showToast('تم حذف الرسالة');
+                } catch (error) {
+                    console.error('Unable to delete own chat message:', error);
+                    showToast('تعذر حذف الرسالة. تحقق من صلاحيات قاعدة البيانات.', true);
+                }
+            }
+
+            function saveStaffChatNotice() {
+                if (!staffChatUnreadStorageKey) return;
+                try {
+                    const noticeKey = `${staffChatUnreadStorageKey}_notice`;
+                    if (pendingStaffChatNotice) {
+                        localStorage.setItem(noticeKey, JSON.stringify(pendingStaffChatNotice));
+                    } else {
+                        localStorage.removeItem(noticeKey);
+                    }
+                } catch (error) {
+                    console.error('Unable to save chat notification bubble:', error);
+                }
+            }
+
+            window._dismissStaffChatNotice = function() {
+                pendingStaffChatNotice = null;
+                renderStaffChatNotice();
+                saveStaffChatNotice();
+            };
+
+            function markStaffChatRead(employeeId) {
+                if (!employeeId) return;
+                delete staffChatUnreadByEmployee[employeeId];
+                saveStaffChatUnreadState();
+                updateStaffChatUnreadBadges();
+            }
+
+            function setStaffChatUnreadCount(key, count) {
+                if (!key) return;
+                if (count > 0) {
+                    staffChatUnreadByEmployee[key] = count;
+                } else {
+                    delete staffChatUnreadByEmployee[key];
+                }
+                saveStaffChatUnreadState();
+                updateStaffChatUnreadBadges();
+            }
+
+            function startStaffChatNotifications() {
+                if (unsubStaffChatNotifications) unsubStaffChatNotifications();
+                unsubStaffChatNotifications = null;
+                if (unsubStaffChatNotificationGroups) unsubStaffChatNotificationGroups();
+                unsubStaffChatNotificationGroups = null;
+                Object.values(staffChatGroupNotificationUnsubs).forEach(unsubscribe => unsubscribe());
+                staffChatGroupNotificationUnsubs = {};
+                if (!currentUserData || !['employee', 'manager'].includes(currentUserData.role)) return;
+
+                const userId = currentUserDocId || currentUserData.id;
+                if (!userId) {
+                    console.error('Cannot start chat notifications: user ID is missing.');
+                    return;
+                }
+                staffChatUnreadStorageKey = `staff_chat_unread_${userId}`;
+                try {
+                    staffChatUnreadByEmployee = JSON.parse(localStorage.getItem(staffChatUnreadStorageKey) || '{}');
+                } catch (error) {
+                    console.error('Unable to load unread chat counts:', error);
+                    staffChatUnreadByEmployee = {};
+                }
+                try {
+                    pendingStaffChatNotice = JSON.parse(localStorage.getItem(`${staffChatUnreadStorageKey}_notice`) || 'null');
+                } catch (error) {
+                    console.error('Unable to load chat notification bubble:', error);
+                    pendingStaffChatNotice = null;
+                }
+                updateStaffChatUnreadBadges();
+                renderStaffChatNotice();
+
+                const notificationsQuery = currentUserData.role === 'manager'
+                    ? query(
+                        collection(db, 'employeeManagerChats'),
+                        orderBy('createdAt', 'desc'),
+                        limit(100)
+                    )
+                    : query(collection(db, 'employeeManagerChats'), where('employeeId', '==', userId));
+                let isInitialSnapshot = true;
+                unsubStaffChatNotifications = onSnapshot(notificationsQuery, snapshot => {
+                    const unreadByEmployee = {};
+                    snapshot.docs.forEach(messageDoc => {
+                        const message = messageDoc.data();
+                        if (message.senderId === userId || message.seenAt || !message.employeeId) return;
+                        const conversationIsOpen = document.getElementById('staffChatModal').classList.contains('active')
+                            && activeStaffChatMode === 'private'
+                            && activeStaffChatEmployeeId === message.employeeId;
+                        if (!conversationIsOpen) {
+                            unreadByEmployee[message.employeeId] = (unreadByEmployee[message.employeeId] || 0) + 1;
+                        }
+                    });
+                    Object.keys(staffChatUnreadByEmployee).forEach(key => {
+                        if (!key.startsWith('group:') && !unreadByEmployee[key]) delete staffChatUnreadByEmployee[key];
+                    });
+                    Object.entries(unreadByEmployee).forEach(([key, count]) => {
+                        staffChatUnreadByEmployee[key] = count;
+                    });
+                    saveStaffChatUnreadState();
+                    updateStaffChatUnreadBadges();
+                    if (isInitialSnapshot) {
+                        isInitialSnapshot = false;
+                        return;
+                    }
+                    snapshot.docChanges().forEach(change => {
+                        if (change.type !== 'added') return;
+                        const message = change.doc.data();
+                        if (message.senderId === userId || !message.employeeId) return;
+
+                        const isConversationOpen = document.getElementById('staffChatModal').classList.contains('active')
+                            && activeStaffChatMode === 'private'
+                            && activeStaffChatEmployeeId === message.employeeId;
+                        if (isConversationOpen) return;
+
+                        const senderName = message.senderName || (currentUserData.role === 'manager' ? 'موظف' : 'المدير');
+                        pendingStaffChatNotice = {
+                            employeeId: message.employeeId,
+                            senderName,
+                            text: message.text || (message.imageUrl ? '📷 صورة' : 'أرسل رسالة جديدة'),
+                            count: (pendingStaffChatNotice?.count || 0) + 1
+                        };
+                        renderStaffChatNotice();
+                        saveStaffChatNotice();
+                        showToast(`رسالة جديدة من ${senderName}`);
+                        if (document.hidden && 'Notification' in window && Notification.permission === 'granted') {
+                            try {
+                                const notification = new Notification('رسالة جديدة', {
+                                    body: `${senderName}: ${message.text || (message.imageUrl ? '📷 صورة' : 'رسالة جديدة')}`
+                                });
+                                notification.onclick = () => {
+                                    window.focus();
+                                    window._openStaffChat(message.employeeId);
+                                    notification.close();
+                                };
+                            } catch (error) {
+                                console.error('Unable to show browser chat notification:', error);
+                            }
+                        }
+                    });
+                }, error => {
+                    console.error('Unable to listen for new chat messages:', error);
+                    showToast('تعذر تفعيل تنبيهات المحادثة', true);
+                });
+
+                const groupsQuery = currentUserData.role === 'manager'
+                    ? collection(db, 'staffChatGroups')
+                    : query(collection(db, 'staffChatGroups'), where('memberIds', 'array-contains', userId));
+                let hasShownGroupNotificationError = false;
+                unsubStaffChatNotificationGroups = onSnapshot(groupsQuery, snapshot => {
+                    const groupIds = new Set(snapshot.docs.map(groupDoc => groupDoc.id));
+                    Object.keys(staffChatGroupNotificationUnsubs).forEach(groupId => {
+                        if (groupIds.has(groupId)) return;
+                        staffChatGroupNotificationUnsubs[groupId]();
+                        delete staffChatGroupNotificationUnsubs[groupId];
+                        setStaffChatUnreadCount(`group:${groupId}`, 0);
+                    });
+                    snapshot.docs.forEach(groupDoc => {
+                        const groupId = groupDoc.id;
+                        if (staffChatGroupNotificationUnsubs[groupId]) return;
+                        const groupMessagesQuery = query(
+                            collection(db, 'staffChatGroupMessages'),
+                            where('groupId', '==', groupId),
+                            orderBy('createdAt', 'desc'),
+                            limit(1)
+                        );
+                        staffChatGroupNotificationUnsubs[groupId] = onSnapshot(groupMessagesQuery, messagesSnapshot => {
+                            const groupIsOpen = document.getElementById('staffChatModal').classList.contains('active')
+                                && activeStaffChatMode === 'group'
+                                && activeStaffChatGroupId === groupId;
+                            const latestMessage = messagesSnapshot.docs[0]?.data();
+                            const unreadCount = latestMessage
+                                && latestMessage.senderId !== userId
+                                && !latestMessage.seenByIds?.includes(userId)
+                                && !groupIsOpen
+                                ? 1
+                                : 0;
+                            setStaffChatUnreadCount(`group:${groupId}`, unreadCount);
+                        }, error => {
+                            console.error(`Unable to listen for unread messages in group ${groupId}:`, error);
+                            delete staffChatGroupNotificationUnsubs[groupId];
+                            if (hasShownGroupNotificationError) return;
+                            hasShownGroupNotificationError = true;
+                            const isQuotaError = error.code === 'resource-exhausted'
+                                || /quota exceeded|resource.?exhausted/i.test(error.message || '');
+                            const message = isQuotaError
+                                ? 'انتهت حصة Firestore. فعّل خطة Blaze أو انتظر تجدد الحصة.'
+                                : error.code === 'failed-precondition'
+                                    ? `فهرس Firestore مطلوب: ${error.message}`
+                                    : `تعذر تحديث إشعارات الجروب (${error.code || 'خطأ'}): ${error.message || 'تحقق من الاتصال والصلاحيات.'}`;
+                            showToast(message, true);
+                        });
+                    });
+                }, error => {
+                    console.error('Unable to load groups for unread-message notifications:', error);
+                    showToast('تعذر تحميل تنبيهات جروبات الشكاوى.', true);
+                });
+            }
+
+            function renderStaffChatMessages(emptyMessage) {
+                const list = document.getElementById('staffChatMessages');
+                const sendButton = document.getElementById('staffChatSendButton');
+                list.replaceChildren();
+                const isPrivateMode = activeStaffChatMode === 'private';
+                const canSend = isPrivateMode && currentUserData
+                    && (currentUserData.role === 'employee' || currentUserData.role === 'manager')
+                    && (currentUserData.role !== 'manager' || Boolean(activeStaffChatEmployeeId));
+                sendButton.disabled = !canSend;
+                document.getElementById('staffChatAttachButton').disabled = !canSend;
+
+                if (!activeStaffChatEmployeeId) {
+                    const empty = document.createElement('div');
+                    empty.className = 'staff-chat-empty';
+                    empty.textContent = emptyMessage || 'اختر موظفاً لعرض المحادثة.';
+                    list.appendChild(empty);
+                    return;
+                }
+
+                if (staffChatMessages.length === 0) {
+                    const empty = document.createElement('div');
+                    empty.className = 'staff-chat-empty';
+                    empty.textContent = emptyMessage || 'لا توجد رسائل بعد. ابدأ المحادثة برسالة جديدة.';
+                    list.appendChild(empty);
+                    return;
+                }
+
+                const currentSenderId = currentUserDocId || currentUserData?.id || '';
+                staffChatMessages.forEach(message => {
+                    const bubble = document.createElement('article');
+                    bubble.className = 'staff-chat-message' + (message.senderId === currentSenderId ? ' own' : '');
+                    const header = document.createElement('div');
+                    header.className = 'staff-chat-message-head';
+                    header.textContent = `${message.senderName || 'مستخدم'} · ${message.senderRole === 'manager' ? 'المدير' : 'موظف'}`;
+                    if (message.text) {
+                        const body = document.createElement('p');
+                        body.textContent = message.text;
+                        bubble.appendChild(body);
+                    }
+                    if (message.imageUrl) {
+                        try {
+                            const imageUrl = new URL(message.imageUrl);
+                            if (imageUrl.protocol === 'https:' && imageUrl.hostname === 'res.cloudinary.com') {
+                                const imageLink = document.createElement('a');
+                                imageLink.className = 'staff-chat-image-link';
+                                imageLink.href = imageUrl.href;
+                                imageLink.target = '_blank';
+                                imageLink.rel = 'noopener noreferrer';
+                                const image = document.createElement('img');
+                                image.className = 'staff-chat-image';
+                                image.src = imageUrl.href;
+                                image.alt = 'صورة مرسلة في المحادثة';
+                                image.loading = 'lazy';
+                                imageLink.appendChild(image);
+                                bubble.appendChild(imageLink);
+                                const cloudinaryUploadPath = `/${CLOUD_NAME}/image/upload/`;
+                                if (imageUrl.pathname.startsWith(cloudinaryUploadPath)) {
+                                    const downloadUrl = new URL(imageUrl.href);
+                                    downloadUrl.pathname = downloadUrl.pathname.replace(
+                                        '/image/upload/',
+                                        '/image/upload/fl_attachment/'
+                                    );
+                                    const actions = document.createElement('div');
+                                    actions.className = 'staff-chat-image-actions';
+                                    const downloadLink = document.createElement('a');
+                                    downloadLink.className = 'staff-chat-image-download';
+                                    downloadLink.href = downloadUrl.href;
+                                    downloadLink.download = '';
+                                    downloadLink.setAttribute('aria-label', 'تحميل الصورة');
+                                    downloadLink.innerHTML = '<i class="fas fa-download" aria-hidden="true"></i> تحميل الصورة';
+                                    downloadLink.addEventListener('click', () => {
+                                        const requesterId = currentUserDocId || currentUserData?.id || '';
+                                        updateDoc(doc(db, 'employeeManagerChats', message.id), {
+                                            downloadRequestedAt: serverTimestamp(),
+                                            downloadRequestedById: requesterId,
+                                            downloadRequestedByName: currentUserData?.fullName || currentUserData?.username || 'مستخدم'
+                                        }).catch(error => {
+                                            console.error('Unable to record chat image download request:', error);
+                                            showToast('بدأ تنزيل الصورة، لكن تعذر تسجيل طلب التحميل.', true);
+                                        });
+                                    });
+                                    actions.appendChild(downloadLink);
+                                    bubble.appendChild(actions);
+                                } else {
+                                    console.error('Skipped chat image download with an unexpected Cloudinary path:', message.imageUrl);
+                                }
+                            } else {
+                                console.error('Skipped chat image with an untrusted URL:', message.imageUrl);
+                            }
+                        } catch (error) {
+                            console.error('Skipped chat image with an invalid URL:', error);
+                        }
+                    }
+                    const time = document.createElement('time');
+                    const date = message.createdAt?.toDate ? message.createdAt.toDate() : null;
+                    time.textContent = date
+                        ? date.toLocaleString('ar-EG', { dateStyle: 'short', timeStyle: 'short' })
+                        : 'الآن';
+                    bubble.prepend(header);
+                    bubble.appendChild(time);
+                    const receipts = document.createElement('div');
+                    receipts.className = 'staff-chat-receipts';
+                    if (message.senderId === currentSenderId) {
+                        const seenStatus = document.createElement('span');
+                        seenStatus.className = message.seenAt ? 'seen' : '';
+                        seenStatus.textContent = message.seenAt ? 'تمت المشاهدة' : 'تم الإرسال';
+                        receipts.appendChild(seenStatus);
+                    }
+                    if (message.imageUrl && message.downloadRequestedById) {
+                        const downloadStatus = document.createElement('span');
+                        downloadStatus.className = 'downloaded';
+                        downloadStatus.textContent = `تم طلب تحميل الصورة بواسطة ${message.downloadRequestedByName || 'مستخدم'}`;
+                        receipts.appendChild(downloadStatus);
+                    }
+                    if (receipts.childElementCount) bubble.appendChild(receipts);
+                    const deleteButton = createStaffChatDeleteButton('employeeManagerChats', message);
+                    if (deleteButton) bubble.appendChild(deleteButton);
+                    list.appendChild(bubble);
+                });
+                list.scrollTop = list.scrollHeight;
+            }
+
+            function renderStaffChatGroupMessages(emptyMessage) {
+                const list = document.getElementById('staffChatMessages');
+                const sendButton = document.getElementById('staffChatSendButton');
+                const canSend = activeStaffChatMode === 'group'
+                    && Boolean(activeStaffChatGroupId)
+                    && currentUserData
+                    && ['employee', 'manager'].includes(currentUserData.role);
+                sendButton.disabled = !canSend;
+                document.getElementById('staffChatAttachButton').disabled = !canSend;
+                list.replaceChildren();
+
+                if (!activeStaffChatGroupId) {
+                    const empty = document.createElement('div');
+                    empty.className = 'staff-chat-empty';
+                    empty.textContent = emptyMessage || 'اختار جروب لعرض الشكاوى.';
+                    list.appendChild(empty);
+                    return;
+                }
+                if (!staffChatGroupMessages.length) {
+                    const empty = document.createElement('div');
+                    empty.className = 'staff-chat-empty';
+                    empty.textContent = emptyMessage || 'لا توجد شكاوى في الجروب. اكتب شكوى جديدة لإرسالها للأعضاء.';
+                    list.appendChild(empty);
+                    return;
+                }
+
+                const currentUserId = currentUserDocId || currentUserData?.id || '';
+                staffChatGroupMessages.forEach(message => {
+                    const bubble = document.createElement('article');
+                    const isTaken = message.complaintStatus === 'taken';
+                    bubble.className = 'staff-chat-message staff-chat-complaint'
+                        + (message.senderId === currentUserId ? ' own' : '')
+                        + (isTaken ? ' taken' : '');
+                    const header = document.createElement('div');
+                    header.className = 'staff-chat-message-head';
+                    header.textContent = `${message.senderName || 'مستخدم'} · ${message.senderId === currentUserId ? 'أرسل الشكوى' : 'شكوى جديدة'}`;
+                    bubble.appendChild(header);
+
+                    if (message.text) {
+                        const body = document.createElement('p');
+                        body.textContent = message.text;
+                        bubble.appendChild(body);
+                        const phoneNumbers = extractStaffChatPhoneNumbers(message.text);
+                        phoneNumbers.forEach(phoneNumber => {
+                            const copyButton = document.createElement('button');
+                            copyButton.type = 'button';
+                            copyButton.className = 'staff-chat-copy-phone';
+                            copyButton.innerHTML = '<i class="fas fa-copy" aria-hidden="true"></i>';
+                            copyButton.append(document.createTextNode(`نسخ الرقم ${phoneNumber}`));
+                            copyButton.addEventListener('click', () => copyStaffChatPhoneNumber(phoneNumber));
+                            bubble.appendChild(copyButton);
+                        });
+                    }
+                    if (message.imageUrl) {
+                        try {
+                            const imageUrl = new URL(message.imageUrl);
+                            const imagePath = `/${CLOUD_NAME}/image/upload/`;
+                            if (imageUrl.protocol !== 'https:' || imageUrl.hostname !== 'res.cloudinary.com'
+                                || !imageUrl.pathname.startsWith(imagePath)) {
+                                throw new Error('Untrusted group image URL.');
+                            }
+                            const imageLink = document.createElement('a');
+                            imageLink.className = 'staff-chat-image-link';
+                            imageLink.href = imageUrl.href;
+                            imageLink.target = '_blank';
+                            imageLink.rel = 'noopener noreferrer';
+                            const image = document.createElement('img');
+                            image.className = 'staff-chat-image';
+                            image.src = imageUrl.href;
+                            image.alt = 'صورة مرفقة بالشكوى';
+                            image.loading = 'lazy';
+                            imageLink.appendChild(image);
+                            bubble.appendChild(imageLink);
+
+                            const downloadUrl = new URL(imageUrl.href);
+                            downloadUrl.pathname = downloadUrl.pathname.replace(
+                                '/image/upload/',
+                                '/image/upload/fl_attachment/'
+                            );
+                            const actions = document.createElement('div');
+                            actions.className = 'staff-chat-image-actions';
+                            const downloadLink = document.createElement('a');
+                            downloadLink.className = 'staff-chat-image-download';
+                            downloadLink.href = downloadUrl.href;
+                            downloadLink.download = '';
+                            downloadLink.textContent = 'تحميل الصورة';
+                            downloadLink.addEventListener('click', () => {
+                                updateDoc(doc(db, 'staffChatGroupMessages', message.id), {
+                                    downloadRequestedById: currentUserId,
+                                    downloadRequestedByName: currentUserData.fullName || currentUserData.username || 'مستخدم',
+                                    downloadRequestedAt: serverTimestamp()
+                                }).catch(error => {
+                                    console.error('Unable to record group complaint image download:', error);
+                                    showToast('بدأ تنزيل الصورة، لكن تعذر تسجيل طلب التحميل.', true);
+                                });
+                            });
+                            actions.appendChild(downloadLink);
+                            bubble.appendChild(actions);
+                        } catch (error) {
+                            console.error('Skipped invalid group complaint image:', error);
+                        }
+                    }
+
+                    const time = document.createElement('time');
+                    const date = message.createdAt?.toDate ? message.createdAt.toDate() : null;
+                    time.textContent = date
+                        ? date.toLocaleString('ar-EG', { dateStyle: 'short', timeStyle: 'short' })
+                        : 'الآن';
+                    bubble.appendChild(time);
+
+                    if (isTaken) {
+                        const takenBadge = document.createElement('div');
+                        takenBadge.className = 'staff-chat-taken-badge';
+                        takenBadge.innerHTML = '<i class="fas fa-circle-check" aria-hidden="true"></i>';
+                        takenBadge.append(document.createTextNode(` استلمها ${message.takenByName || 'موظف'}`));
+                        bubble.appendChild(takenBadge);
+                    } else if (currentUserData?.role === 'employee') {
+                        const takeButton = document.createElement('button');
+                        takeButton.type = 'button';
+                        takeButton.className = 'staff-chat-take-button';
+                        const isTaking = pendingStaffChatTakeIds.has(message.id);
+                        takeButton.disabled = isTaking || !staffClaimAuthEnabled || !auth.currentUser;
+                        takeButton.innerHTML = isTaking
+                            ? '<i class="fas fa-spinner fa-spin" aria-hidden="true"></i> جاري الاستلام...'
+                            : staffClaimAuthEnabled && auth.currentUser
+                                ? '<i class="fas fa-hand" aria-hidden="true"></i> استلمت الشكوى'
+                                : '<i class="fas fa-lock" aria-hidden="true"></i> إعداد الاستلام مطلوب';
+                        if (staffClaimAuthEnabled && auth.currentUser) {
+                            takeButton.addEventListener('click', () => window._takeStaffChatComplaint(message.id));
+                        } else {
+                            takeButton.title = 'فعّل تسجيل الموظفين في Firebase Authentication لتفعيل الاستلام المشترك.';
+                        }
+                        bubble.appendChild(takeButton);
+                    }
+                    const receipts = document.createElement('div');
+                    receipts.className = 'staff-chat-receipts';
+                    if (message.senderId === currentUserId) {
+                        const seenByCount = Array.isArray(message.seenByIds)
+                            ? message.seenByIds.filter(userId => userId !== message.senderId).length
+                            : 0;
+                        const seenStatus = document.createElement('span');
+                        seenStatus.className = seenByCount ? 'seen' : '';
+                        seenStatus.textContent = seenByCount
+                            ? `شاهدها ${seenByCount} من الأعضاء`
+                            : 'تم الإرسال';
+                        receipts.appendChild(seenStatus);
+                    }
+                    if (message.imageUrl && message.downloadRequestedById) {
+                        const downloadStatus = document.createElement('span');
+                        downloadStatus.className = 'downloaded';
+                        downloadStatus.textContent = `تم طلب تحميل الصورة بواسطة ${message.downloadRequestedByName || 'عضو'}`;
+                        receipts.appendChild(downloadStatus);
+                    }
+                    if (receipts.childElementCount) bubble.appendChild(receipts);
+                    const deleteButton = createStaffChatDeleteButton('staffChatGroupMessages', message);
+                    if (deleteButton) bubble.appendChild(deleteButton);
+                    list.appendChild(bubble);
+                });
+                list.scrollTop = list.scrollHeight;
+            }
+
+            function extractStaffChatPhoneNumbers(text) {
+                const normalizedText = String(text || '').replace(/[٠-٩۰-۹]/g, digit =>
+                    String.fromCharCode(digit.charCodeAt(0) >= 0x06f0 ? digit.charCodeAt(0) - 0x06f0 + 48 : digit.charCodeAt(0) - 0x0660 + 48)
+                );
+                const matches = normalizedText.match(/(?:\+|00)?\d[\d\s().-]*\d/g) || [];
+                return [...new Set(matches.map(match => match.replace(/[^\d+]/g, ''))
+                    .filter(number => {
+                        const digits = number.replace(/\D/g, '');
+                        return digits.length >= 3 && digits.length <= 15;
+                    }))];
+            }
+
+            async function copyStaffChatPhoneNumber(phoneNumber) {
+                try {
+                    if (navigator.clipboard?.writeText) {
+                        await navigator.clipboard.writeText(phoneNumber);
+                    } else {
+                        const input = document.createElement('textarea');
+                        input.value = phoneNumber;
+                        input.setAttribute('readonly', '');
+                        input.style.position = 'fixed';
+                        input.style.opacity = '0';
+                        document.body.appendChild(input);
+                        input.select();
+                        const copied = document.execCommand('copy');
+                        input.remove();
+                        if (!copied) throw new Error('Clipboard copy command was rejected.');
+                    }
+                    showToast(`تم نسخ الرقم ${phoneNumber}`);
+                } catch (error) {
+                    console.error('Unable to copy complaint phone number:', error);
+                    showToast('تعذر نسخ الرقم. تحقق من صلاحية الحافظة في التطبيق.', true);
+                }
+            }
+
+            async function markStaffGroupMessagesSeen(groupId) {
+                if (!groupId
+                    || activeStaffChatGroupId !== groupId
+                    || activeStaffChatMode !== 'group'
+                    || !document.getElementById('staffChatModal').classList.contains('active')) return;
+                const userId = currentUserDocId || currentUserData?.id || '';
+                if (!userId) return;
+                const unseenMessages = staffChatGroupMessages.filter(message =>
+                    message.senderId !== userId
+                    && !message.seenByIds?.includes(userId)
+                    && !pendingStaffChatSeenUpdates.has(message.id)
+                );
+                await Promise.all(unseenMessages.map(async message => {
+                    pendingStaffChatSeenUpdates.add(message.id);
+                    try {
+                        await updateDoc(doc(db, 'staffChatGroupMessages', message.id), {
+                            seenByIds: arrayUnion(userId),
+                            seenByNames: arrayUnion(currentUserData.fullName || currentUserData.username || 'عضو')
+                        });
+                    } catch (error) {
+                        console.error('Unable to record group complaint as seen:', error);
+                        showToast('تعذر تسجيل مشاهدة شكوى الجروب. تحقق من صلاحيات قاعدة البيانات.', true);
+                    } finally {
+                        pendingStaffChatSeenUpdates.delete(message.id);
+                    }
+                }));
+            }
+
+            function stopStaffChatGroupMessageListener() {
+                if (unsubStaffGroupMessages) unsubStaffGroupMessages();
+                unsubStaffGroupMessages = null;
+                if (unsubStaffGroupClaims) unsubStaffGroupClaims();
+                unsubStaffGroupClaims = null;
+                staffChatGroupClaims = {};
+            }
+
+            function getRealtimeKey(value) {
+                return encodeURIComponent(String(value)).replace(/\./g, '%2E');
+            }
+
+            function applyStaffChatGroupClaims(message) {
+                const claim = staffChatGroupClaims[getRealtimeKey(message.id)];
+                return claim
+                    ? {
+                        ...message,
+                        complaintStatus: 'taken',
+                        takenByUid: claim.takenByUid,
+                        takenByName: claim.takenByName
+                    }
+                    : message;
+            }
+
+            function selectStaffChatGroup(groupId) {
+                const group = staffChatGroups.find(item => item.id === groupId);
+                document.getElementById('staffChatCreateGroupForm').classList.add('hidden');
+                document.getElementById('staffChatCreateGroupToggle').innerHTML =
+                    '<i class="fas fa-plus" aria-hidden="true"></i> إنشاء جروب جديد';
+                document.getElementById('staffChatManageMembersForm').classList.add('hidden');
+                document.getElementById('staffChatManageMembersToggle').classList.toggle(
+                    'hidden',
+                    !group || currentUserData?.role !== 'manager'
+                );
+                document.getElementById('staffChatDeleteGroupButton').classList.toggle(
+                    'hidden',
+                    !group || currentUserData?.role !== 'manager'
+                );
+                document.getElementById('staffChatManageMembersToggle').innerHTML =
+                    '<i class="fas fa-user-plus" aria-hidden="true"></i> إدارة أعضاء الجروب';
+                activeStaffChatGroupId = group ? group.id : '';
+                staffChatGroupMessages = [];
+                stopStaffChatGroupMessageListener();
+                document.getElementById('staffChatGroupSelect').value = activeStaffChatGroupId;
+                document.getElementById('staffChatSubtitle').textContent = group
+                    ? `شكاوى جروب ${group.name}`
+                    : 'اختار جروب الشكاوى أو أنشئ جروباً جديداً.';
+                document.getElementById('staffChatInput').placeholder = 'اكتب الشكوى أو الصق صورة...';
+                renderStaffChatGroupMessages(activeStaffChatGroupId ? 'جاري تحميل شكاوى الجروب...' : undefined);
+                if (!activeStaffChatGroupId) return;
+
+                if (staffClaimAuthEnabled && auth.currentUser) {
+                    const listeningGroupId = activeStaffChatGroupId;
+                    unsubStaffGroupClaims = onValue(
+                        ref(realtimeDb, `staffChatGroupClaims/${getRealtimeKey(listeningGroupId)}`),
+                        snapshot => {
+                            staffChatGroupClaims = snapshot.val() || {};
+                            if (activeStaffChatGroupId !== listeningGroupId || activeStaffChatMode !== 'group') return;
+                            staffChatGroupMessages = staffChatGroupMessages.map(applyStaffChatGroupClaims);
+                            renderStaffChatGroupMessages();
+                        },
+                        error => {
+                            console.error('Unable to listen for group complaint claims:', error);
+                            showToast('تعذر تحديث حالة الاستلام. تحقق من صلاحيات Realtime Database.', true);
+                        }
+                    );
+                }
+
+                const groupMessagesQuery = query(
+                    collection(db, 'staffChatGroupMessages'),
+                    where('groupId', '==', activeStaffChatGroupId)
+                );
+                const listeningGroupId = activeStaffChatGroupId;
+                unsubStaffGroupMessages = onSnapshot(groupMessagesQuery, snapshot => {
+                    staffChatGroupMessages = snapshot.docs.map(messageDoc =>
+                        applyStaffChatGroupClaims({ id: messageDoc.id, ...messageDoc.data() })
+                    );
+                    staffChatGroupMessages.sort((first, second) =>
+                        (first.createdAt?.toMillis?.() || 0) - (second.createdAt?.toMillis?.() || 0)
+                    );
+                    if (activeStaffChatMode === 'group' && activeStaffChatGroupId === listeningGroupId) {
+                        renderStaffChatGroupMessages();
+                        markStaffGroupMessagesSeen(listeningGroupId);
+                    }
+                }, error => {
+                    console.error('Unable to load complaint group messages:', error);
+                    renderStaffChatGroupMessages('تعذر تحميل الجروب. تحقق من الاتصال وصلاحيات قاعدة البيانات.');
+                    showToast('تعذر تحميل شكاوى الجروب', true);
+                });
+            }
+
+            function syncStaffChatGroups() {
+                const select = document.getElementById('staffChatGroupSelect');
+                select.replaceChildren();
+                const memberSelect = document.getElementById('staffChatGroupMembers');
+                const manageMembersSelect = document.getElementById('staffChatManageMembersSelect');
+                if (currentUserData?.role === 'manager') {
+                    const selectedMemberIds = new Set(Array.from(memberSelect.selectedOptions, option => option.value));
+                    memberSelect.replaceChildren();
+                    allEmployees
+                        .filter(employee => employee.role === 'employee' && employee.active !== false)
+                        .sort((first, second) => (first.fullName || '').localeCompare(second.fullName || '', 'ar'))
+                        .forEach(employee => {
+                            const option = document.createElement('option');
+                            option.value = employee.id;
+                            option.textContent = employee.fullName || employee.username || 'موظف';
+                            option.selected = selectedMemberIds.has(employee.id);
+                            memberSelect.appendChild(option);
+                        });
+
+                    const activeGroup = staffChatGroups.find(group => group.id === activeStaffChatGroupId);
+                    const selectedManageIds = manageMembersSelect.form
+                        && !manageMembersSelect.form.classList.contains('hidden')
+                        ? new Set(Array.from(manageMembersSelect.selectedOptions, option => option.value))
+                        : new Set(activeGroup?.memberIds || []);
+                    manageMembersSelect.replaceChildren();
+                    allEmployees
+                        .filter(employee => employee.role === 'employee'
+                            && (employee.active !== false || activeGroup?.memberIds?.includes(employee.id)))
+                        .sort((first, second) => (first.fullName || '').localeCompare(second.fullName || '', 'ar'))
+                        .forEach(employee => {
+                            const option = document.createElement('option');
+                            option.value = employee.id;
+                            option.textContent = employee.fullName || employee.username || 'موظف';
+                            option.selected = selectedManageIds.has(employee.id);
+                            manageMembersSelect.appendChild(option);
+                        });
+                }
+                const placeholder = document.createElement('option');
+                placeholder.value = '';
+                placeholder.textContent = staffChatGroups.length ? 'اختار الجروب' : 'لا توجد جروبات بعد';
+                select.appendChild(placeholder);
+                staffChatGroups.forEach(group => {
+                    const option = document.createElement('option');
+                    option.value = group.id;
+                    option.textContent = group.name || 'جروب شكاوى';
+                    select.appendChild(option);
+                });
+                const nextGroupId = staffChatGroups.some(group => group.id === activeStaffChatGroupId)
+                    ? activeStaffChatGroupId
+                    : (staffChatGroups[0]?.id || '');
+                select.value = nextGroupId;
+                if (nextGroupId !== activeStaffChatGroupId
+                    || (nextGroupId && !unsubStaffGroupMessages)) {
+                    selectStaffChatGroup(nextGroupId);
+                } else if (!nextGroupId) {
+                    renderStaffChatGroupMessages('لا توجد جروبات متاحة لك حالياً.');
+                }
+            }
+
+            function startStaffChatGroupListener() {
+                if (unsubStaffChatGroups) return;
+                if (!currentUserData || !['employee', 'manager'].includes(currentUserData.role)) return;
+                const userId = currentUserDocId || currentUserData.id;
+                const groupsQuery = currentUserData.role === 'manager'
+                    ? collection(db, 'staffChatGroups')
+                    : query(collection(db, 'staffChatGroups'), where('memberIds', 'array-contains', userId));
+                unsubStaffChatGroups = onSnapshot(groupsQuery, snapshot => {
+                    staffChatGroups = snapshot.docs.map(groupDoc => ({ id: groupDoc.id, ...groupDoc.data() }));
+                    staffChatGroups.sort((first, second) =>
+                        (first.name || '').localeCompare(second.name || '', 'ar')
+                    );
+                    if (activeStaffChatMode === 'group') syncStaffChatGroups();
+                }, error => {
+                    console.error('Unable to load complaint groups:', error);
+                    showToast('تعذر تحميل الجروبات. تحقق من صلاحيات قاعدة البيانات.', true);
+                });
+            }
+
+            window._switchStaffChatMode = function(mode) {
+                if (!['private', 'group'].includes(mode)
+                    || !currentUserData
+                    || !['employee', 'manager'].includes(currentUserData.role)) return;
+                activeStaffChatMode = mode;
+                const isGroupMode = mode === 'group';
+                document.getElementById('staffChatPrivateMode').classList.toggle('active', !isGroupMode);
+                document.getElementById('staffChatPrivateMode').setAttribute('aria-selected', String(!isGroupMode));
+                document.getElementById('staffChatGroupMode').classList.toggle('active', isGroupMode);
+                document.getElementById('staffChatGroupMode').setAttribute('aria-selected', String(isGroupMode));
+                document.getElementById('staffChatRecipientWrap').classList.toggle('hidden', !isPrivateManagerChat());
+                document.getElementById('staffChatGroupTools').classList.toggle('hidden', !isGroupMode);
+                document.getElementById('staffChatCreateGroupToggle').classList.toggle(
+                    'hidden',
+                    !isGroupMode || currentUserData.role !== 'manager'
+                );
+                document.getElementById('staffChatCreateGroupForm').classList.add('hidden');
+                document.getElementById('staffChatCreateGroupToggle').innerHTML =
+                    '<i class="fas fa-plus" aria-hidden="true"></i> إنشاء جروب جديد';
+                document.getElementById('staffChatInput').placeholder = isGroupMode
+                    ? 'اكتب الشكوى أو الصق صورة...'
+                    : 'اكتب رسالة أو الصق صورة...';
+                document.getElementById('staffChatManageMembersToggle').classList.add('hidden');
+                document.getElementById('staffChatManageMembersForm').classList.add('hidden');
+                document.getElementById('staffChatDeleteGroupButton').classList.add('hidden');
+                if (isGroupMode) {
+                    if (unsubStaffChatSnapshot) unsubStaffChatSnapshot();
+                    unsubStaffChatSnapshot = null;
+                    startStaffChatGroupListener();
+                    syncStaffChatGroups();
+                    renderStaffChatGroupMessages();
+                } else {
+                    stopStaffChatGroupMessageListener();
+                    if (currentUserData.role === 'manager') {
+                        syncStaffChatEmployees();
+                    } else {
+                        selectStaffChatEmployee(currentUserDocId || currentUserData.id || '');
+                    }
+                }
+            };
+
+            function isPrivateManagerChat() {
+                return activeStaffChatMode === 'private' && currentUserData?.role === 'manager';
+            }
+
+            window._selectStaffChatGroup = function(groupId) {
+                if (activeStaffChatMode !== 'group') return;
+                document.getElementById('staffChatCreateGroupForm').classList.add('hidden');
+                document.getElementById('staffChatCreateGroupToggle').innerHTML =
+                    '<i class="fas fa-plus" aria-hidden="true"></i> إنشاء جروب جديد';
+                selectStaffChatGroup(groupId);
+            };
+
+            window._toggleStaffChatCreateGroup = function() {
+                if (activeStaffChatMode !== 'group' || currentUserData?.role !== 'manager') return;
+                const form = document.getElementById('staffChatCreateGroupForm');
+                const isOpening = form.classList.contains('hidden');
+                if (isOpening) {
+                    document.getElementById('staffChatManageMembersForm').classList.add('hidden');
+                    document.getElementById('staffChatManageMembersToggle').innerHTML =
+                        '<i class="fas fa-user-plus" aria-hidden="true"></i> إدارة أعضاء الجروب';
+                }
+                form.classList.toggle('hidden', !isOpening);
+                document.getElementById('staffChatCreateGroupToggle').innerHTML = isOpening
+                    ? '<i class="fas fa-times" aria-hidden="true"></i> إلغاء إنشاء الجروب'
+                    : '<i class="fas fa-plus" aria-hidden="true"></i> إنشاء جروب جديد';
+                if (isOpening) document.getElementById('staffChatGroupName').focus();
+            };
+
+            window._toggleStaffChatGroupMembers = function(forceOpen) {
+                if (activeStaffChatMode !== 'group' || currentUserData?.role !== 'manager'
+                    || !activeStaffChatGroupId) return;
+                const form = document.getElementById('staffChatManageMembersForm');
+                const isOpening = typeof forceOpen === 'boolean'
+                    ? forceOpen
+                    : form.classList.contains('hidden');
+                if (isOpening) {
+                    document.getElementById('staffChatCreateGroupForm').classList.add('hidden');
+                    document.getElementById('staffChatCreateGroupToggle').innerHTML =
+                        '<i class="fas fa-plus" aria-hidden="true"></i> إنشاء جروب جديد';
+                    syncStaffChatGroups();
+                }
+                form.classList.toggle('hidden', !isOpening);
+                document.getElementById('staffChatManageMembersToggle').innerHTML = isOpening
+                    ? '<i class="fas fa-times" aria-hidden="true"></i> إغلاق إدارة الأعضاء'
+                    : '<i class="fas fa-user-plus" aria-hidden="true"></i> إدارة أعضاء الجروب';
+                if (isOpening) document.getElementById('staffChatManageMembersSelect').focus();
+            };
+
+            window._saveStaffChatGroupMembers = async function(event) {
+                event.preventDefault();
+                if (currentUserData?.role !== 'manager' || !activeStaffChatGroupId) return;
+                const group = staffChatGroups.find(item => item.id === activeStaffChatGroupId);
+                if (!group) {
+                    showToast('الجروب المحدد غير موجود.', true);
+                    return;
+                }
+                const managerId = currentUserDocId || currentUserData.id;
+                const selectedEmployeeIds = Array.from(
+                    document.getElementById('staffChatManageMembersSelect').selectedOptions,
+                    option => option.value
+                ).filter(employeeId => allEmployees.some(employee =>
+                    employee.id === employeeId && employee.role === 'employee'
+                ));
+                const managerMemberIds = (Array.isArray(group.memberIds) ? group.memberIds : [])
+                    .filter(memberId => memberId === managerId
+                        || allEmployees.some(employee => employee.id === memberId && employee.role === 'manager'));
+                const memberIds = [...new Set([managerId, ...managerMemberIds, ...selectedEmployeeIds])];
+                const saveButton = document.querySelector('#staffChatManageMembersForm button[type="submit"]');
+                saveButton.disabled = true;
+                try {
+                    await updateDoc(doc(db, 'staffChatGroups', group.id), { memberIds });
+                    staffChatGroups = staffChatGroups.map(item =>
+                        item.id === group.id ? { ...item, memberIds } : item
+                    );
+                    syncStaffChatGroups();
+                    window._toggleStaffChatGroupMembers(false);
+                    showToast('تم تحديث أعضاء الجروب');
+                } catch (error) {
+                    console.error('Unable to update complaint group members:', error);
+                    showToast('تعذر تحديث أعضاء الجروب. تحقق من صلاحيات قاعدة البيانات.', true);
+                } finally {
+                    saveButton.disabled = false;
+                }
+            };
+
+            window._deleteStaffChatGroup = async function() {
+                if (currentUserData?.role !== 'manager' || !activeStaffChatGroupId
+                    || activeStaffChatMode !== 'group') return;
+                const group = staffChatGroups.find(item => item.id === activeStaffChatGroupId);
+                if (!group) {
+                    showToast('الجروب المحدد غير موجود.', true);
+                    return;
+                }
+                if (!confirm(`سيتم حذف جروب "${group.name || 'جروب الشكاوى'}" وكل رسائله وشكاواه نهائياً. هل تريد المتابعة؟`)) {
+                    return;
+                }
+
+                const deleteButton = document.getElementById('staffChatDeleteGroupButton');
+                deleteButton.disabled = true;
+                try {
+                    const messagesQuery = query(
+                        collection(db, 'staffChatGroupMessages'),
+                        where('groupId', '==', group.id)
+                    );
+                    const messagesSnapshot = await getDocs(messagesQuery);
+                    const messageDocs = messagesSnapshot.docs;
+                    for (let index = 0; index < messageDocs.length; index += 450) {
+                        const batch = writeBatch(db);
+                        messageDocs.slice(index, index + 450).forEach(messageDoc => batch.delete(messageDoc.ref));
+                        await batch.commit();
+                    }
+
+                    await deleteDoc(doc(db, 'staffChatGroups', group.id));
+                    stopStaffChatGroupMessageListener();
+                    if (staffChatGroupNotificationUnsubs[group.id]) {
+                        staffChatGroupNotificationUnsubs[group.id]();
+                        delete staffChatGroupNotificationUnsubs[group.id];
+                    }
+                    delete staffChatUnreadByEmployee[`group:${group.id}`];
+                    saveStaffChatUnreadState();
+                    updateStaffChatUnreadBadges();
+                    staffChatGroups = staffChatGroups.filter(item => item.id !== group.id);
+                    activeStaffChatGroupId = '';
+                    staffChatGroupMessages = [];
+                    document.getElementById('staffChatManageMembersForm').classList.add('hidden');
+                    document.getElementById('staffChatCreateGroupForm').classList.add('hidden');
+                    selectStaffChatGroup('');
+                    syncStaffChatGroups();
+                    showToast('تم حذف الجروب وجميع رسائله وشكاواه');
+                } catch (error) {
+                    console.error('Unable to delete complaint group and its messages:', error);
+                    showToast('تعذر حذف الجروب بالكامل. تحقق من صلاحيات قاعدة البيانات وحاول مرة أخرى.', true);
+                } finally {
+                    deleteButton.disabled = false;
+                }
+            };
+
+            window._createStaffChatGroup = async function(event) {
+                event.preventDefault();
+                if (currentUserData?.role !== 'manager') return;
+                const nameInput = document.getElementById('staffChatGroupName');
+                const membersSelect = document.getElementById('staffChatGroupMembers');
+                const name = nameInput.value.trim();
+                const selectedIds = Array.from(membersSelect.selectedOptions, option => option.value)
+                    .filter(employeeId => allEmployees.some(employee =>
+                        employee.id === employeeId && employee.role === 'employee' && employee.active !== false
+                    ));
+                const managerId = currentUserDocId || currentUserData.id;
+                if (!name) {
+                    showToast('اكتب اسم الجروب', true);
+                    return;
+                }
+                if (!selectedIds.length) {
+                    showToast('اختار موظفاً واحداً على الأقل للجروب', true);
+                    return;
+                }
+                const memberIds = [...new Set([managerId, ...selectedIds])];
+                const createButton = membersSelect.form.querySelector('button[type="submit"]');
+                createButton.disabled = true;
+                try {
+                    const groupRef = await addDoc(collection(db, 'staffChatGroups'), {
+                        name: name.slice(0, 60),
+                        memberIds,
+                        createdById: managerId,
+                        createdByName: currentUserData.fullName || currentUserData.username || 'المدير',
+                        createdAt: serverTimestamp()
+                    });
+                    nameInput.value = '';
+                    Array.from(membersSelect.options).forEach(option => { option.selected = false; });
+                    staffChatGroups = [
+                        ...staffChatGroups.filter(group => group.id !== groupRef.id),
+                        {
+                            id: groupRef.id,
+                            name: name.slice(0, 60),
+                            memberIds,
+                            createdById: managerId
+                        }
+                    ];
+                    syncStaffChatGroups();
+                    activeStaffChatGroupId = groupRef.id;
+                    startStaffChatGroupListener();
+                    selectStaffChatGroup(groupRef.id);
+                    document.getElementById('staffChatCreateGroupForm').classList.add('hidden');
+                    document.getElementById('staffChatCreateGroupToggle').innerHTML =
+                        '<i class="fas fa-plus" aria-hidden="true"></i> إنشاء جروب جديد';
+                    showToast('تم إنشاء جروب الشكاوى وإضافة الموظفين');
+                } catch (error) {
+                    console.error('Unable to create complaint group:', error);
+                    showToast('تعذر إنشاء الجروب: ' + error.message, true);
+                } finally {
+                    createButton.disabled = false;
+                }
+            };
+
+            window._takeStaffChatComplaint = async function(messageId) {
+                if (currentUserData?.role !== 'employee' || !activeStaffChatGroupId) {
+                    showToast('استلام الشكوى متاح للموظفين داخل الجروب', true);
+                    return;
+                }
+                if (pendingStaffChatTakeIds.has(messageId)) return;
+                pendingStaffChatTakeIds.add(messageId);
+                renderStaffChatGroupMessages();
+                const groupId = activeStaffChatGroupId;
+                try {
+                    if (!staffClaimAuthEnabled || !auth.currentUser) {
+                        throw new Error('فعّل Email/Password في Firebase Authentication ثم سجّل الدخول من جديد.');
+                    }
+                    const claimReference = ref(
+                        realtimeDb,
+                        `staffChatGroupClaims/${getRealtimeKey(groupId)}/${getRealtimeKey(messageId)}`
+                    );
+                    const claimResult = await runRealtimeTransaction(claimReference, currentClaim => {
+                        if (currentClaim !== null) return;
+                        return {
+                            takenByUid: auth.currentUser.uid,
+                            takenByName: auth.currentUser.displayName
+                                || currentUserData.fullName
+                                || currentUserData.username
+                                || 'موظف',
+                            takenAt: Date.now()
+                        };
+                    });
+                    const claim = claimResult.snapshot.val();
+                    const takenByName = claim.takenByName || 'موظف';
+                    staffChatGroupMessages = staffChatGroupMessages.map(message =>
+                        message.id === messageId
+                            ? { ...message, complaintStatus: 'taken', takenByUid: claim.takenByUid, takenByName }
+                            : message
+                    );
+                    if (claimResult.committed) {
+                        showToast('تم استلام الشكوى، وستظهر مشطوبة للجميع في الجروب');
+                    } else {
+                        showToast(`استلم الشكوى بالفعل ${takenByName}، ولا يمكن لموظف آخر استلامها.`, true);
+                    }
+                } catch (error) {
+                    console.error('Unable to take complaint from group:', error);
+                    showToast('تعذر استلام الشكوى: ' + error.message, true);
+                } finally {
+                    pendingStaffChatTakeIds.delete(messageId);
+                    if (activeStaffChatMode === 'group' && activeStaffChatGroupId === groupId) {
+                        renderStaffChatGroupMessages();
+                    }
+                }
+            };
+
+            async function markStaffChatMessagesSeen(employeeId) {
+                if (!employeeId
+                    || activeStaffChatEmployeeId !== employeeId
+                    || !document.getElementById('staffChatModal').classList.contains('active')) return;
+                const readerId = currentUserDocId || currentUserData?.id || '';
+                if (!readerId) return;
+                const unreadMessages = staffChatMessages.filter(message =>
+                    message.senderId !== readerId
+                    && !message.seenAt
+                    && !pendingStaffChatSeenUpdates.has(message.id)
+                );
+                await Promise.all(unreadMessages.map(async message => {
+                    pendingStaffChatSeenUpdates.add(message.id);
+                    try {
+                        await updateDoc(doc(db, 'employeeManagerChats', message.id), {
+                            seenAt: serverTimestamp(),
+                            seenById: readerId,
+                            seenByName: currentUserData.fullName || currentUserData.username || 'مستخدم'
+                        });
+                    } catch (error) {
+                        console.error('Unable to mark chat message as seen:', error);
+                        showToast('تعذر تسجيل مشاهدة الرسالة. تحقق من صلاحيات قاعدة البيانات.', true);
+                    } finally {
+                        pendingStaffChatSeenUpdates.delete(message.id);
+                    }
+                }));
+            }
+
+            window._selectStaffChatImage = function(file) {
+                if (!file) return;
+                if (!file.type.startsWith('image/')) {
+                    showToast('اختر ملف صورة صالحاً', true);
+                    document.getElementById('staffChatImageFile').value = '';
+                    return;
+                }
+                if (file.size > MAX_CHAT_IMAGE_SIZE) {
+                    showToast('حجم الصورة يجب ألا يتجاوز 10 ميجابايت', true);
+                    document.getElementById('staffChatImageFile').value = '';
+                    return;
+                }
+                if (staffChatImagePreviewUrl) URL.revokeObjectURL(staffChatImagePreviewUrl);
+                selectedStaffChatImage = file;
+                staffChatImagePreviewUrl = URL.createObjectURL(file);
+                document.getElementById('staffChatAttachmentImage').src = staffChatImagePreviewUrl;
+                document.getElementById('staffChatAttachmentName').textContent = file.name || 'صورة من الحافظة';
+                document.getElementById('staffChatAttachmentPreview').classList.remove('hidden');
+            };
+
+            window._clearStaffChatImage = function() {
+                if (staffChatImagePreviewUrl) URL.revokeObjectURL(staffChatImagePreviewUrl);
+                staffChatImagePreviewUrl = '';
+                selectedStaffChatImage = null;
+                document.getElementById('staffChatImageFile').value = '';
+                document.getElementById('staffChatAttachmentImage').removeAttribute('src');
+                document.getElementById('staffChatAttachmentPreview').classList.add('hidden');
+            };
+
+            async function uploadStaffChatImage(file) {
+                if (!CLOUD_NAME || !UPLOAD_PRESET) {
+                    throw new Error('اضبط اسم Upload Preset غير الموقّع (Unsigned) في إعدادات Cloudinary أولاً.');
+                }
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('upload_preset', UPLOAD_PRESET);
+                const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+                let result;
+                try {
+                    result = await response.json();
+                } catch (error) {
+                    throw new Error('تعذر قراءة استجابة Cloudinary.');
+                }
+                if (!response.ok || !result.secure_url) {
+                    throw new Error(result.error?.message || 'فشل رفع الصورة إلى Cloudinary.');
+                }
+                return result.secure_url;
+            }
+
+            function selectStaffChatEmployee(employeeId) {
+                activeStaffChatMode = 'private';
+                activeStaffChatEmployeeId = employeeId || '';
+                staffChatMessages = [];
+                if (unsubStaffChatSnapshot) unsubStaffChatSnapshot();
+                unsubStaffChatSnapshot = null;
+                markStaffChatRead(activeStaffChatEmployeeId);
+                const employee = allEmployees.find(item => item.id === activeStaffChatEmployeeId);
+                const subtitle = document.getElementById('staffChatSubtitle');
+                if (currentUserData?.role === 'manager' && employee) {
+                    subtitle.textContent = `محادثة خاصة مع ${employee.fullName || employee.username || 'الموظف'}`;
+                } else if (currentUserData?.role === 'employee') {
+                    subtitle.textContent = 'رسائلك خاصة بينك وبين المدير';
+                } else {
+                    subtitle.textContent = 'اختر موظفاً لعرض المحادثة.';
+                }
+                renderStaffChatMessages(activeStaffChatEmployeeId ? 'جاري تحميل الرسائل...' : 'لا يوجد موظفون متاحون للمحادثة.');
+                if (!activeStaffChatEmployeeId) return;
+
+                const messagesQuery = query(
+                    collection(db, 'employeeManagerChats'),
+                    where('employeeId', '==', activeStaffChatEmployeeId)
+                );
+                const listeningEmployeeId = activeStaffChatEmployeeId;
+                unsubStaffChatSnapshot = onSnapshot(messagesQuery, snapshot => {
+                    if (activeStaffChatMode !== 'private' || activeStaffChatEmployeeId !== listeningEmployeeId) return;
+                    staffChatMessages = snapshot.docs.map(messageDoc => ({ id: messageDoc.id, ...messageDoc.data() }));
+                    staffChatMessages.sort((first, second) => {
+                        const firstTime = first.createdAt?.toMillis?.() || 0;
+                        const secondTime = second.createdAt?.toMillis?.() || 0;
+                        return firstTime - secondTime;
+                    });
+                    renderStaffChatMessages();
+                    markStaffChatMessagesSeen(activeStaffChatEmployeeId);
+                }, error => {
+                    if (activeStaffChatMode !== 'private' || activeStaffChatEmployeeId !== listeningEmployeeId) return;
+                    console.error('Unable to load employee-manager chat:', error);
+                    renderStaffChatMessages('تعذر تحميل الرسائل. تحقق من الاتصال وصلاحيات قاعدة البيانات.');
+                    showToast('تعذر تحميل المحادثة', true);
+                });
+            }
+
+            function syncStaffChatEmployees() {
+                const select = document.getElementById('staffChatRecipient');
+                const employees = allEmployees
+                    .filter(employee => employee.role === 'employee')
+                    .sort((first, second) => (first.fullName || '').localeCompare(second.fullName || '', 'ar'));
+                select.replaceChildren();
+                const placeholder = document.createElement('option');
+                placeholder.value = '';
+                placeholder.textContent = employees.length ? 'اختر الموظف' : 'لا يوجد موظفون';
+                select.appendChild(placeholder);
+                employees.forEach(employee => {
+                    const option = document.createElement('option');
+                    option.value = employee.id;
+                    option.textContent = employee.fullName || employee.username || 'موظف';
+                    select.appendChild(option);
+                });
+                const nextEmployeeId = employees.some(employee => employee.id === activeStaffChatEmployeeId)
+                    ? activeStaffChatEmployeeId
+                    : (employees[0]?.id || '');
+                select.value = nextEmployeeId;
+                if (nextEmployeeId !== activeStaffChatEmployeeId || (nextEmployeeId && !unsubStaffChatSnapshot)) {
+                    selectStaffChatEmployee(nextEmployeeId);
+                } else if (!nextEmployeeId) {
+                    renderStaffChatMessages('لا يوجد موظفون متاحون للمحادثة.');
+                }
+            }
+
+            window._openStaffChat = function(employeeId) {
+                if (!currentUserData || !['employee', 'manager'].includes(currentUserData.role)) {
+                    showToast('المحادثة متاحة للموظفين والمدير فقط', true);
+                    return;
+                }
+                if ('Notification' in window && Notification.permission === 'default') {
+                    Notification.requestPermission().catch(error => {
+                        console.error('Unable to request browser notification permission:', error);
+                    });
+                }
+                const modal = document.getElementById('staffChatModal');
+                modal.classList.add('active');
+                if (employeeId) activeStaffChatMode = 'private';
+                window._switchStaffChatMode(activeStaffChatMode);
+                if (employeeId && currentUserData.role === 'manager'
+                    && allEmployees.some(employee => employee.id === employeeId && employee.role === 'employee')) {
+                    document.getElementById('staffChatRecipient').value = employeeId;
+                    selectStaffChatEmployee(employeeId);
+                }
+            };
+
+            window._openStaffChatUnread = function() {
+                if (!currentUserData || !['employee', 'manager'].includes(currentUserData.role)) return;
+                const unreadPrivateEmployee = Object.keys(staffChatUnreadByEmployee)
+                    .find(key => !key.startsWith('group:') && staffChatUnreadByEmployee[key] > 0);
+                const unreadGroupId = Object.keys(staffChatUnreadByEmployee)
+                    .find(key => key.startsWith('group:') && staffChatUnreadByEmployee[key] > 0);
+                if (unreadPrivateEmployee) {
+                    activeStaffChatMode = 'private';
+                    window._openStaffChat(unreadPrivateEmployee);
+                    return;
+                }
+                if (unreadGroupId) {
+                    activeStaffChatGroupId = unreadGroupId.slice('group:'.length);
+                    activeStaffChatMode = 'group';
+                    window._openStaffChat();
+                    return;
+                }
+                window._openStaffChat();
+            };
+
+            window._openStaffChatFromNotice = function() {
+                if (!pendingStaffChatNotice) return;
+                window._openStaffChat(pendingStaffChatNotice.employeeId);
+            };
+
+            window._selectStaffChatEmployee = function(employeeId) {
+                if (currentUserData?.role !== 'manager') return;
+                selectStaffChatEmployee(employeeId);
+            };
+
+            window._closeStaffChat = function() {
+                document.getElementById('staffChatModal').classList.remove('active');
+                if (pendingStaffChatNotice?.employeeId === activeStaffChatEmployeeId) {
+                    window._dismissStaffChatNotice();
+                }
+                if (unsubStaffChatSnapshot) unsubStaffChatSnapshot();
+                unsubStaffChatSnapshot = null;
+                stopStaffChatGroupMessageListener();
+                if (unsubStaffChatGroups) unsubStaffChatGroups();
+                unsubStaffChatGroups = null;
+            };
+
+            window._sendStaffChatMessage = async function(event) {
+                event.preventDefault();
+                if (!currentUserData || !['employee', 'manager'].includes(currentUserData.role)) return;
+                const input = document.getElementById('staffChatInput');
+                const sendButton = document.getElementById('staffChatSendButton');
+                const attachButton = document.getElementById('staffChatAttachButton');
+                const uploadStatus = document.getElementById('staffChatUploadStatus');
+                const chatMode = activeStaffChatMode;
+                const employeeId = activeStaffChatEmployeeId;
+                const groupId = activeStaffChatGroupId;
+                const text = input.value.trim();
+                const imageFile = selectedStaffChatImage;
+                if ((chatMode === 'private' && !employeeId) || (chatMode === 'group' && !groupId)) return;
+                if (!text && !imageFile) return;
+
+                sendButton.disabled = true;
+                attachButton.disabled = true;
+                try {
+                    let imageUrl = '';
+                    if (imageFile) {
+                        uploadStatus.textContent = 'جاري رفع الصورة...';
+                        uploadStatus.classList.remove('hidden');
+                        imageUrl = await uploadStaffChatImage(imageFile);
+                    }
+                    const messageData = {
+                        senderId: currentUserDocId || currentUserData.id || '',
+                        senderName: currentUserData.fullName || currentUserData.username || 'مستخدم',
+                        senderRole: currentUserData.role,
+                        text,
+                        ...(imageUrl ? { imageUrl, messageType: 'image' } : {}),
+                        createdAt: serverTimestamp()
+                    };
+                    if (chatMode === 'group') {
+                        await addDoc(collection(db, 'staffChatGroupMessages'), {
+                            ...messageData,
+                            groupId,
+                            messageType: 'complaint',
+                            complaintStatus: 'open',
+                            seenByIds: [messageData.senderId],
+                            seenByNames: [messageData.senderName]
+                        });
+                    } else {
+                        await addDoc(collection(db, 'employeeManagerChats'), {
+                            ...messageData,
+                            employeeId
+                        });
+                    }
+                    input.value = '';
+                    if (imageFile) window._clearStaffChatImage();
+                } catch (error) {
+                    console.error('Unable to send employee-manager chat message:', error);
+                    showToast('تعذر إرسال الرسالة: ' + error.message, true);
+                } finally {
+                    sendButton.disabled = false;
+                    attachButton.disabled = false;
+                    uploadStatus.classList.add('hidden');
+                    uploadStatus.textContent = '';
+                }
+            };
 
             function isViewerUser() {
                 return currentUserData && currentUserData.role === 'viewer';
@@ -1872,11 +3550,13 @@ function getCurrentTimeFormatted() {
             const mgrIcon = document.getElementById('mgrIcon');
             const mgrTitle = document.getElementById('mgrTitleSpan');
             const complaintSoundToggle = document.getElementById('mgrComplaintSoundToggle');
+            const staffChatButton = document.getElementById('mgrStaffChatButton');
             // السطر الجديد للتحكم في زر التقارير
             const reportTab = document.getElementById('mgrReportTab'); 
 
             if (isViewerUser()) {
                 if (complaintSoundToggle) complaintSoundToggle.style.display = 'none';
+                if (staffChatButton) staffChatButton.style.display = 'none';
                 if (empTab) empTab.style.display = 'none';
                 if (exportDrop) exportDrop.style.display = 'none';
                 if (deleteTh) deleteTh.style.display = 'none';
@@ -1888,6 +3568,7 @@ function getCurrentTimeFormatted() {
                 if (mgrTitle) mgrTitle.innerHTML = '<strong>' + (currentUserData.fullName || 'مشاهد') + '</strong> <span class="viewer-badge-session">(مدير🤵‍♂️)</span>';
             } else {
                 if (complaintSoundToggle) complaintSoundToggle.style.display = '';
+                if (staffChatButton) staffChatButton.style.display = '';
                 if (empTab) empTab.style.display = '';
                 if (exportDrop) exportDrop.style.display = '';
                 if (deleteTh) deleteTh.style.display = '';
@@ -1899,6 +3580,36 @@ function getCurrentTimeFormatted() {
                 if (mgrTitle) mgrTitle.textContent = 'المدير العام';
             }
             updateManagerComplaintSoundButton();
+        }
+        function getEmployeeAuthEmail(employeeId) {
+            const safeId = String(employeeId).replace(/[^a-zA-Z0-9-]/g, '-');
+            return `staff-${safeId}@nagaf-complaints.firebaseapp.com`;
+        }
+
+   async function signInEmployeeForSharedClaims(employeeId, password, displayName) {
+            const email = getEmployeeAuthEmail(employeeId);
+            // استخدام كلمة مرور داخلية ثابتة ونظامية للموظف (أكثر من 6 خانات دائماً)
+            // لمنع تعارضها مع أي تغيير في كلمة مرور الموظف مستقبلاً
+            const internalAuthPassword = `Staff_${employeeId.replace(/[^a-zA-Z0-9]/g, '')}_Sec2026!`;
+
+            try {
+                try {
+                    await createUserWithEmailAndPassword(auth, email, internalAuthPassword);
+                } catch (error) {
+                    if (error.code !== 'auth/email-already-in-use') throw error;
+                    await signInWithEmailAndPassword(auth, email, internalAuthPassword);
+                }
+                await updateProfile(auth.currentUser, { displayName });
+                await auth.currentUser.getIdToken(true);
+                staffClaimAuthEnabled = true;
+                return true;
+            } catch (error) {
+                console.error('Unable to initialize shared complaint claims authentication:', error);
+                staffClaimAuthEnabled = false;
+                if (auth.currentUser) await signOut(auth);
+                showToast(`تنبيه: خاصية الاستلام المشترك غير مفعّلة (${error.code || error.message})`, true);
+                return false;
+            }
         }
         async function handleLogin() {
             const selectedValue = document.getElementById('usernameSelect').value;
@@ -1916,6 +3627,8 @@ function getCurrentTimeFormatted() {
                 if (selectedValue === 'admin') {
                     const defMgr = DEFAULT_MANAGERS.find(m => m.username === 'admin' && m.password === password);
                     if (defMgr) {
+                        if (auth.currentUser) await signOut(auth);
+                        staffClaimAuthEnabled = false;
                         currentUserData = { ...defMgr, branch: 'كل الفروع', active: true, id: 'default_admin' };
                         currentUserDocId = 'default_admin';
                         const savedThemeColor = localStorage.getItem('complaints_theme_default_admin');
@@ -1939,6 +3652,7 @@ function getCurrentTimeFormatted() {
                         applyEmployeeThemeSettings(currentUserData.themeSettings);
                         applyViewerRestrictions();
                         loadManagerData();
+                        startStaffChatNotifications();
                         startSessionTimer();
                         return;
                     } else {
@@ -1975,6 +3689,12 @@ function getCurrentTimeFormatted() {
                     return;
                 }
 
+                await signInEmployeeForSharedClaims(
+                    empDoc.id,
+                    password,
+                    empData.fullName || empData.username || 'موظف'
+                );
+
                 // 5. نجاح الدخول - إعداد الجلسة
                 currentUserDocId = empDoc.id;
                 currentUserData = { id: empDoc.id, ...empData };
@@ -2002,6 +3722,7 @@ function getCurrentTimeFormatted() {
                     applyEmployeeThemeSettings(empData.themeSettings);
                     refreshEmployeeView();
                 }
+                startStaffChatNotifications();
                 startSessionTimer();
 
             } catch (e) {
@@ -2012,7 +3733,7 @@ function getCurrentTimeFormatted() {
         }
             window.handleLogin = handleLogin;
 
-            function handleLogout() {
+            async function handleLogout() {
                 if (themeSaveTimeout) clearTimeout(themeSaveTimeout);
                 themeSaveTimeout = null;
                 if (themeSettingsSaveTimeout) clearTimeout(themeSettingsSaveTimeout);
@@ -2021,6 +3742,31 @@ function getCurrentTimeFormatted() {
                 sessionInterval = null;
                 if (unsubSnapshot) unsubSnapshot();
                 if (unsubEmpSnapshot) unsubEmpSnapshot();
+                if (unsubStaffChatSnapshot) unsubStaffChatSnapshot();
+                if (unsubStaffChatNotifications) unsubStaffChatNotifications();
+                if (unsubStaffChatGroups) unsubStaffChatGroups();
+                if (unsubStaffChatNotificationGroups) unsubStaffChatNotificationGroups();
+                Object.values(staffChatGroupNotificationUnsubs).forEach(unsubscribe => unsubscribe());
+                stopStaffChatGroupMessageListener();
+                if (auth.currentUser) await signOut(auth);
+                staffClaimAuthEnabled = false;
+                unsubStaffChatSnapshot = null;
+                unsubStaffChatNotifications = null;
+                unsubStaffChatGroups = null;
+                unsubStaffChatNotificationGroups = null;
+                staffChatGroupNotificationUnsubs = {};
+                activeStaffChatEmployeeId = '';
+                activeStaffChatGroupId = '';
+                activeStaffChatMode = 'private';
+                staffChatMessages = [];
+                staffChatGroupMessages = [];
+                staffChatGroups = [];
+                staffChatUnreadByEmployee = {};
+                staffChatUnreadStorageKey = '';
+                updateStaffChatUnreadBadges();
+                pendingStaffChatNotice = null;
+                renderStaffChatNotice();
+                document.getElementById('staffChatModal').classList.remove('active');
                 unsubSnapshot = null;
                 unsubEmpSnapshot = null;
                 currentUser = null;
@@ -3281,6 +5027,11 @@ const cQuery = query(collection(db, 'complaints'), orderBy('createdAt', 'desc'))
                     allEmployees = snap.docs.map(d => ({ id: d.id, ...d.data() }));
                     localEmpCache = allEmployees;
                     localStorage.setItem('db_employees_cache', JSON.stringify(localEmpCache));
+                    if (currentUserData?.role === 'manager'
+                        && document.getElementById('staffChatModal').classList.contains('active')) {
+                        if (activeStaffChatMode === 'group') syncStaffChatGroups();
+                        else syncStaffChatEmployees();
+                    }
                     if (currentUserData?.role === 'manager' || currentUserData?.role === 'viewer') {
                         loadManagerData();
                         renderEmployeesTable();
@@ -3300,8 +5051,9 @@ const cQuery = query(collection(db, 'complaints'), orderBy('createdAt', 'desc'))
         // دالة التحقق من حالة تسجيل الدخول وتعيين الإعدادات الافتراضية
         // دالة التحقق من حالة تسجيل الدخول وتعيين الإعدادات الافتراضية
     onAuthStateChanged(auth, async (user) => {
-        const session = sessionStorage.getItem('active_session');
-        const today = getCurrentDate(); 
+            staffClaimAuthEnabled = Boolean(user);
+            const session = sessionStorage.getItem('active_session');
+            const today = getCurrentDate(); 
         const month = getCurrentMonth(); 
 
         // تعيين التواريخ الافتراضية
@@ -3361,6 +5113,7 @@ const cQuery = query(collection(db, 'complaints'), orderBy('createdAt', 'desc'))
                 applyEmployeeThemeSettings(sData.themeSettings);
             }   
             startSessionTimer();
+            startStaffChatNotifications();
         } else {
             document.getElementById('login-section').classList.remove('hidden');
         }
@@ -3374,6 +5127,18 @@ const cQuery = query(collection(db, 'complaints'), orderBy('createdAt', 'desc'))
             });
             document.getElementById('username')?.addEventListener('keydown', function(e) {
                 if (e.key === 'Enter') document.getElementById('password').focus();
+            });
+            document.getElementById('staffChatInput')?.addEventListener('paste', function(event) {
+                const clipboardItems = Array.from(event.clipboardData?.items || []);
+                const imageItem = clipboardItems.find(item => item.type.startsWith('image/'));
+                if (!imageItem) return;
+                const imageFile = imageItem.getAsFile();
+                if (!imageFile) {
+                    showToast('تعذر قراءة الصورة من الحافظة', true);
+                    return;
+                }
+                event.preventDefault();
+                window._selectStaffChatImage(imageFile);
             });
 
         // وظيفة مساعدة لفلترة بيانات الموظف الحالي فقط (خاص بالموظف فقط)
